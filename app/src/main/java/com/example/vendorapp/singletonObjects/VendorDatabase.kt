@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.vendorapp.acceptedOrderScreen.model.room.AcceptedOrderDao
 import com.example.vendorapp.acceptedOrderScreen.model.room.AcceptedOrderItem
+import com.example.vendorapp.menu.model.room.MenuDao
 import com.example.vendorapp.newOrderScreen.model.room.NewOrderDao
 import com.example.vendorapp.newOrderScreen.model.room.NewOrderItem
 
@@ -31,5 +32,6 @@ abstract class VendorDatabase: RoomDatabase() {
 
     abstract fun newOrderDao(): NewOrderDao
     abstract fun acceptedOrderDao(): AcceptedOrderDao
+    abstract fun menuDao(): MenuDao
 
 }
