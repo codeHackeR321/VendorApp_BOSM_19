@@ -1,11 +1,11 @@
-package com.example.vendorapp.newOrderScreen.model.room
+package com.example.vendorapp.acceptedOrderScreen.model.room
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.jetbrains.annotations.NotNull
 
-@Entity(tableName = "new_order_item")
-data class NewOrderItem(
+@Entity(tableName = "accepted_order_item")
+data class AcceptedOrderItem (
 
     @NotNull
     @PrimaryKey

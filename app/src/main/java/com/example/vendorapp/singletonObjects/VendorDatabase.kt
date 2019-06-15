@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.vendorapp.acceptedOrderScreen.model.room.AcceptedOrderDao
+import com.example.vendorapp.acceptedOrderScreen.model.room.AcceptedOrderItem
 import com.example.vendorapp.newOrderScreen.model.room.NewOrderDao
 import com.example.vendorapp.newOrderScreen.model.room.NewOrderItem
 
-@Database(entities = [NewOrderItem::class], version = 1)
+@Database(entities = [NewOrderItem::class, AcceptedOrderItem::class], version = 1)
 abstract class VendorDatabase: RoomDatabase() {
 
     //companion object => same as static in java
@@ -28,5 +30,6 @@ abstract class VendorDatabase: RoomDatabase() {
     }
 
     abstract fun newOrderDao(): NewOrderDao
+    abstract fun acceptedOrderDao(): AcceptedOrderDao
 
 }
