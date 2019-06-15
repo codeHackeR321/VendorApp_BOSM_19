@@ -1,7 +1,8 @@
-package com.example.vendorapp
+package com.example.vendorapp.loginScreen.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.vendorapp.R
 
 class MainActivity : AppCompatActivity() {
 
