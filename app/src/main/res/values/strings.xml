@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">VendorApp</string>
+    <string name="login_username">Username</string>
+    <string name="login_password">Password</string>
+    <string name="chanel_name_newOrder">New Orders</string>
+    <string name="chanel_desc_newOrder">Inform that a new order has been made</string>
 </resources>
