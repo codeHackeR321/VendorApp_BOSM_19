@@ -112,12 +112,105 @@
       {
         "day": "Day1",
         "earnings": "12000",
-        "orders": ["1","2","3"]
+        "orders": [
+          {
+            "orderId": "1",
+            "status": "Pending",
+            "timestamp": "1635249654",
+            "otp": "1234",
+            "totalAmount": "1560",
+            "items": [
+              {
+                "itemId": "01",
+                "price": "560",
+                "quantity": "2"
+              },
+              {
+                "itemId": "02",
+                "price": "560",
+                "quantity": "2"
+              },
+              {
+                "itemId": "03",
+                "price": "560",
+                "quantity": "2"
+              }
+            ]
+          },
+          {
+            "orderId": "2",
+            "status": "Pending",
+            "timestamp": "1635249780",
+            "otp": "1243",
+            "totalAmount": "1560",
+            "items": [
+              {
+                "itemId": "03",
+                "price": "560",
+                "quantity": "2"
+              },
+              {
+                "itemId": "04",
+                "price": "560",
+                "quantity": "2"
+              }
+            ]
+          },
+          {
+            "orderId": "3",
+            "status": "Pending",
+            "timestamp": "1635249690",
+            "otp": "1324",
+            "totalAmount": "1560",
+            "items": [
+              {
+                "itemId": "01",
+                "price": "560",
+                "quantity": "2"
+              },
+              {
+                "itemId": "03",
+                "price": "560",
+                "quantity": "2"
+              },
+              {
+                "itemId": "05",
+                "price": "560",
+                "quantity": "2"
+              }
+            ]
+          }
+        ]
       },
       {
         "day": "Day2",
         "earnings": "12000",
-        "orders": ["1"]
+        "orders": [
+          {
+            "orderId": "1",
+            "status": "Pending",
+            "timestamp": "1635249654",
+            "otp": "1234",
+            "totalAmount": "1560",
+            "items": [
+              {
+                "itemId": "01",
+                "price": "560",
+                "quantity": "2"
+              },
+              {
+                "itemId": "02",
+                "price": "560",
+                "quantity": "2"
+              },
+              {
+                "itemId": "03",
+                "price": "560",
+                "quantity": "2"
+              }
+            ]
+          }
+        ]
       }
     ]
   }
