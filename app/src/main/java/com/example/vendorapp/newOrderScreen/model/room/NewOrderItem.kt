@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull
 
 @Entity(tableName = "new_order_item")
 data class NewOrderItem(
-
     @NotNull
     @PrimaryKey
     var orderId: Int
