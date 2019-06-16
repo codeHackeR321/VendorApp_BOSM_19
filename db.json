@@ -105,5 +105,20 @@
       "price": "560",
       "status": "off"
     }
-  ]
+  ].
+  "earnings": {
+    "totalEarnings": "30000",
+    "daywise": [
+      {
+        "day": "Day1",
+        "earnings": "12000",
+        "orders": ["1","2","3"]
+      },
+      {
+        "day": "Day2",
+        "earnings": "12000",
+        "orders": ["1"]
+      }
+    ]
+  }
 }
