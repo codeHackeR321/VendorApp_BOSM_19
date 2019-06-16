@@ -105,26 +105,5 @@
       "price": "560",
       "status": "off"
     }
-  ],
-  "earnings": {
-    "totalEarnings": "30000",
-    "dayWise": [
-      {
-        "day": "Day1",
-        "eanrnings": "15600",
-        "orders": [
-          "1",
-          "2",
-          "3"
-        ]
-      },
-      {
-        "day": "Day2",
-        "eanrnings": "1560",
-        "orders": [
-          "1"
-        ]
-      }
-    ]
-  }
+  ]
 }
