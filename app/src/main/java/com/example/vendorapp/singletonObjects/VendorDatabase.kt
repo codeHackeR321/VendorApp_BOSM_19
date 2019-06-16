@@ -16,9 +16,9 @@ abstract class VendorDatabase: RoomDatabase() {
     //companion object => same as static in java
     companion object{
 
-        private var roomInstance: VendorDatabase? = null
+        var roomInstance: VendorDatabase? = null
 
-        // @Synchronized => only one thread can access to prevent multiple instances
+        // @Synchronized => only one thread can access at a time to prevent multiple instances
         @Synchronized fun getInstance(context: Context): VendorDatabase {
 
             if (roomInstance == null){
