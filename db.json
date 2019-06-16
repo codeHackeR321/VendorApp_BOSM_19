@@ -1,0 +1,109 @@
+{
+  "orders": [
+    {
+      "orderId": "1",
+      "status": "Pending",
+      "timestamp": "1635249654",
+      "otp": "1234",
+      "totalAmount": "1560",
+      "items": [
+        {
+          "itemId": "01",
+          "price": "560",
+          "quantity": "2"
+        },
+        {
+          "itemId": "02",
+          "price": "560",
+          "quantity": "2"
+        },
+        {
+          "itemId": "03",
+          "price": "560",
+          "quantity": "2"
+        }
+      ]
+    },
+    {
+      "orderId": "2",
+      "status": "Pending",
+      "timestamp": "1635249780",
+      "otp": "1243",
+      "totalAmount": "1560",
+      "items": [
+        {
+          "itemId": "03",
+          "price": "560",
+          "quantity": "2"
+        },
+        {
+          "itemId": "04",
+          "price": "560",
+          "quantity": "2"
+        }
+      ]
+    },
+    {
+      "orderId": "3",
+      "status": "Pending",
+      "timestamp": "1635249690",
+      "otp": "1324",
+      "totalAmount": "1560",
+      "items": [
+        {
+          "itemId": "01",
+          "price": "560",
+          "quantity": "2"
+        },
+        {
+          "itemId": "03",
+          "price": "560",
+          "quantity": "2"
+        },
+        {
+          "itemId": "05",
+          "price": "560",
+          "quantity": "2"
+        }
+      ]
+    }
+  ],
+  "menu": [
+    {
+      "itemId": "01",
+      "name": "Veg Sandwich",
+      "price": "560",
+      "status": "on"
+    },
+    {
+      "itemId": "02",
+      "name": "Veg Grilled Sandwich",
+      "price": "560",
+      "status": "on"
+    },
+    {
+      "itemId": "03",
+      "name": "Veg Cheese Grilled Sandwich",
+      "price": "560",
+      "status": "on"
+    },
+    {
+      "itemId": "04",
+      "name": "Veg Mayonise Cheese Grilled Sandwich",
+      "price": "560",
+      "status": "on"
+    },
+    {
+      "itemId": "05",
+      "name": "Veg Paneer Mayonese Tandoori Cheese Grilled Sandwich",
+      "price": "560",
+      "status": "on"
+    },
+    {
+      "itemId": "06",
+      "name": "Chicken Sandwich",
+      "price": "560",
+      "status": "off"
+    }
+  ]
+}
