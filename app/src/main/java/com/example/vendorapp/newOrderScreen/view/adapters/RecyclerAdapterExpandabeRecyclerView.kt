@@ -1,4 +1,4 @@
-package com.example.vendorapp.newOrderScreen.view
+package com.example.vendorapp.newOrderScreen.view.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,7 +10,7 @@ import com.example.vendorapp.newOrderScreen.view.expandableRecyclerView.GroupVie
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 
-class RecyclerAdapterNewOrderList(var inflater : LayoutInflater , var list: List<ExpandableGroup<*>>) :
+class RecyclerAdapterExpandabeRecyclerView(var inflater : LayoutInflater, var list: List<ExpandableGroup<*>>) :
         ExpandableRecyclerViewAdapter<GroupViewHolderNewOrderCompactMenu , ChildViewHolderNewOrderOrderDetails>(list){
     override fun onCreateGroupViewHolder(parent: ViewGroup?, viewType: Int): GroupViewHolderNewOrderCompactMenu {
         return(GroupViewHolderNewOrderCompactMenu(inflater.inflate(R.layout.group_view_holder_new_order_screen , parent , false)))
