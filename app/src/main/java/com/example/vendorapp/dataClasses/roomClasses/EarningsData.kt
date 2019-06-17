@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.vendorapp.dataClasses.roomClasses.DayData
 import org.jetbrains.annotations.NotNull
 
 @Entity(tableName = "earnings_table")

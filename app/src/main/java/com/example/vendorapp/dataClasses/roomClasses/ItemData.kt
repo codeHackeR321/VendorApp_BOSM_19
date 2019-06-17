@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import org.jetbrains.annotations.NotNull
 
 
-data class ItemObject (
+data class ItemData (
 
     @NotNull
     @ColumnInfo(name = "item_id")

@@ -1,16 +1,16 @@
 package com.example.vendorapp.dataClasses.retroClasses
 
-class OrdersPojo {
+data class OrdersPojo(
 
-    private var orderId: String = ""
+    var orderId: String,
 
-    private var status: String = ""
+    var status: String,
 
-    private var timestamp: String = ""
+    var timestamp: String,
 
-    private var otp: String = ""
+    var otp: String,
 
-    private var totalAmount: String = ""
+    var totalAmount: String,
 
-    private var items: Array<>
-}
+    var items: Array<ItemPojo>
+)
