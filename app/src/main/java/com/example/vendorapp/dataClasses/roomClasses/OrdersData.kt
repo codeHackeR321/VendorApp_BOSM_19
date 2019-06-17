@@ -32,6 +32,6 @@ data class OrdersData (
 
     @NotNull
     @Embedded
-    var items: Array<ItemData>
+    var items: List<ItemData>
 
 )
