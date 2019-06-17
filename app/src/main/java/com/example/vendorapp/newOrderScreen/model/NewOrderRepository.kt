@@ -10,7 +10,7 @@ class NewOrderRepository(application: Application) {
 
     init {
 
-        val database = VendorDatabase.getInstance(application)
+        val database = VendorDatabase.getDatabaseInstance(application)
         newOrderDao = database.newOrderDao()
     }
 

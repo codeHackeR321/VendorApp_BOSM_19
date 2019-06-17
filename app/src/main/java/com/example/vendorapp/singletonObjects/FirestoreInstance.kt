@@ -8,7 +8,7 @@ class FirestoreInstance {
 
         var firestoreInstance : FirebaseFirestore? = null
 
-        @Synchronized fun getInstance() : FirebaseFirestore{
+        @Synchronized fun getFirebaseInstance() : FirebaseFirestore{
 
             if (firestoreInstance == null){
                 firestoreInstance = FirebaseFirestore.getInstance()

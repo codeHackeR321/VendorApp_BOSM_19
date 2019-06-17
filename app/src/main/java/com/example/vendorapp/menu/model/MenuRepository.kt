@@ -10,7 +10,7 @@ class MenuRepository (application: Application){
 
     init {
 
-        val database = VendorDatabase.getInstance(application)
+        val database = VendorDatabase.getDatabaseInstance(application)
         menuDao = database.menuDao()
     }
 }
