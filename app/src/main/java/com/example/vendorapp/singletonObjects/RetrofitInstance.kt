@@ -7,18 +7,18 @@ class RetrofitInstance {
 
     companion object{
 
-        var retrofitInstance: Retrofit? = null
+        var retrofitService: RetrofitApi? = null
 
-        @Synchronized fun getRetroInstance(): Retrofit{
+        @Synchronized fun getRetroInstance(): RetrofitApi{
 
-            if (retrofitInstance == null)
+            if (retrofitService == null)
             {
                 //Base url of test api from sheety
-                retrofitInstance = Retrofit.Builder().baseUrl("https://my-json-server.typicode.com/PrarabdhGarg/VendorApp")
-                    .addConverterFactory(GsonConverterFactory.create()).build()
+                retrofitService = Retrofit.Builder().baseUrl("https://my-json-server.typicode.com/PrarabdhGarg/VendorApp")
+                    .addConverterFactory(GsonConverterFactory.create()).build().create(RetrofitApi::class.java)
             }
 
-            return retrofitInstance!!
+            return retrofitService!!
         }
 
     }
