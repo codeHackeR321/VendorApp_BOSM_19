@@ -1,7 +1,20 @@
 <resources>
     <string name="app_name">VendorApp</string>
-    <string name="login_username">Username</string>
-    <string name="login_password">Password</string>
+
+    <string name="login_activity_username">Username</string>
+    <string name="login_activity_password">Password</string>
+
     <string name="chanel_name_newOrder">New Orders</string>
     <string name="chanel_desc_newOrder">Inform that a new order has been made</string>
+
+    <string name="test_order_number">Order No. 30</string>
+    <string name="test_amount">\u20B9 300</string>
+    <string name="test_item_name">Veg Cheese Grilled Sandwich</string>
+    <string name="test_item_quantity">3</string>
+    <string name="test_itemwise_price">\u20B9100X</string>
+
+    <string name="card_new_order_accept_bttn">Accept</string>
+    <string name="card_new_order_decline_bttn">Decline</string>
+    <string name="group_view_holder_new_order_heading">Order</string>
+
 </resources>
