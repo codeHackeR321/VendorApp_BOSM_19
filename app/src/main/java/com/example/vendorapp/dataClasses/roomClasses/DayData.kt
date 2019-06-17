@@ -16,5 +16,5 @@ data class DayData (
 
     @NotNull
     @Embedded
-    var orders: Array<OrdersData>
+    var orders: List<OrdersData>
 )
