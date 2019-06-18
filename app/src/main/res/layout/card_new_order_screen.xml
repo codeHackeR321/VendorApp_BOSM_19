@@ -33,7 +33,7 @@
         android:layout_marginRight="@dimen/default_margin"
         android:layout_marginBottom="@dimen/default_margin"
         android:id="@+id/text_card_new_order_total_amount"
-        android:text="@string/test_amount"
+        android:text="@string/test_total_amount"
         android:layout_height="wrap_content" />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -24,8 +24,8 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:text="@string/test_itemwise_price"
-            android:id="@+id/text_child_view_holder_new_order_multiplication"
+            android:text="@string/test_item_wise_price"
+            android:id="@+id/text_child_view_holder_new_order_itemwise_price"
             android:paddingLeft="@dimen/default_padding"
             android:paddingTop="@dimen/default_padding"
             android:paddingBottom="@dimen/default_padding"
@@ -45,7 +45,7 @@
             android:layout_weight="1"
             android:id="@+id/text_child_view_holder_new_order_item_cost"
             android:padding="@dimen/default_padding"
-            android:text="@string/test_amount"
+            android:text="@string/new_order_total_amount"
             android:layout_height="match_parent" />
 
     </LinearLayout>

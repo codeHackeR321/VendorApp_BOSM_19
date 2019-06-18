@@ -3,16 +3,17 @@ package com.example.vendorapp.singletonObjects
 import com.example.vendorapp.dataClasses.retroClasses.EarningsPojo
 import com.example.vendorapp.dataClasses.retroClasses.MenuPojo
 import com.example.vendorapp.dataClasses.retroClasses.OrdersPojo
+import io.reactivex.Observable
 import retrofit2.Call
 import retrofit2.http.GET
 
 interface RetrofitApi {
 
     @get:GET("/orders")
-    val orders: Call<List<OrdersPojo>>
+    val orders: Observable<List<OrdersPojo>>
 
     @get:GET("/menu")
-    val menu: Call<MenuPojo>
+    val menu: Observable<List<MenuPojo>>
 
     @get:GET("/earnings")
     val earnings: Call<EarningsPojo>

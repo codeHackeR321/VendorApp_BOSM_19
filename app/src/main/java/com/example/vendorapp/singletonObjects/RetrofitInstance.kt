@@ -1,6 +1,8 @@
 package com.example.vendorapp.singletonObjects
 
+import io.reactivex.plugins.RxJavaPlugins
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitInstance {
@@ -14,8 +16,11 @@ class RetrofitInstance {
             if (retrofitService == null)
             {
                 //Base url of test api from sheety
+                //RxJava adapter for api calls
                 retrofitService = Retrofit.Builder().baseUrl("https://my-json-server.typicode.com/PrarabdhGarg/VendorApp")
-                    .addConverterFactory(GsonConverterFactory.create()).build().create(RetrofitApi::class.java)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                    .build().create(RetrofitApi::class.java)
             }
 
             return retrofitService!!

@@ -20,5 +20,5 @@ data class EarningsData (
 
     @NotNull
     @Embedded
-    var daywise: Array<DayData>
+    var daywise: List<DayData>
 )
