@@ -1,10 +1,9 @@
 package com.example.vendorapp.menu.model.room
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.vendorapp.dataClasses.roomClasses.MenuItemData
+import com.example.vendorapp.dataclasses.roomClasses.MenuItemData
 import io.reactivex.Observable
 
 @Dao
