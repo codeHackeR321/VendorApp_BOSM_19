@@ -30,6 +30,8 @@ class MenuRepository (application: Application){
 
     val menuApi = menuApiCall.subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .map { }
+        .map {
+
+        }
         .subscribe()
 }

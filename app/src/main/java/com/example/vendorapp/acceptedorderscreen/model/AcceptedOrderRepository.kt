@@ -30,7 +30,10 @@ class AcceptedOrderRepository(application: Application) {
 
     val ordersApi = orderApiCall.subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .map {  }
+        .map {
+
+
+        }
         .subscribe()
 
 }
