@@ -19,6 +19,6 @@ interface MenuDao {
     fun insertMenu(vararg menuItemData: MenuItemData)
 
     @Query("SELECT * FROM menu_table WHERE itemId > :itemId")
-    fun getItemName(itemId : String) : MenuItemData
+    fun getItemName(itemId : String) : Observable<MenuItemData>
 
 }
