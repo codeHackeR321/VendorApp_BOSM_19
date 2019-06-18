@@ -3,20 +3,19 @@ package com.example.vendorapp.singletonobjects
 import com.example.vendorapp.dataclasses.retroClasses.EarningsPojo
 import com.example.vendorapp.dataclasses.retroClasses.MenuPojo
 import com.example.vendorapp.dataclasses.retroClasses.OrdersPojo
-import io.reactivex.Flowable
-import io.reactivex.Observable
+import io.reactivex.Single
 import retrofit2.http.GET
 
 interface RetrofitApi {
 
     @get:GET("/orders")
-    val orders: Flowable<List<OrdersPojo>>
+    val orders: Single<List<OrdersPojo>>
 
     @get:GET("/menu")
-    val menu: Flowable<List<MenuPojo>>
+    val menu: Single<List<MenuPojo>>
 
     @get:GET("/earnings")
-    val earnings: Observable<EarningsPojo>
+    val earnings: Single<EarningsPojo>
 
     //Add post when api available
 }
