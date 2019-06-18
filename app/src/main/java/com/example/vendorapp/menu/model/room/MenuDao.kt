@@ -16,7 +16,7 @@ interface MenuDao {
     fun deleteAll()
 
     @Insert
-    fun insertMenu(vararg menuItemData: MenuItemData)
+    fun insertMenu(menu: List<MenuItemData>)
 
     @Query("SELECT * FROM menu_table WHERE itemId > :itemId")
     fun getItemName(itemId : String) : Flowable<MenuItemData>
