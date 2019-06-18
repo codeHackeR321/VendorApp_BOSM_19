@@ -30,12 +30,9 @@ class NewOrderRepository(application: Application) {
     }
 
     @SuppressLint("CheckResult")
-    fun getNewOrdersList()
-    { newOrderDao.getAllNewOrders().subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe {
-
-        }
+    fun getNewOrdersList():Flowable<List<OrdersPojo>>
+    {
+        return newOrderDao.getAllNewOrders()
     }
 
     fun setnewOrderfromServer()
@@ -43,22 +40,22 @@ class NewOrderRepository(application: Application) {
         orderApi.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .map {
-                for (i in 0 until it.size)
+                it.forEach {
                     newOrderDao.insertNewOrder(
                         OrdersData(
-                            it.get(i).orderId,
-                            it.get(i).status,
-                            it.get(i).timestamp,
-                            it.get(i).otp,
-                            it.get(i).totalAmount,
-                            setItem(it.get(i).items)
+                            it.orderId,
+                            it.status,
+                            it.timestamp,
+                            it.otp,
+                            it.totalAmount,
+                            setItem(it.items)
                         )
                     )
-            }
+                }  }
             .subscribe()
     }
 
-    fun setItem(itemList: List<ItemPojo>): List<ItemData> {
+    fun setItem(itemList: List<ItemPojo>): ArrayList<ItemData> {
         var item: ArrayList<ItemData> = ArrayList()
         for (i in 0 until itemList.size)
             item.add(ItemData(itemList.get(i).itemId, itemList.get(i).price, itemList.get(i).quantity))
