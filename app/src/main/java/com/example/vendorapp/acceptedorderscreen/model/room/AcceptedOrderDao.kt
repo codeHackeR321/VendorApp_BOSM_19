@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.vendorapp.dataclasses.roomClasses.OrdersData
-import io.reactivex.Observable
+import io.reactivex.Flowable
 
 
 @Dao
@@ -12,7 +12,7 @@ interface AcceptedOrderDao {
 
     // All orders with accepted or ready status
     @Query("SELECT * FROM orders_table WHERE status = 'accepted' OR status = 'ready' ")
-    fun getOrders(): Observable<List<OrdersData>>
+    fun getOrders(): Flowable<List<OrdersData>>
 
     @Query("DELETE FROM orders_table")
     fun deleteAll()
