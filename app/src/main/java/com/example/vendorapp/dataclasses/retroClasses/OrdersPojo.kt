@@ -12,5 +12,5 @@ data class OrdersPojo(
 
     var totalAmount: String,
 
-    var items:List<ItemPojo>
+    var items: List<ItemPojo>
 )

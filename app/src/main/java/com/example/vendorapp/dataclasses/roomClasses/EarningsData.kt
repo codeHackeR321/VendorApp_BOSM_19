@@ -17,5 +17,5 @@ data class EarningsData (
     var totalEarnings: String,
 
     @Embedded
-    var daywise: List<DayData>
+    var daywise: ArrayList<DayData>
 )

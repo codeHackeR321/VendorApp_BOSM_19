@@ -18,5 +18,5 @@ interface AcceptedOrderDao {
     fun deleteAll()
 
     @Insert
-    fun insertOrder(vararg order: OrdersData)
+    fun insertOrder(orders: ArrayList<OrdersData>)
 }

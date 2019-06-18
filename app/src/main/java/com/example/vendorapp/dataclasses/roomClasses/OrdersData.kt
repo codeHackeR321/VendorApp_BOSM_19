@@ -26,6 +26,6 @@ data class OrdersData (
     var totalAmount: String,
 
     @Embedded
-    var items: List<ItemData>
+    var items: ArrayList<ItemData>
 
 )
