@@ -8,15 +8,11 @@ import org.jetbrains.annotations.NotNull
 data class MenuItemData (
 
     @PrimaryKey
-    @NotNull
     var itemId: String,
 
-    @NotNull
     var name: String,
 
-    @NotNull
     var price: String,
 
-    @NotNull
     var status: String
 )
