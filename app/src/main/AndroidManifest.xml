@@ -11,7 +11,7 @@
             android:theme="@style/AppTheme">
         <activity android:name=".menu.view.MenuActivity">
         </activity>
-        <activity android:name=".loginScreen.view.MainActivity">
+        <activity android:name=".loginscreen.view.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
