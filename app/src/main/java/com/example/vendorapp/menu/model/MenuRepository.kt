@@ -35,7 +35,8 @@ class MenuRepository (application: Application){
 
     val menuApi = menuApiCall.subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(object: SingleObserver<List<MenuPojo>>{
+        .subscribe(object: SingleObserver<List<MenuPojo>>
+        {
 
             override fun onSuccess(t: List<MenuPojo>) {
 
