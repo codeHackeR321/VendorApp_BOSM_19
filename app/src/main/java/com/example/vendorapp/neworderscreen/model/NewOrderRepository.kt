@@ -6,6 +6,7 @@ import com.example.vendorapp.dataclasses.retroClasses.ItemPojo
 import com.example.vendorapp.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.dataclasses.roomClasses.ItemData
 import com.example.vendorapp.dataclasses.roomClasses.OrdersData
+import com.example.vendorapp.menu.model.room.MenuDao
 import com.example.vendorapp.neworderscreen.model.room.NewOrderDao
 import com.example.vendorapp.singletonobjects.RetrofitInstance
 import com.example.vendorapp.singletonobjects.VendorDatabase

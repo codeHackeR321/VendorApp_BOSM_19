@@ -12,12 +12,14 @@ import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
 import com.example.vendorapp.neworderscreen.view.expandableRecyclerView.GroupDataClass
 import kotlinx.android.synthetic.main.card_new_order_screen.view.*
 
-class RecyclerAdapterFragment(val orders : List<ModifiedOrdersDataClass> , val listener : RecyclerButtonClickListener) : RecyclerView.Adapter<RecyclerAdapterFragment.OrderViewHolder>(){
+class RecyclerAdapterFragment(val listener : RecyclerButtonClickListener) : RecyclerView.Adapter<RecyclerAdapterFragment.OrderViewHolder>(){
 
     interface RecyclerButtonClickListener{
 
         fun buttonClicked(orderId : String , accepted : Boolean)
     }
+
+    var orders = emptyList<ModifiedOrdersDataClass>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
         return OrderViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.card_new_order_screen , parent , false))
