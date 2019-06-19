@@ -3,6 +3,7 @@ package com.example.vendorapp.acceptedorderscreen.model
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.room.FtsOptions
 import com.example.vendorapp.acceptedorderscreen.model.room.AcceptedOrderDao
 import com.example.vendorapp.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.dataclasses.roomClasses.ItemData
@@ -39,11 +40,11 @@ class AcceptedOrderRepository(application: Application) {
             .subscribe(object : SingleObserver<List<OrdersPojo>>{
                 override fun onSuccess(t: List<OrdersPojo>) {
 
-                    var orders: ArrayList<OrdersData> = ArrayList(t.size)
+                    var orders = emptyList<OrdersData>()
 
                     t.forEach {
 
-                        orders.add(it.toOrderData())
+                        orders.plus(it.toOrderData())
                     }
 
                     acceptedOrderDao.deleteAll()
@@ -64,9 +65,10 @@ class AcceptedOrderRepository(application: Application) {
 
     private fun OrdersPojo.toOrderData(): OrdersData{
 
-        var item: ArrayList<ItemData> = ArrayList(items.size)
+        var item = emptyList<ItemData>()
+
         items.forEach {
-            item.add(ItemData(itemId = it.itemId, price = it.price, quantity = it.quantity))
+            item.plus(ItemData(itemId = it.itemId, price = it.price, quantity = it.quantity))
         }
 
         return OrdersData(orderId = orderId, status = status, otp = otp,

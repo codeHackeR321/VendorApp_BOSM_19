@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.vendorapp.acceptedorderscreen.model.room.AcceptedOrderDao
 import com.example.vendorapp.dataclasses.roomClasses.EarningsData
 import com.example.vendorapp.dataclasses.roomClasses.MenuItemData
@@ -12,6 +13,7 @@ import com.example.vendorapp.menu.model.room.MenuDao
 import com.example.vendorapp.neworderscreen.model.room.NewOrderDao
 
 @Database(entities = [OrdersData::class, EarningsData::class, MenuItemData::class], version = 1)
+@TypeConverters(RoomTypeConverters::class)
 abstract class VendorDatabase: RoomDatabase() {
 
     //companion object => same as static in java

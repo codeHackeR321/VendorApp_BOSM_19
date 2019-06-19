@@ -40,10 +40,10 @@ class MenuRepository (application: Application){
 
             override fun onSuccess(t: List<MenuPojo>) {
 
-                var menu = ArrayList<MenuItemData>(t.size)
+                var menu = emptyList<MenuItemData>()
 
                 t.forEach {
-                    menu.add(it.toMenuItemData())
+                    menu.plus(it.toMenuItemData())
                 }
 
                 menuDao.deleteAll()

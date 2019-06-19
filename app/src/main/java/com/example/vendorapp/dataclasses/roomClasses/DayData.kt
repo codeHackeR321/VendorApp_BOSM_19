@@ -13,5 +13,5 @@ data class DayData (
     var earnings: String,
 
     @Embedded
-    var orders: ArrayList<OrdersData>
+    var orders: List<OrdersData>
 )
