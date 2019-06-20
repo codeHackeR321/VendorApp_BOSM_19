@@ -1,4 +1,4 @@
-package com.example.vendorapp.dataclasses.retroClasses
+package com.example.vendorapp.shared.dataclasses.retroClasses
 
 data class DayPojo(
 

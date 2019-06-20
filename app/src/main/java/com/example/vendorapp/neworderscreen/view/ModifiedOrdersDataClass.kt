@@ -1,6 +1,6 @@
 package com.example.vendorapp.neworderscreen.view
 
-import com.example.vendorapp.neworderscreen.view.expandableRecyclerView.ChildDataClass
+import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
 
 data class ModifiedOrdersDataClass (
 
