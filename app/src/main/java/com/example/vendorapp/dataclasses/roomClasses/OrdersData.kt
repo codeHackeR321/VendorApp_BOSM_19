@@ -21,9 +21,6 @@ data class OrdersData (
     var otp: String,
 
     @ColumnInfo(name = "total_amount")
-    var totalAmount: Int,
-
-    @ColumnInfo(name = "day")
-    var day: String
+    var totalAmount: String
 
 )
