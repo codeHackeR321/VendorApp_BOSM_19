@@ -1,4 +1,4 @@
-package com.example.vendorapp.singletonobjects
+package com.example.vendorapp.shared.singletonobjects
 
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -10,7 +10,7 @@ class RetrofitInstance {
 
         var retrofitService: RetrofitApi? = null
 
-        @Synchronized fun getRetroInstance(): RetrofitApi{
+        @Synchronized fun getRetroInstance(): RetrofitApi {
 
             if (retrofitService == null)
             {

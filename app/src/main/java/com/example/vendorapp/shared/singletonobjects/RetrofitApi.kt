@@ -1,8 +1,8 @@
-package com.example.vendorapp.singletonobjects
+package com.example.vendorapp.shared.singletonobjects
 
-import com.example.vendorapp.dataclasses.retroClasses.EarningsPojo
-import com.example.vendorapp.dataclasses.retroClasses.MenuPojo
-import com.example.vendorapp.dataclasses.retroClasses.OrdersPojo
+import com.example.vendorapp.shared.dataclasses.retroClasses.EarningsPojo
+import com.example.vendorapp.shared.dataclasses.retroClasses.MenuPojo
+import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
 import io.reactivex.Single
 import retrofit2.http.GET
 

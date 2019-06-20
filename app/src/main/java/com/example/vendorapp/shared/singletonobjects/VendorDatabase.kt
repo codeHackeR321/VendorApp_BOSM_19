@@ -1,13 +1,13 @@
-package com.example.vendorapp.singletonobjects
+package com.example.vendorapp.shared.singletonobjects
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.vendorapp.acceptedorderscreen.model.room.AcceptedOrderDao
-import com.example.vendorapp.dataclasses.roomClasses.ItemData
-import com.example.vendorapp.dataclasses.roomClasses.MenuItemData
-import com.example.vendorapp.dataclasses.roomClasses.OrdersData
+import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
+import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
+import com.example.vendorapp.shared.dataclasses.roomClasses.OrdersData
 import com.example.vendorapp.menu.model.room.MenuDao
 import com.example.vendorapp.neworderscreen.model.room.NewOrderDao
 

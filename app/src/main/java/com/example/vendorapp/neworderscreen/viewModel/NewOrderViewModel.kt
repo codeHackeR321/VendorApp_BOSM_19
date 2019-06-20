@@ -6,8 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
-import com.example.vendorapp.neworderscreen.view.expandableRecyclerView.ChildDataClass
-import com.example.vendorapp.singletonobjects.repositories.NewOrderRepositoryInstance
+import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
+import com.example.vendorapp.shared.singletonobjects.repositories.NewOrderRepositoryInstance
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -19,6 +19,7 @@ class NewOrderViewModel(application: Application) : ViewModel(){
     @SuppressLint("CheckResult")
     fun getNewOrders()
     {
+
 //        var list = emptyList<ModifiedOrdersDataClass>()
 //        newOrderRepo.getNewOrdersList().subscribeOn(Schedulers.io()).
 //                observeOn(AndroidSchedulers.mainThread()).
@@ -32,6 +33,7 @@ class NewOrderViewModel(application: Application) : ViewModel(){
 //                    }
 //                    (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(list)
 //                }
+
     }
 
     fun refreshOrderData()
