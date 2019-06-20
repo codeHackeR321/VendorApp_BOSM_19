@@ -15,7 +15,7 @@ data class OrdersData (
     var status: String,
 
     @ColumnInfo(name = "timestamp")
-    var timestamp: String,
+    var timestamp: Long,
 
     @ColumnInfo(name = "otp")
     var otp: String,

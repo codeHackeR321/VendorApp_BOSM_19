@@ -5,10 +5,12 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import org.jetbrains.annotations.NotNull
 
-@Entity(tableName = "items_per_order")
+@Entity(tableName = "items_order")
 data class ItemData (
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    var id: String,
+
     @ColumnInfo(name = "item_id")
     var itemId: String,
 
