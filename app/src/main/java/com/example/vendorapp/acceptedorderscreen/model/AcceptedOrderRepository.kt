@@ -68,10 +68,10 @@ class AcceptedOrderRepository(application: Application) {
         var item = emptyList<ItemData>()
 
         items.forEach {
-            item.plus(ItemData(itemId = it.itemId, price = it.price, quantity = it.quantity))
+            item.plus(ItemData(itemId = it.itemId, price = it.price, quantity = it.quantity, orderId = orderId))
         }
 
         return OrdersData(orderId = orderId, status = status, otp = otp,
-            timestamp = timestamp, totalAmount = totalAmount, items = item)
+            timestamp = timestamp, totalAmount = totalAmount.toInt(), day = "1")
     }
 }

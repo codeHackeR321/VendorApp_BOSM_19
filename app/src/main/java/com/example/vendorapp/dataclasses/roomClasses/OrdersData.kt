@@ -1,10 +1,8 @@
 package com.example.vendorapp.dataclasses.roomClasses
 
 import androidx.room.ColumnInfo
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import org.jetbrains.annotations.NotNull
 
 @Entity(tableName = "orders_table")
 data class OrdersData (
@@ -23,9 +21,9 @@ data class OrdersData (
     var otp: String,
 
     @ColumnInfo(name = "total_amount")
-    var totalAmount: String,
+    var totalAmount: Int,
 
-    @Embedded
-    var items: List<ItemData>
+    @ColumnInfo(name = "day")
+    var day: String
 
 )
