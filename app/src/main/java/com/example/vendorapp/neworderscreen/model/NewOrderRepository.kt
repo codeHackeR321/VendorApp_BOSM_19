@@ -33,7 +33,7 @@ class NewOrderRepository(application: Application) {
     @SuppressLint("CheckResult")
     fun getNewOrdersList():Flowable<List<OrdersPojo>>
     {
-        return newOrderDao.getAllNewOrders()
+        return newOrderDao.getAllNewOrders().subscribeOn(Schedulers.io())
     }
 
     fun setnewOrderfromServer()
@@ -56,7 +56,7 @@ class NewOrderRepository(application: Application) {
             .subscribe()
     }
 
-    fun setItem(itemList: List<ItemPojo>): ArrayList<ItemData> {
+    fun setItem(itemList: List<ItemPojo>): List<ItemData> {
         var item: ArrayList<ItemData> = ArrayList()
         for (i in 0 until itemList.size)
             item.add(ItemData(itemList.get(i).itemId, itemList.get(i).price, itemList.get(i).quantity))
@@ -65,7 +65,7 @@ class NewOrderRepository(application: Application) {
 
     fun updateStatus(orderId:String,status:String):Completable
     {
-        return newOrderDao.updateStatus(orderId,status)
+        return newOrderDao.updateStatus(orderId,status).subscribeOn(Schedulers.io())
     }
 
 }
