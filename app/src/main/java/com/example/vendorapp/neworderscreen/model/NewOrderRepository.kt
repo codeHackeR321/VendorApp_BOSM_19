@@ -31,7 +31,7 @@ class NewOrderRepository(application: Application) {
     }
 
     @SuppressLint("CheckResult")
-    fun getNewOrdersList():Flowable<List<OrdersPojo>>
+    fun getNewOrdersList():Flowable<List<OrdersData>>
     {
         return newOrderDao.getAllNewOrders().subscribeOn(Schedulers.io())
     }
@@ -46,20 +46,23 @@ class NewOrderRepository(application: Application) {
                         OrdersData(
                             it.orderId,
                             it.status,
-                            it.timestamp,
+                            it.timestamp.toLong(),
                             it.otp,
-                            it.totalAmount,
-                            setItem(it.items)
+                            it.totalAmount
+                            )
                         )
-                    )
                 }  }
             .subscribe()
     }
 
     fun setItem(itemList: List<ItemPojo>): List<ItemData> {
         var item: ArrayList<ItemData> = ArrayList()
-        for (i in 0 until itemList.size)
-            item.add(ItemData(itemList.get(i).itemId, itemList.get(i).price, itemList.get(i).quantity))
+
+        //Change orderId extraction process
+        itemList.forEach {
+            item.add(ItemData(id= 0, itemId = it.itemId, orderId = "0", price = it.price, quantity = it.quantity))
+        }
+
         return item
     }
 
