@@ -3,13 +3,9 @@ package com.example.vendorapp.neworderscreen.model.room
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Update
-import com.example.vendorapp.dataclasses.retroClasses.OrdersPojo
-import com.example.vendorapp.dataclasses.roomClasses.OrdersData
+import com.example.vendorapp.shared.dataclasses.roomClasses.OrdersData
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Observable
-import io.reactivex.Single
 
 @Dao
 interface NewOrderDao {

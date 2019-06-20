@@ -1,4 +1,4 @@
-package com.example.vendorapp.neworderscreen.view.expandableRecyclerView
+package com.example.vendorapp.shared.expandableRecyclerView
 
 import android.annotation.SuppressLint
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup

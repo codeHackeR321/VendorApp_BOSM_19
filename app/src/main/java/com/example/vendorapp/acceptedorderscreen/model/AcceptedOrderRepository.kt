@@ -1,21 +1,16 @@
 package com.example.vendorapp.acceptedorderscreen.model
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.room.FtsOptions
 import com.example.vendorapp.acceptedorderscreen.model.room.AcceptedOrderDao
-import com.example.vendorapp.dataclasses.retroClasses.OrdersPojo
-import com.example.vendorapp.dataclasses.roomClasses.ItemData
-import com.example.vendorapp.dataclasses.roomClasses.OrdersData
-import com.example.vendorapp.singletonobjects.RetrofitInstance
-import com.example.vendorapp.singletonobjects.VendorDatabase
+import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
+import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
+import com.example.vendorapp.shared.dataclasses.roomClasses.OrdersData
+import com.example.vendorapp.shared.singletonobjects.RetrofitInstance
+import com.example.vendorapp.shared.singletonobjects.VendorDatabase
 import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
-import java.util.Observable
 
 class AcceptedOrderRepository(application: Application) {
 

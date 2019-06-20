@@ -1,9 +1,8 @@
-package com.example.vendorapp.dataclasses.roomClasses
+package com.example.vendorapp.shared.dataclasses.roomClasses
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import org.jetbrains.annotations.NotNull
 
 @Entity(tableName = "items_order")
 data class ItemData (

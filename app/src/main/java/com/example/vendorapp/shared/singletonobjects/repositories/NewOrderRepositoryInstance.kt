@@ -1,4 +1,4 @@
-package com.example.vendorapp.singletonobjects.repositories
+package com.example.vendorapp.shared.singletonobjects.repositories
 
 import android.app.Application
 import com.example.vendorapp.neworderscreen.model.NewOrderRepository

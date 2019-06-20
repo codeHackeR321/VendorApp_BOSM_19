@@ -6,8 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
-import com.example.vendorapp.neworderscreen.view.expandableRecyclerView.ChildDataClass
-import com.example.vendorapp.singletonobjects.repositories.NewOrderRepositoryInstance
+import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
+import com.example.vendorapp.shared.singletonobjects.repositories.NewOrderRepositoryInstance
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -26,7 +26,14 @@ class NewOrderViewModel(application: Application) : ViewModel(){
                     orderList.forEach {order ->
                         var childList = emptyList<ChildDataClass>()
                         order.items.forEach {
-                            childList.plus(ChildDataClass(itemId = it.itemId , itemName = "Default Name" , price = it.price , quantity = it.quantity))
+                            childList.plus(
+                                ChildDataClass(
+                                    itemId = it.itemId,
+                                    itemName = "Default Name",
+                                    price = it.price,
+                                    quantity = it.quantity
+                                )
+                            )
                         }
                         list.plus(ModifiedOrdersDataClass(timestamp = order.timestamp.toString() , totalAmount = order.totalAmount , status = order.status , otp = order.otp , items = childList , orderId = order.orderId))
                     }

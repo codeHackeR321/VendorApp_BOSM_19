@@ -3,7 +3,7 @@ package com.example.vendorapp.acceptedorderscreen.model.room
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.vendorapp.dataclasses.roomClasses.OrdersData
+import com.example.vendorapp.shared.dataclasses.roomClasses.OrdersData
 import io.reactivex.Flowable
 
 
