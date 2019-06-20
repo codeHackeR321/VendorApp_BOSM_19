@@ -18,7 +18,7 @@ interface MenuDao {
     @Insert
     fun insertMenu(menu: List<MenuItemData>)
 
-    @Query("SELECT * FROM menu_table WHERE itemId > :itemId")
+    @Query("SELECT * FROM menu_table WHERE item_Id > :itemId")
     fun getItemName(itemId : String) : Flowable<MenuItemData>
 
 }

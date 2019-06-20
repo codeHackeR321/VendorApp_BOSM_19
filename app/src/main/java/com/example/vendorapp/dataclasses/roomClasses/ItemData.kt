@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull
 data class ItemData (
 
     @PrimaryKey(autoGenerate = true)
-    var id: String,
+    var id: Int,
 
     @ColumnInfo(name = "item_id")
     var itemId: String,
