@@ -18,7 +18,7 @@ interface NewOrderDao {
     fun insertNewOrder(newOrder:OrdersData)
 
     @Query("SELECT * from orders_table WHERE status= 'Pending'")
-    fun getAllNewOrders(): Flowable<List<OrdersPojo>>
+    fun getAllNewOrders(): Flowable<List<OrdersData>>
 
     @Query( "UPDATE orders_table SET status = :status WHERE order_id = :orderId")
     fun updateStatus(orderId:String,status:String):Completable
