@@ -1,9 +1,6 @@
 package com.example.vendorapp.acceptedorderscreen.model
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.room.FtsOptions
 import com.example.vendorapp.acceptedorderscreen.model.room.AcceptedOrderDao
 import com.example.vendorapp.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.dataclasses.roomClasses.ItemData
@@ -13,9 +10,7 @@ import com.example.vendorapp.singletonobjects.VendorDatabase
 import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
-import java.util.Observable
 
 class AcceptedOrderRepository(application: Application) {
 
@@ -31,8 +26,11 @@ class AcceptedOrderRepository(application: Application) {
     }
 
     fun getOrdersRoom(): Flowable<List<OrdersData>>{
-
         return acceptedOrderDao.getOrders()
+    }
+
+    fun getOrderItemsRoom(orderId: String): Flowable<List<ItemData>>{
+        return acceptedOrderDao.getItemsForOrder(orderId)
     }
 
     val orderApi = orderApiCall.subscribeOn(Schedulers.io())
@@ -41,14 +39,18 @@ class AcceptedOrderRepository(application: Application) {
                 override fun onSuccess(t: List<OrdersPojo>) {
 
                     var orders = emptyList<OrdersData>()
+                    var itemsInOrder = emptyList<ItemData>()
 
                     t.forEach {
 
+                        itemsInOrder.plus(it.toItemData())
                         orders.plus(it.toOrderData())
                     }
 
-                    acceptedOrderDao.deleteAll()
+                    acceptedOrderDao.deleteAllOrders()
+                    acceptedOrderDao.deleteAllOrderItems()
                     acceptedOrderDao.insertOrder( orders )
+                    acceptedOrderDao.insertOrderItems( itemsInOrder )
 
                 }
 
@@ -64,6 +66,11 @@ class AcceptedOrderRepository(application: Application) {
 
 
     private fun OrdersPojo.toOrderData(): OrdersData{
+        return OrdersData(orderId = orderId, status = status, otp = otp,
+            timestamp = timestamp.toLong(), totalAmount = totalAmount)
+    }
+
+    private fun OrdersPojo.toItemData(): List<ItemData>{
 
         var item = emptyList<ItemData>()
 
@@ -71,7 +78,6 @@ class AcceptedOrderRepository(application: Application) {
             item.plus(ItemData(itemId = it.itemId, price = it.price, quantity = it.quantity, orderId = orderId, id = 0))
         }
 
-        return OrdersData(orderId = orderId, status = status, otp = otp,
-            timestamp = timestamp.toLong(), totalAmount = totalAmount)
+        return item
     }
 }
