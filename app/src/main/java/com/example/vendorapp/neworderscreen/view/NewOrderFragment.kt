@@ -7,16 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.example.vendorapp.R
 import com.example.vendorapp.neworderscreen.view.adapters.RecyclerAdapterFragment
-import com.example.vendorapp.singletonobjects.viewmodels.NewOrderViewModelInstance
-import io.reactivex.disposables.Disposable
+import com.example.vendorapp.neworderscreen.viewModel.NewOrderViewModel
 import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 
 class NewOrderFragment : Fragment() , RecyclerAdapterFragment.RecyclerButtonClickListener{
 
     private val viewModel by lazy {
-        NewOrderViewModelInstance.getInstance(this)
+        ViewModelProviders.of(viewLifecycleOwner as Fragment).get(NewOrderViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
