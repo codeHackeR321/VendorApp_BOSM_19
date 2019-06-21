@@ -35,7 +35,7 @@ class AcceptedOrderRepository(application: Application) {
     }
 
     fun updateStatus(orderId: String, status: String): Completable{
-        return acceptedOrderDao.updateStatus(orderId, status)
+        return acceptedOrderDao.updateStatus(orderId, status).subscribeOn(Schedulers.io())
     }
 
 

@@ -26,7 +26,7 @@ class MenuRepository (application: Application){
     }
 
     fun getMenuRoom(): Flowable<List<MenuItemData>>{
-        return menuDao.getMenu()
+        return menuDao.getMenu().subscribeOn(Schedulers.io())
     }
 
     val menuApi = menuApiCall.subscribeOn(Schedulers.io())
@@ -42,6 +42,7 @@ class MenuRepository (application: Application){
             menuDao.deleteAll()
             menuDao.insertMenu(menu)
         }
+        .ignoreElement()
 
     private fun MenuPojo.toMenuItemData(): MenuItemData{
         return MenuItemData(itemId, name, price, status)
