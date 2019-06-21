@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.vendorapp.R
+import com.example.vendorapp.neworderscreen.view.NewOrderFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,5 +41,11 @@ class MainActivity : AppCompatActivity() {
      * */
     fun initializeApp(){
         setupNotificationChannel()
+        setupFragment()
+    }
+
+    fun setupFragment()
+    {
+        supportFragmentManager.beginTransaction().add(R.id.frameLayout , NewOrderFragment()).commit()
     }
 }

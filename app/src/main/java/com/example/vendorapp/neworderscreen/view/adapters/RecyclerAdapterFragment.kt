@@ -1,6 +1,7 @@
 package com.example.vendorapp.neworderscreen.view.adapters
 
 import android.app.Activity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +31,7 @@ class RecyclerAdapterFragment(val listener : RecyclerButtonClickListener) : Recy
     }
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
+        Log.d("Testing RecyclerAdapter" , "Entered with data = ${orders.toString()}")
         holder.textOrderNumber.text = String.format(holder.itemView.resources.getString(R.string.new_order_order_number) , orders[position].orderId)
         holder.textTotalAmount.text = String.format(holder.itemView.resources.getString(R.string.new_order_total_amount) , orders[position].totalAmount)
         val inflater = holder.itemView.context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater

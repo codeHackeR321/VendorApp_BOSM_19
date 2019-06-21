@@ -1,5 +1,6 @@
 package com.example.vendorapp.neworderscreen.view
 
+import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -16,26 +17,34 @@ import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 class NewOrderFragment : Fragment() , RecyclerAdapterFragment.RecyclerButtonClickListener{
 
     private val viewModel by lazy {
-        ViewModelProviders.of(viewLifecycleOwner as Fragment).get(NewOrderViewModel::class.java)
+        // ViewModelProviders.of(viewLifecycleOwner as Fragment).get(NewOrderViewModel::class.java)
+        NewOrderViewModel(context!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_fra_new_order, container, false)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initializeView()
     }
 
     fun initializeView()
     {
         recycler_new_order_screen.adapter = RecyclerAdapterFragment(this)
+        Log.d("Testing View" , "Recycler Adapter enabled with id ${recycler_new_order_screen.adapter}")
         viewModel.refreshOrderData()
+        viewModel.getNewOrders()
         viewModel.orders.observe(this , Observer {
-            Log.d("Testing New Order View" , "Entered observer for orders")
-            (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders = it
+            Log.d("Testing New Order View" , "Entered observer for orders with dat = ${it.toString()}")
+            it.forEach {
+                if ((recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders.indexOf(it) == -1)
+                    (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders = (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders.plus(it)
+            }
+            // (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders = it
+            Log.d("Testing New Order View" , "Adapter id = ${recycler_new_order_screen.adapter}\nAdapter data = ${(recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders}")
+            (recycler_new_order_screen.adapter as RecyclerAdapterFragment).notifyDataSetChanged()
         })
     }
 

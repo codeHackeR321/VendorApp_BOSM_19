@@ -2,6 +2,8 @@ package com.example.vendorapp.neworderscreen.model
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.Context
+import android.util.Log
 import com.example.vendorapp.shared.dataclasses.retroClasses.ItemPojo
 import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
@@ -14,14 +16,14 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlin.collections.ArrayList
 
-class NewOrderRepository(application: Application) {
+class NewOrderRepository(context: Context) {
 
     private val newOrderDao: NewOrderDao
     private val orderApi: Single<List<OrdersPojo>>
 
     init {
 
-        val database = VendorDatabase.getDatabaseInstance(application)
+        val database = VendorDatabase.getDatabaseInstance(context)
         newOrderDao = database.newOrderDao()
         orderApi = RetrofitInstance.getRetroInstance().orders
     }
@@ -29,25 +31,34 @@ class NewOrderRepository(application: Application) {
     @SuppressLint("CheckResult")
     fun getNewOrdersList():Flowable<List<OrdersData>>
     {
-        return newOrderDao.getAllNewOrders()
+        Log.d("Testing Repo" , "Entered getNewOrderList")
+        return newOrderDao.getAllNewOrders().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
     }
 
     fun setnewOrderfromServer()
     {
+        Log.d("Testing Repo" , "Entered function to fetch from server")
         orderApi.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .map {
-                it.forEach {
+            .observeOn(Schedulers.io())
+            .map {orders ->
+                orders.forEach {order ->
+                    Log.d("Testing Repo" , "Server Data = ${order.toString()}")
                     newOrderDao.insertNewOrder(
                         OrdersData(
-                            it.orderId,
-                            it.status,
-                            it.timestamp.toLong(),
-                            it.otp,
-                            it.totalAmount
+                            order.orderId,
+                            order.status,
+                            order.timestamp.toLong(),
+                            order.otp,
+                            order.totalAmount
                             )
                         )
-                }  }
+                    var list = emptyList<ItemData>()
+                    order.items.map {item ->
+                        list.plus(ItemData(itemId = item.itemId , orderId = order.orderId , quantity = item.quantity , price = item.price , id = 0))
+                    }
+                    newOrderDao.insertItems(list)
+                }
+            }
             .subscribe()
     }
 
@@ -66,5 +77,7 @@ class NewOrderRepository(application: Application) {
     {
         return newOrderDao.updateStatus(orderId,status)
     }
+
+    fun getItemName(id : String) = newOrderDao.getItemName(id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
 
 }

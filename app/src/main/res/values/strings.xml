@@ -7,7 +7,7 @@
     <string name="chanel_name_newOrder">New Orders</string>
     <string name="chanel_desc_newOrder">Inform that a new order has been made</string>
 
-    <string name="new_order_order_number">Order No. %1$d</string>
+    <string name="new_order_order_number">Order No. %1$s</string>
     <string name="new_order_total_amount">\u20B9 %1$s</string>
     <string name="new_order_item_wise_price">\u20B9%1$sX</string>
 

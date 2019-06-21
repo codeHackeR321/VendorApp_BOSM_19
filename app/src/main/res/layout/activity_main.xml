@@ -7,7 +7,12 @@
         android:layout_height="match_parent"
         tools:context=".loginscreen.view.MainActivity">
 
-    <TextView
+    <FrameLayout
+            android:layout_width="match_parent"
+            android:id="@+id/frameLayout"
+            android:layout_height="match_parent"/>
+
+    <!--<TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text=""
@@ -46,6 +51,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="8dp"
-            app:layout_constraintTop_toBottomOf="@+id/loginPassword"/>
+            app:layout_constraintTop_toBottomOf="@+id/loginPassword"/>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
