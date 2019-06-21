@@ -4,13 +4,14 @@ import android.app.Application
 import com.example.vendorapp.acceptedorderscreen.model.room.AcceptedOrderDao
 import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
+import com.example.vendorapp.shared.dataclasses.OrderItemsData
 import com.example.vendorapp.shared.dataclasses.roomClasses.OrdersData
 import com.example.vendorapp.shared.singletonobjects.RetrofitInstance
 import com.example.vendorapp.shared.singletonobjects.VendorDatabase
 import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import org.reactivestreams.Subscription
 
 class AcceptedOrderRepository(application: Application) {
 
@@ -33,41 +34,62 @@ class AcceptedOrderRepository(application: Application) {
         return acceptedOrderDao.getItemsForOrder(orderId)
     }
 
+
+    var ordersRoom = acceptedOrderDao.getOrders().subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(object : FlowableSubscriber<List<OrdersData>>{
+            override fun onComplete() {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onSubscribe(s: Subscription) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onNext(t: List<OrdersData>?) {
+
+                var orderList = emptyList<OrderItemsData>()
+
+                t!!.forEach { ordersData ->
+
+                    acceptedOrderDao.getItemsForOrder(ordersData.orderId)
+                        .doOnNext {itemList ->
+
+                            orderList.plus(OrderItemsData(ordersData, itemList))
+                        }
+                }
+
+                var ordersList = Flowable.just(orderList)
+            }
+
+            override fun onError(t: Throwable?) {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+        })
+
     val orderApi = orderApiCall.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : SingleObserver<List<OrdersPojo>>{
-                override fun onSuccess(t: List<OrdersPojo>) {
+            .doOnSuccess {
 
-                    var orders = emptyList<OrdersData>()
-                    var itemsInOrder = emptyList<ItemData>()
+                var orders = emptyList<OrdersData>()
+                var items = emptyList<ItemData>()
 
-                    t.forEach {
+                it.forEach { ordersPojo ->
 
-                        itemsInOrder.plus(it.toItemData())
-                        orders.plus(it.toOrderData())
-                    }
-
-                    acceptedOrderDao.deleteAllOrders()
-                    acceptedOrderDao.deleteAllOrderItems()
-                    acceptedOrderDao.insertOrder( orders )
-                    acceptedOrderDao.insertOrderItems( itemsInOrder )
-
+                    orders.plus(ordersPojo.toOrderData())
+                    items.plus(ordersPojo.toItemData())
                 }
 
-                override fun onSubscribe(d: Disposable) {
-                }
-
-                override fun onError(e: Throwable) {
-                }
-
-            })
-
-
+                acceptedOrderDao.deleteAllOrders()
+                acceptedOrderDao.deleteAllOrderItems()
+                acceptedOrderDao.insertOrder(orders)
+                acceptedOrderDao.insertOrderItems(items)
+            }
 
 
     private fun OrdersPojo.toOrderData(): OrdersData{
-        return OrdersData(orderId = orderId, status = status, otp = otp,
-            timestamp = timestamp.toLong(), totalAmount = totalAmount)
+        return OrdersData(orderId = orderId, status = status, otp = otp, timestamp = timestamp.toLong(), totalAmount = totalAmount)
     }
 
     private fun OrdersPojo.toItemData(): List<ItemData>{

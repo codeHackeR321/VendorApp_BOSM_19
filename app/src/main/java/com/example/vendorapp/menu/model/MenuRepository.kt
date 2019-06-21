@@ -19,7 +19,6 @@ class MenuRepository (application: Application){
     private val menuApiCall: Single<List<MenuPojo>>
 
     init {
-
         val database = VendorDatabase.getDatabaseInstance(application)
         menuDao = database.menuDao()
 
@@ -27,39 +26,25 @@ class MenuRepository (application: Application){
     }
 
     fun getMenuRoom(): Flowable<List<MenuItemData>>{
-
         return menuDao.getMenu()
     }
 
     val menuApi = menuApiCall.subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(object: SingleObserver<List<MenuPojo>>
-        {
+        .doOnSuccess {
 
-            override fun onSuccess(t: List<MenuPojo>) {
+            var menu = emptyList<MenuItemData>()
 
-                var menu = emptyList<MenuItemData>()
-
-                t.forEach {
-                    menu.plus(it.toMenuItemData())
-                }
-
-                menuDao.deleteAll()
-                menuDao.insertMenu(menu)
+            it.forEach { menuPojo ->
+                menu.plus(menuPojo.toMenuItemData())
             }
 
-            override fun onSubscribe(d: Disposable) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onError(e: Throwable) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-        })
+            menuDao.deleteAll()
+            menuDao.insertMenu(menu)
+        }
 
     private fun MenuPojo.toMenuItemData(): MenuItemData{
-
         return MenuItemData(itemId, name, price, status)
-
     }
+
 }

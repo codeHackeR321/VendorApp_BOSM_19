@@ -11,21 +11,19 @@ import com.example.vendorapp.shared.singletonobjects.repositories.NewOrderReposi
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class NewOrderViewModel(application: Application) : ViewModel(){
+class NewOrderViewModel(application: Application) : ViewModel() {
 
-    var orders : LiveData<List<ModifiedOrdersDataClass>> = MutableLiveData()
+    var orders: LiveData<List<ModifiedOrdersDataClass>> = MutableLiveData()
     var newOrderRepo = NewOrderRepositoryInstance.getInstance(application)
 
     @SuppressLint("CheckResult")
-    fun getNewOrders()
-    {
+    fun getNewOrders() {
 
-//        var list = emptyList<ModifiedOrdersDataClass>()
-//        newOrderRepo.getNewOrdersList().subscribeOn(Schedulers.io()).
-//                observeOn(AndroidSchedulers.mainThread()).
-//                doOnNext {orderList ->
-//                    orderList.forEach {order ->
-//                        var childList = emptyList<ChildDataClass>()
+        var list = emptyList<ModifiedOrdersDataClass>()
+        newOrderRepo.getNewOrdersList().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+            .doOnNext { orderList ->
+                orderList.forEach { order ->
+                    //                        var childList = emptyList<ChildDataClass>()
 //                        order.items.forEach {
 //                            childList.plus(ChildDataClass(itemId = it.itemId , itemName = "Default Name" , price = it.price , quantity = it.quantity))
 //                        }
@@ -33,12 +31,16 @@ class NewOrderViewModel(application: Application) : ViewModel(){
 //                    }
 //                    (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(list)
 //                }
+//
+//    }
 
+
+
+                }
+            }
     }
 
-    fun refreshOrderData()
-    {
+    fun refreshOrderData() {
         newOrderRepo.setnewOrderfromServer()
     }
-
 }
