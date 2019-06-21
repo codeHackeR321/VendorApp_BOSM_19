@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 class NewOrderFragment : Fragment() , RecyclerAdapterFragment.RecyclerButtonClickListener{
 
     private val viewModel by lazy {
-        ViewModelProviders.of(viewLifecycleOwner as Fragment).get(NewOrderViewModel::class.java)
+        ViewModelProviders.of(viewLifecycleOwner as Fragment).get(NewOrderViewModel(context!!)::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

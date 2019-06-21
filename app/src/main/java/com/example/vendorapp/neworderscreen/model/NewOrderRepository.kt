@@ -2,6 +2,7 @@ package com.example.vendorapp.neworderscreen.model
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.Context
 import com.example.vendorapp.shared.dataclasses.retroClasses.ItemPojo
 import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
@@ -14,14 +15,14 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlin.collections.ArrayList
 
-class NewOrderRepository(application: Application) {
+class NewOrderRepository(context: Context) {
 
     private val newOrderDao: NewOrderDao
     private val orderApi: Single<List<OrdersPojo>>
 
     init {
 
-        val database = VendorDatabase.getDatabaseInstance(application)
+        val database = VendorDatabase.getDatabaseInstance(context)
         newOrderDao = database.newOrderDao()
         orderApi = RetrofitInstance.getRetroInstance().orders
     }
