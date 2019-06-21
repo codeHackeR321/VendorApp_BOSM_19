@@ -23,7 +23,7 @@ interface NewOrderDao {
     @Query("SELECT * from orders_table WHERE status= 'Pending'")
     fun getAllNewOrders(): Flowable<List<OrdersData>>
 
-    @Query("SELECT * from items_order INNER JOIN menu_table WHERE items_order.item_id = menu_table.item_id AND order_Id= :orderId")
+    @Query("SELECT * from items_order WHERE order_Id= :orderId")
     fun getOrderItems(orderId: String):Flowable<List<ItemData>>
 
     @Query( "UPDATE orders_table SET status = :status WHERE order_id = :orderId")
@@ -38,4 +38,6 @@ interface NewOrderDao {
     @Query("SELECT * from orders_table WHERE order_id= :orderId ")
     fun getOrderById(orderId: String):Flowable<OrdersData>
 
+    @Query("SELECT item_name from menu_table WHERE item_id= :itemId ")
+    fun getItemName(itemId:String)
 }
