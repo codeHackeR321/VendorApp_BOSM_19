@@ -2,6 +2,8 @@ package com.example.vendorapp.neworderscreen.model
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.Context
+import android.util.Log
 import com.example.vendorapp.shared.dataclasses.retroClasses.ItemPojo
 import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
@@ -14,57 +16,59 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlin.collections.ArrayList
 
-class NewOrderRepository(application: Application) {
+class NewOrderRepository(context: Context) {
 
     private val newOrderDao: NewOrderDao
     private val orderApi: Single<List<OrdersPojo>>
 
     init {
 
-        val database = VendorDatabase.getDatabaseInstance(application)
+        val database = VendorDatabase.getDatabaseInstance(context)
         newOrderDao = database.newOrderDao()
         orderApi = RetrofitInstance.getRetroInstance().orders
     }
 
     @SuppressLint("CheckResult")
-    fun getNewOrdersList():Flowable<List<OrdersData>>
-    {
-        return newOrderDao.getAllNewOrders()
+    fun getNewOrdersList(): Flowable<List<OrdersData>> {
+        return newOrderDao.getAllNewOrders().subscribeOn(Schedulers.io())
     }
 
-    fun setnewOrderfromServer()
-    {
-        orderApi.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .map {
-                it.forEach {
-                    newOrderDao.insertNewOrder(
-                        OrdersData(
-                            it.orderId,
-                            it.status,
-                            it.timestamp.toLong(),
-                            it.otp,
-                            it.totalAmount
-                            )
-                        )
-                }  }
-            .subscribe()
+    fun getItemsOfOrder(orderId: String): Flowable<List<ItemData>> {
+        return newOrderDao.getOrderItems(orderId).subscribeOn(Schedulers.io())
     }
 
-    fun setItem(itemList: List<ItemPojo>): ArrayList<ItemData> {
-        var item: ArrayList<ItemData> = ArrayList()
+    fun setnewOrderfromServer(): Completable {
+        return orderApi.subscribeOn(Schedulers.io())
+            .doOnSuccess { orders ->
+                newOrderDao.deleteAllOrders()
+                newOrderDao.deleteAllOrderItems()
+                orders.forEach {
+                    newOrderDao.insertNewOrder(it.toOrderData())
+                    newOrderDao.insertOrderItems(it.toItemData())
+                }
+            }
+            .ignoreElement()
+    }
 
-        //Change orderId extraction process
-        itemList.forEach {
-            item.add(ItemData(id= 0, itemId = it.itemId, orderId = "0", price = it.price, quantity = it.quantity))
+    fun getOrderFromId(orderId: String): Flowable<OrdersData> {
+        return newOrderDao.getOrderById(orderId).subscribeOn(Schedulers.io())
+    }
+
+    fun updateStatus(orderId: String, status: String): Completable {
+        return newOrderDao.updateStatus(orderId, status).subscribeOn(Schedulers.io())
+    }
+
+    fun OrdersPojo.toOrderData(): OrdersData {
+        return OrdersData(orderId, status, timestamp.toLong(), otp, totalAmount)
+    }
+
+    fun OrdersPojo.toItemData(): List<ItemData> {
+
+        var itemList = emptyList<ItemData>()
+        items.forEach {
+            itemList.plus(ItemData(1, it.itemId, orderId, it.price, it.quantity))
         }
-
-        return item
-    }
-
-    fun updateStatus(orderId:String,status:String):Completable
-    {
-        return newOrderDao.updateStatus(orderId,status)
+        return itemList
     }
 
 }

@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
 import com.example.vendorapp.shared.dataclasses.roomClasses.OrdersData
+import io.reactivex.Completable
 import io.reactivex.Flowable
 
 
@@ -22,6 +23,9 @@ interface AcceptedOrderDao {
 
     @Query("DELETE FROM items_order")
     fun deleteAllOrderItems()
+
+    @Query("UPDATE orders_table SET status = :status WHERE order_id = :orderId")
+    fun updateStatus(orderId: String, status: String): Completable
 
     @Insert
     fun insertOrder(orders: List<OrdersData>)

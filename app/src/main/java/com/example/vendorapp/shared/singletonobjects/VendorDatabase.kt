@@ -23,7 +23,7 @@ abstract class VendorDatabase: RoomDatabase() {
         @Synchronized fun getDatabaseInstance(context: Context): VendorDatabase {
 
             if (roomInstance == null){
-                roomInstance = Room.databaseBuilder(context.applicationContext, VendorDatabase::class.java, "vendor_database"  )
+                roomInstance = Room.databaseBuilder(context.applicationContext, VendorDatabase::class.java, "vendor_database")
                     .build()
             }
 

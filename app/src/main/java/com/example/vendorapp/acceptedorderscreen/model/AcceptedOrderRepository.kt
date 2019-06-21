@@ -27,14 +27,19 @@ class AcceptedOrderRepository(application: Application) {
     }
 
     fun getOrdersRoom(): Flowable<List<OrdersData>>{
-        return acceptedOrderDao.getOrders()
+        return acceptedOrderDao.getOrders().subscribeOn(Schedulers.io())
     }
 
     fun getOrderItemsRoom(orderId: String): Flowable<List<ItemData>>{
-        return acceptedOrderDao.getItemsForOrder(orderId)
+        return acceptedOrderDao.getItemsForOrder(orderId).subscribeOn(Schedulers.io())
+    }
+
+    fun updateStatus(orderId: String, status: String): Completable{
+        return acceptedOrderDao.updateStatus(orderId, status)
     }
 
 
+    //Not complete and correct yet
     var ordersRoom = acceptedOrderDao.getOrders().subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(object : FlowableSubscriber<List<OrdersData>>{
@@ -68,6 +73,7 @@ class AcceptedOrderRepository(application: Application) {
 
         })
 
+
     val orderApi = orderApiCall.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSuccess {
@@ -86,6 +92,7 @@ class AcceptedOrderRepository(application: Application) {
                 acceptedOrderDao.insertOrder(orders)
                 acceptedOrderDao.insertOrderItems(items)
             }
+        .ignoreElement()
 
 
     private fun OrdersPojo.toOrderData(): OrdersData{
