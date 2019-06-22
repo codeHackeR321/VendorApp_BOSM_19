@@ -9,6 +9,7 @@ import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import com.example.vendorapp.shared.dataclasses.roomClasses.OrdersData
 import io.reactivex.Completable
 import io.reactivex.Flowable
+import io.reactivex.Single
 import retrofit2.http.DELETE
 
 @Dao
@@ -30,8 +31,8 @@ interface NewOrderDao {
     fun updateStatus(orderId:String,status:String):Completable
 
     @Query("SELECT * from orders_table WHERE order_id= :orderId ")
-    fun getOrderById(orderId: String):Flowable<OrdersData>
+    fun getOrderById(orderId: String): Flowable<OrdersData>
 
     @Query("SELECT item_name from menu_table WHERE item_id= :itemId ")
-    fun getItemName(itemId:String)
+    fun getItemName(itemId:String): Single<String>
 }
