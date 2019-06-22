@@ -14,6 +14,6 @@ class MenuActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         nMenuViewModel=ViewModelProviders.of(this).get(MenuViewModel::class.java)
         setContentView(R.layout.activity_menu)
-       // menuAdapter=MenuAdapter("")
+       
     }
 }

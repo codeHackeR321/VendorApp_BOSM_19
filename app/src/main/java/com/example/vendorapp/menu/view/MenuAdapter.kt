@@ -29,7 +29,13 @@ class MenuAdapter(private val itemList: ArrayList<MenuPojo>) : RecyclerView.Adap
     }
 
     override fun onBindViewHolder(holder: MenuAdapter.MenuViewHolder, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        holder.itemName.text=itemList.get(position).name
+        holder.itemPrice.text=itemList.get(position).price
+        if(itemList.get(position).status=="off"){
+            holder.switch.isActivated=false
+        }
+        else
+            holder.switch.isActivated=true
     }
 
 
