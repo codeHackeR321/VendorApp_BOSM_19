@@ -5,5 +5,5 @@ import com.example.vendorapp.shared.dataclasses.roomClasses.OrdersData
 
 data class OrderItemsData(
     var order: OrdersData,
-    var items: List<ItemData>
+    var items: List<ItemsModel>
 )
