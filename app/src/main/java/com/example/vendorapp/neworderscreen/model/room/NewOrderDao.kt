@@ -29,12 +29,6 @@ interface NewOrderDao {
     @Query( "UPDATE orders_table SET status = :status WHERE order_id = :orderId")
     fun updateStatus(orderId:String,status:String):Completable
 
-    @Query("DELETE FROM orders_table")
-    fun deleteAllOrders()
-
-    @Query("DELETE FROM items_order")
-    fun deleteAllOrderItems()
-
     @Query("SELECT * from orders_table WHERE order_id= :orderId ")
     fun getOrderById(orderId: String):Flowable<OrdersData>
 

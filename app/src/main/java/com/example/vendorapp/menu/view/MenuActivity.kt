@@ -8,10 +8,12 @@ import com.example.vendorapp.menu.viewModel.MenuViewModel
 
 class MenuActivity : AppCompatActivity() {
     private lateinit var nMenuViewModel:MenuViewModel
+    private lateinit var menuAdapter: MenuAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         nMenuViewModel=ViewModelProviders.of(this).get(MenuViewModel::class.java)
         setContentView(R.layout.activity_menu)
-
+       // menuAdapter=MenuAdapter("")
     }
 }

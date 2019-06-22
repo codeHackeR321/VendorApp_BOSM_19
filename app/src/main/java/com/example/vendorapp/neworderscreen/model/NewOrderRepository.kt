@@ -40,8 +40,6 @@ class NewOrderRepository(context: Context) {
     fun setnewOrderfromServer(): Completable {
         return orderApi.subscribeOn(Schedulers.io())
             .doOnSuccess { orders ->
-                newOrderDao.deleteAllOrders()
-                newOrderDao.deleteAllOrderItems()
                 orders.forEach {
                     newOrderDao.insertNewOrder(it.toOrderData())
                     newOrderDao.insertOrderItems(it.toItemData())
@@ -66,7 +64,7 @@ class NewOrderRepository(context: Context) {
 
         var itemList = emptyList<ItemData>()
         items.forEach {
-            itemList.plus(ItemData(1, it.itemId, orderId, it.price, it.quantity))
+            itemList=itemList.plus(ItemData(0, it.itemId, orderId, it.price, it.quantity))
         }
         return itemList
     }
