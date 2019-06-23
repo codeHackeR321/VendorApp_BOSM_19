@@ -57,7 +57,6 @@ class OrderRepository(application: Context) {
                 it.forEach { ordersData ->
                     orderDao.getItemsForOrder(ordersData.orderId)
                         .doOnNext{itemList ->
-                            Log.d("check1",itemList.toString())
                             orderList=orderList.plus(OrderItemsData(ordersData, itemList))
                             Log.d("check1",orderList.toString())
 
@@ -68,6 +67,7 @@ class OrderRepository(application: Context) {
                 return@flatMap Flowable.just(orderList)
             }
     }
+
 
             fun updateOrders(): Completable {
 

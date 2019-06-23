@@ -13,6 +13,7 @@
         android:padding="@dimen/default_padding"
         android:layout_marginBottom="@dimen/default_margin"
         android:drawablePadding="5dp"
+        android:fontFamily="@font/cabin"
         android:drawableRight="@drawable/down_arrow"
         android:gravity="left|center"
         android:text="@string/group_view_holder_new_order_heading"
