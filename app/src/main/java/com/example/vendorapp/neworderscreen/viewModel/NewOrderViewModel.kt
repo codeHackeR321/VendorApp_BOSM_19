@@ -3,6 +3,7 @@ package com.example.vendorapp.neworderscreen.viewModel
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,24 +22,33 @@ class NewOrderViewModel(context : Context) : ViewModel(){
 
     @SuppressLint("CheckResult")
     fun getNewOrders() {
-
         var ordersList = emptyList<ModifiedOrdersDataClass>()
-        newOrderRepo.getNewOrdersList().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-            .doOnNext {orderList ->
-                orderList.forEach {order ->
-                    var itemsList = emptyList<ChildDataClass>()
-                    newOrderRepo.getItemsOfOrder(order.orderId).observeOn(AndroidSchedulers.mainThread()).
-                        doOnNext {
-                            it.forEach {
-                                itemsList = itemsList.plus(ChildDataClass("Item Name" , it.price , it.quantity , it.itemId))
-                            }
-                        }.
-                        doOnComplete {
-                            ordersList = ordersList.plus(ModifiedOrdersDataClass(order.orderId , order.status , order.timestamp.toString() , order.otp , order.totalAmount , itemsList))
-                    }
+        newOrderRepo.getNewOrdersList().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnNext {orders ->
+            orders.forEach {order ->
+                var itemList = emptyList<ChildDataClass>()
+                order.items.forEach {
+                    itemList = itemList.plus(
+                        ChildDataClass(
+                            itemName = it.name,
+                            itemId = it.itemId,
+                            price = it.price,
+                            quantity = it.quantity
+                    ))
                 }
-                (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(ordersList)
+                ordersList = ordersList.plus(ModifiedOrdersDataClass(
+                    orderId = order.order.orderId,
+                    otp = order.order.otp,
+                    status = order.order.status,
+                    totalAmount = order.order.totalAmount,
+                    timestamp = order.order.timestamp.toString(),
+                    items = itemList
+                ))
             }
+        }.doOnComplete {
+            (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(ordersList)
+        }.doOnError {
+            Log.e("Testing NO VM" , "Error in reading new orders from database")
+        }.subscribe()
     }
 
     fun refreshOrderData() {
