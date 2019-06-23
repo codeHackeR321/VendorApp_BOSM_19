@@ -23,18 +23,17 @@ class NewOrderViewModel(context : Context) : ViewModel(){
     fun getNewOrders() {
 
         var ordersList = emptyList<ModifiedOrdersDataClass>()
-        orderRepo.getNewOrders().observeOn(AndroidSchedulers.mainThread()).doOnNext {orders ->
-            orders.forEach {order ->
+        orderRepo.getAllNewOrders().observeOn(AndroidSchedulers.mainThread()).doOnNext {orderList ->
+            orderList.forEach {order ->
                 var itemList = emptyList<ChildDataClass>()
-                order.items.forEach {
+                for (item in order.items) {
                     itemList = itemList.plus(
                         ChildDataClass(
-                            itemName = it.name,
-                            itemId = it.itemId,
-                            price = it.price,
-                            quantity = it.quantity
+                            itemName = item.name,
+                            itemId = item.itemId,
+                            price = item.price,
+                            quantity = item.quantity
                     ))
-
                 }
                 ordersList = ordersList.plus(ModifiedOrdersDataClass(
                     orderId = order.order.orderId,
@@ -44,9 +43,9 @@ class NewOrderViewModel(context : Context) : ViewModel(){
                     timestamp = order.order.timestamp.toString(),
                     items = itemList
                 ))
+
+                (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(ordersList)
             }
-        }.doOnComplete {
-            (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(ordersList)
         }.doOnError {
             Log.e("Testing NO VM" , "Error in reading new orders from database")
         }.subscribe()

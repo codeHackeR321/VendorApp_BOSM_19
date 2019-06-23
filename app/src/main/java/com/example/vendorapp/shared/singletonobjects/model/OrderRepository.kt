@@ -2,6 +2,7 @@ package com.example.vendorapp.shared.singletonobjects.model
 
 import android.content.Context
 import android.util.Log
+import com.example.vendorapp.shared.dataclasses.ItemsModel
 import com.example.vendorapp.shared.singletonobjects.model.room.OrderDao
 import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
@@ -40,9 +41,8 @@ class OrderRepository(application: Context) {
                 var orderList = emptyList<OrderItemsData>()
                 it.forEach { ordersData ->
                     orderDao.getItemsForOrder(ordersData.orderId)
-                        .doOnNext{itemList ->
+                        .doOnSuccess{itemList ->
                             orderList=orderList.plus(OrderItemsData(ordersData, itemList))
-
                         }.subscribe()
                 }
                 return@flatMap Flowable.just(orderList)
@@ -54,14 +54,12 @@ class OrderRepository(application: Context) {
         return orderDao.getNewOrders().subscribeOn(Schedulers.io())
             .flatMap {
                 var orderList = emptyList<OrderItemsData>()
-                it.forEach { ordersData ->
+                for (ordersData in it) {
                     orderDao.getItemsForOrder(ordersData.orderId)
-                        .doOnNext{itemList ->
+                        .doOnSuccess{itemList ->
                             orderList=orderList.plus(OrderItemsData(ordersData, itemList))
                             Log.d("check1",orderList.toString())
-
                         }.subscribe()
-                    Log.d("check2",orderList.toString())
                 }
                 Log.d("check2",orderList.toString())
                 return@flatMap Flowable.just(orderList)
@@ -69,7 +67,26 @@ class OrderRepository(application: Context) {
     }
 
 
-            fun updateOrders(): Completable {
+    fun getAllNewOrders() : Flowable<List<OrderItemsData>>
+    {
+        return orderDao.trialQuery().subscribeOn(Schedulers.io()).flatMap {
+            var list = it.sortedBy { it.orderId }
+            var orderItemList = emptyList<OrderItemsData>()
+            var itemList = emptyList<ItemsModel>()
+            for ((index , item) in list.iterator().withIndex())
+            {
+                itemList = itemList.plus(ItemsModel(item.itemId , item.price , item.quantity , item.name))
+                if (!(index != list.size - 1 && list[index].orderId == list[index + 1].orderId))
+                {
+                    orderItemList = orderItemList.plus(OrderItemsData(OrdersData(item.orderId , item.status , item.timestamp , item.otp , item.totalAmount) , itemList))
+                    itemList = emptyList<ItemsModel>()
+                }
+            }
+            return@flatMap Flowable.just(orderItemList)
+        }
+    }
+
+    fun updateOrders(): Completable {
 
         return orderApiCall.subscribeOn(Schedulers.io())
             .doOnSuccess {
