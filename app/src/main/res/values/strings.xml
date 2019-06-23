@@ -24,5 +24,7 @@
     <string name="group_view_holder_new_order_heading">Order</string>
 
     <string name="number_of_pages_viewPger">2</string>
+    <string name="heading_new_order_tab">New Orders</string>
+    <string name="heading_accepted_order_tab">Accepted Orders</string>
 
 </resources>

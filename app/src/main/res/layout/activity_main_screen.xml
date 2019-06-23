@@ -12,9 +12,11 @@
             android:id="@+id/viewPager_activity_mainScreen"
             android:layout_height="match_parent">
 
-        <com.google.material.tabs.TabLayout
-                android:id="@+id/tabLayout_activity_mainScreen"
+        <com.google.android.material.tabs.TabLayout
                 android:layout_width="match_parent"
+                android:id="@+id/tabLayout_activity_mainScreen"
+                app:tabMode="fixed"
+                app:tabGravity="fill"
                 android:layout_height="wrap_content"/>
 
     </androidx.viewpager.widget.ViewPager>

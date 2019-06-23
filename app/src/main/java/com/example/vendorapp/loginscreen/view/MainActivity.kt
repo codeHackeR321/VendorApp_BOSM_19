@@ -2,10 +2,13 @@ package com.example.vendorapp.loginscreen.view
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.vendorapp.MainScreenActivity
 import com.example.vendorapp.R
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -14,6 +17,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         initializeApp()
+
+        loginButton.setOnClickListener {
+            startActivity(Intent(this , MainScreenActivity::class.java))
+        }
     }
 
     /**
