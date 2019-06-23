@@ -1,8 +1,7 @@
-package com.example.vendorapp.acceptedorderscreen.model
+package com.example.vendorapp.shared.singletonobjects.model
 
-import android.app.Application
 import android.content.Context
-import com.example.vendorapp.acceptedorderscreen.model.room.AcceptedOrderDao
+import com.example.vendorapp.shared.singletonobjects.model.room.OrderDao
 import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
 import com.example.vendorapp.shared.dataclasses.OrderItemsData
@@ -10,45 +9,39 @@ import com.example.vendorapp.shared.dataclasses.roomClasses.OrdersData
 import com.example.vendorapp.shared.singletonobjects.RetrofitInstance
 import com.example.vendorapp.shared.singletonobjects.VendorDatabase
 import io.reactivex.*
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import org.reactivestreams.Subscription
 
-class AcceptedOrderRepository(application: Context) {
+class OrderRepository(application: Context) {
 
-    private val acceptedOrderDao: AcceptedOrderDao
+    private val orderDao: OrderDao
     private val orderApiCall: Single<List<OrdersPojo>>
 
     init {
 
         val database = VendorDatabase.getDatabaseInstance(application)
-        acceptedOrderDao = database.acceptedOrderDao()
+        orderDao = database.orderDao()
 
         orderApiCall = RetrofitInstance.getRetroInstance().orders
     }
 
-//    fun getOrdersRoom(): Flowable<List<OrdersData>>{
-//        return acceptedOrderDao.getOrders().subscribeOn(Schedulers.io())
-//    }
-
-//    fun getOrderItemsRoom(orderId: String): Flowable<List<ItemData>>{
-//        return acceptedOrderDao.getItemsForOrder(orderId).subscribeOn(Schedulers.io())
-//    }
+    fun getOrderFromId(orderId: String): Flowable<OrdersData> {
+        return orderDao.getOrderById(orderId).subscribeOn(Schedulers.io())
+    }
 
     fun updateStatus(orderId: String, status: String): Completable{
-        return acceptedOrderDao.updateStatus(orderId, status).subscribeOn(Schedulers.io())
+        return orderDao.updateStatus(orderId, status).subscribeOn(Schedulers.io())
     }
 
 
     fun getOrdersRoom(): Flowable<List<OrderItemsData>>{
 
-        return acceptedOrderDao.getOrders().subscribeOn(Schedulers.io())
+        return orderDao.getOrders().subscribeOn(Schedulers.io())
             .flatMap {
                 var orderList = emptyList<OrderItemsData>()
 
                 it.forEach { ordersData ->
 
-                    acceptedOrderDao.getItemsForOrder(ordersData.orderId)
+                    orderDao.getItemsForOrder(ordersData.orderId)
                         .doOnNext {itemList ->
 
                             orderList.plus(OrderItemsData(ordersData, itemList))
@@ -73,10 +66,10 @@ class AcceptedOrderRepository(application: Context) {
                     items.plus(ordersPojo.toItemData())
                 }
 
-                acceptedOrderDao.deleteAllOrders()
-                acceptedOrderDao.deleteAllOrderItems()
-                acceptedOrderDao.insertOrder(orders)
-                acceptedOrderDao.insertOrderItems(items)
+                orderDao.deleteAllOrders()
+                orderDao.deleteAllOrderItems()
+                orderDao.insertOrders(orders)
+                orderDao.insertOrderItems(items)
             }
             .ignoreElement()
     }

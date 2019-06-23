@@ -68,5 +68,6 @@ dependencies {
     //Use ViewModel Factory
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
 
-
+    //To use material design views
+    implementation 'com.android.support:design:28.0.0'
 }

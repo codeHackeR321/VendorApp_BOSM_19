@@ -23,4 +23,13 @@
     <string name="card_accepted_order_finish_bttn">Finish</string>
     <string name="group_view_holder_new_order_heading">Order</string>
 
+    <string name="number_of_pages_viewPger">2</string>
+    <string name="heading_new_order_tab">New Orders</string>
+    <string name="heading_accepted_order_tab">Accepted Orders</string>
+
+    <string name="overflow_menu_toogle">Menu</string>
+    <string name="overflow_menu_earnings">Earnings</string>
+    <string name="overflow_menu_contactUs">Contact Us</string>
+    <string name="overflow_menu_logout">Log Out</string>
+
 </resources>
