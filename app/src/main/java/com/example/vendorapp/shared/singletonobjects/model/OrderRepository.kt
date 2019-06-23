@@ -1,6 +1,7 @@
 package com.example.vendorapp.shared.singletonobjects.model
 
 import android.content.Context
+import android.util.Log
 import com.example.vendorapp.shared.singletonobjects.model.room.OrderDao
 import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
@@ -34,38 +35,55 @@ class OrderRepository(application: Context) {
 
 
     fun getOrdersRoom(): Flowable<List<OrderItemsData>>{
-
         return orderDao.getOrders().subscribeOn(Schedulers.io())
             .flatMap {
                 var orderList = emptyList<OrderItemsData>()
-
                 it.forEach { ordersData ->
-
                     orderDao.getItemsForOrder(ordersData.orderId)
-                        .doOnNext {itemList ->
+                        .doOnNext{itemList ->
+                            orderList=orderList.plus(OrderItemsData(ordersData, itemList))
 
-                            orderList.plus(OrderItemsData(ordersData, itemList))
-                        }
+                        }.subscribe()
                 }
-
                 return@flatMap Flowable.just(orderList)
             }
     }
 
-    fun updateOrders(): Completable {
+    fun getNewOrders(): Flowable<List<OrderItemsData>>{
+        Log.d("check","called")
+        return orderDao.getNewOrders().subscribeOn(Schedulers.io())
+            .flatMap {
+                var orderList = emptyList<OrderItemsData>()
+                it.forEach { ordersData ->
+                    orderDao.getItemsForOrder(ordersData.orderId)
+                        .doOnNext{itemList ->
+                            Log.d("check1",itemList.toString())
+                            orderList=orderList.plus(OrderItemsData(ordersData, itemList))
+                            Log.d("check1",orderList.toString())
+
+                        }.subscribe()
+                    Log.d("check2",orderList.toString())
+                }
+                Log.d("check2",orderList.toString())
+                return@flatMap Flowable.just(orderList)
+            }
+    }
+
+            fun updateOrders(): Completable {
 
         return orderApiCall.subscribeOn(Schedulers.io())
             .doOnSuccess {
-
+                 Log.d("checkP","$it")
                 var orders = emptyList<OrdersData>()
                 var items = emptyList<ItemData>()
 
                 it.forEach { ordersPojo ->
 
-                    orders.plus(ordersPojo.toOrderData())
-                    items.plus(ordersPojo.toItemData())
+                    orders= orders.plus(ordersPojo.toOrderData())
+                    items= items.plus(ordersPojo.toItemData())
                 }
-
+                Log.d("check",orders.toString())
+                Log.d("check",items.toString())
                 orderDao.deleteAllOrders()
                 orderDao.deleteAllOrderItems()
                 orderDao.insertOrders(orders)
@@ -83,9 +101,8 @@ class OrderRepository(application: Context) {
         var item = emptyList<ItemData>()
 
         items.forEach {
-            item.plus(ItemData(itemId = it.itemId, price = it.price, quantity = it.quantity, orderId = orderId, id = 0))
+           item = item.plus(ItemData(itemId = it.itemId, price = it.price, quantity = it.quantity, orderId = orderId, id = 0))
         }
-
         return item
     }
 }

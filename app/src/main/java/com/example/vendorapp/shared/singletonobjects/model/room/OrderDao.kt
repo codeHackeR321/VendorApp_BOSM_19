@@ -13,6 +13,9 @@ import io.reactivex.Flowable
 @Dao
 interface OrderDao {
 
+    @Query("SELECT * FROM orders_table WHERE status = 'Pending'")
+    fun getNewOrders():Flowable<List<OrdersData>>
+
     @Query("SELECT * FROM orders_table WHERE status = 'accepted' OR status = 'ready' ")
     fun getOrders(): Flowable<List<OrdersData>>
 

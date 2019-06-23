@@ -23,7 +23,7 @@ class NewOrderViewModel(context : Context) : ViewModel(){
     fun getNewOrders() {
 
         var ordersList = emptyList<ModifiedOrdersDataClass>()
-        orderRepo.getOrdersRoom().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnNext {orders ->
+        orderRepo.getNewOrders().observeOn(AndroidSchedulers.mainThread()).doOnNext {orders ->
             orders.forEach {order ->
                 var itemList = emptyList<ChildDataClass>()
                 order.items.forEach {
@@ -52,7 +52,9 @@ class NewOrderViewModel(context : Context) : ViewModel(){
         }.subscribe()
     }
 
-    fun refreshOrderData() {
-        orderRepo.updateOrders()
+    fun refreshOrderData(){
+        orderRepo.updateOrders().doOnComplete {
+            getNewOrders()
+        }.subscribe()
     }
 }

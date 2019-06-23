@@ -39,16 +39,16 @@ class MenuAdapter(private val listener: UpdateMenuListener) : RecyclerView.Adapt
         holder.itemName.text=itemList.get(position).name
         holder.itemPrice.text=itemList.get(position).price
         if(itemList.get(position).status.equals("on"))
-            holder.switch.isActivated=true
+            holder.switch.isChecked=true
         else
-            holder.switch.isActivated=false
+            holder.switch.isChecked=false
         holder.switch.setOnClickListener {item ->
             when(item.on_off.isActivated){
                 true->{ listener.onStatusChanged(itemList.get(position).itemId,"on")
-                    holder.switch.isActivated=true
+                    holder.switch.isChecked=true
                 }
                 false -> {listener.onStatusChanged(itemList.get(position).itemId,"off")
-                           holder.switch.isActivated=false
+                           holder.switch.isChecked=false
                          }
             }
         }

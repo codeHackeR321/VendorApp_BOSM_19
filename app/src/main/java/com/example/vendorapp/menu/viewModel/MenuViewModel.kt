@@ -20,14 +20,16 @@ class MenuViewModel(context: Context) :ViewModel() {
     var menuRepository:MenuRepository=MenuRepositoryInstance.getInstance(context)
     init {
 
-        menuRepository.updateMenu().subscribeOn(Schedulers.io()).doOnComplete {
-            menuRepository.getMenuRoom().observeOn(AndroidSchedulers.mainThread())
-                .subscribe({menu->
-                    (menuList as MutableLiveData<List<MenuItemData>>).postValue(menu)
-                },{
-                    Log.d("Error",it.stackTrace.toString())
-                })
-        }
+        menuRepository.updateMenu().subscribeOn(Schedulers.io()).subscribe(
+            {
+                menuRepository.getMenuRoom().observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({menu->
+                        (menuList as MutableLiveData<List<MenuItemData>>).postValue(menu)
+                    },{
+                        Log.d("Error",it.stackTrace.toString())
+                    })
+            }
+        )
     }
 
     fun updateStatus(id:String,status:String){

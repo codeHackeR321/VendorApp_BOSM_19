@@ -1,6 +1,7 @@
 package com.example.vendorapp.menu.model
 
 import android.content.Context
+import android.util.Log
 import com.example.vendorapp.shared.dataclasses.retroClasses.MenuPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import com.example.vendorapp.menu.model.room.MenuDao
@@ -35,7 +36,7 @@ class MenuRepository(application: Context){
                 var menu = emptyList<MenuItemData>()
 
                 it.forEach { menuPojo ->
-                    menu.plus(menuPojo.toMenuItemData())
+                   menu= menu.plus(menuPojo.toMenuItemData())
                 }
 
                 menuDao.deleteAll()
