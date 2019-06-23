@@ -1,4 +1,4 @@
-package com.example.vendorapp.acceptedorderscreen.model.room
+package com.example.vendorapp.shared.singletonobjects.model.room
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -11,12 +11,12 @@ import io.reactivex.Flowable
 
 
 @Dao
-interface AcceptedOrderDao {
+interface OrderDao {
 
     @Query("SELECT * FROM orders_table WHERE status = 'accepted' OR status = 'ready' ")
     fun getOrders(): Flowable<List<OrdersData>>
 
-    @Query("SELECT items_order.item_id AS itemId,price,quantity,item_name AS name from items_order INNER JOIN menu_table ON items_order.item_id= menu_table.item_id WHERE order_Id= :orderId")
+    @Query("SELECT items_order.item_id AS itemId, price, quantity, item_name AS name from items_order INNER JOIN menu_table ON items_order.item_id = menu_table.item_id WHERE order_Id= :orderId")
     fun getItemsForOrder(orderId: String): Flowable<List<ItemsModel>>
 
     @Query("DELETE FROM orders_table")
@@ -29,8 +29,11 @@ interface AcceptedOrderDao {
     fun updateStatus(orderId: String, status: String): Completable
 
     @Insert
-    fun insertOrder(orders: List<OrdersData>)
+    fun insertOrders(orders: List<OrdersData>)
 
     @Insert
     fun insertOrderItems(items: List<ItemData>)
+
+    @Query("SELECT * from orders_table WHERE order_id= :orderId ")
+    fun getOrderById(orderId: String): Flowable<OrdersData>
 }

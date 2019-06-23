@@ -5,18 +5,16 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.vendorapp.acceptedorderscreen.model.AcceptedOrderRepository
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
 import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
-import com.example.vendorapp.shared.singletonobjects.repositories.AcceptedOrderRepositoryInstance
-import com.example.vendorapp.shared.singletonobjects.repositories.NewOrderRepositoryInstance
+import com.example.vendorapp.shared.singletonobjects.repositories.OrderRepositoryInstance
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 class AcceptedOrderViewModel(context : Context) : ViewModel(){
 
     var acceptedOrders : LiveData<List<ModifiedOrdersDataClass>> = MutableLiveData()
-    var acceptedOrderRepo = AcceptedOrderRepositoryInstance.getInstance(context)
+    var acceptedOrderRepo = OrderRepositoryInstance.getInstance(context)
 
 
     @SuppressLint("CheckResult")
