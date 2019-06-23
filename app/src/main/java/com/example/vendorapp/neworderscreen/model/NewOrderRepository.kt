@@ -9,6 +9,7 @@ import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
 import com.example.vendorapp.shared.dataclasses.roomClasses.OrdersData
 import com.example.vendorapp.neworderscreen.model.room.NewOrderDao
+import com.example.vendorapp.shared.dataclasses.OrderItemsData
 import com.example.vendorapp.shared.singletonobjects.RetrofitInstance
 import com.example.vendorapp.shared.singletonobjects.VendorDatabase
 import io.reactivex.*
@@ -29,19 +30,23 @@ class NewOrderRepository(context: Context) {
     }
 
     @SuppressLint("CheckResult")
-    fun getNewOrdersList(): Flowable<List<OrdersData>> {
-        return newOrderDao.getAllNewOrders().subscribeOn(Schedulers.io())
-    }
+    fun getNewOrdersList(): Flowable<List<OrderItemsData>> {
+        var orderList = emptyList<OrderItemsData>()
+        newOrderDao.getAllNewOrders().subscribeOn(Schedulers.io()).doOnNext {orders->
+            orders.forEach {order->
+                newOrderDao.getOrderItems(order.orderId)
+                    .doOnNext {
+                        orderList=orderList.plus(OrderItemsData(order,it))
+                    }
+            }
 
-    fun getItemsOfOrder(orderId: String): Flowable<List<ItemData>> {
-        return newOrderDao.getOrderItems(orderId).subscribeOn(Schedulers.io())
+        }
+        return Flowable.just(orderList)
     }
 
     fun setnewOrderfromServer(): Completable {
         return orderApi.subscribeOn(Schedulers.io())
             .doOnSuccess { orders ->
-                newOrderDao.deleteAllOrders()
-                newOrderDao.deleteAllOrderItems()
                 orders.forEach {
                     newOrderDao.insertNewOrder(it.toOrderData())
                     newOrderDao.insertOrderItems(it.toItemData())
@@ -66,7 +71,7 @@ class NewOrderRepository(context: Context) {
 
         var itemList = emptyList<ItemData>()
         items.forEach {
-            itemList.plus(ItemData(1, it.itemId, orderId, it.price, it.quantity))
+            itemList=itemList.plus(ItemData(0, it.itemId, orderId, it.price, it.quantity))
         }
         return itemList
     }

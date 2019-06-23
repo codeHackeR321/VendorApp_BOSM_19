@@ -26,36 +26,26 @@ class AcceptedOrderRepository(application: Application) {
         orderApiCall = RetrofitInstance.getRetroInstance().orders
     }
 
-    fun getOrdersRoom(): Flowable<List<OrdersData>>{
-        return acceptedOrderDao.getOrders().subscribeOn(Schedulers.io())
-    }
+//    fun getOrdersRoom(): Flowable<List<OrdersData>>{
+//        return acceptedOrderDao.getOrders().subscribeOn(Schedulers.io())
+//    }
 
-    fun getOrderItemsRoom(orderId: String): Flowable<List<ItemData>>{
-        return acceptedOrderDao.getItemsForOrder(orderId).subscribeOn(Schedulers.io())
-    }
+//    fun getOrderItemsRoom(orderId: String): Flowable<List<ItemData>>{
+//        return acceptedOrderDao.getItemsForOrder(orderId).subscribeOn(Schedulers.io())
+//    }
 
     fun updateStatus(orderId: String, status: String): Completable{
         return acceptedOrderDao.updateStatus(orderId, status).subscribeOn(Schedulers.io())
     }
 
 
-    //Not complete and correct yet
-    var ordersRoom = acceptedOrderDao.getOrders().subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(object : FlowableSubscriber<List<OrdersData>>{
-            override fun onComplete() {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+    fun getOrdersRoom(): Flowable<List<OrderItemsData>>{
 
-            override fun onSubscribe(s: Subscription) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onNext(t: List<OrdersData>?) {
-
+        return acceptedOrderDao.getOrders().subscribeOn(Schedulers.io())
+            .flatMap {
                 var orderList = emptyList<OrderItemsData>()
 
-                t!!.forEach { ordersData ->
+                it.forEach { ordersData ->
 
                     acceptedOrderDao.getItemsForOrder(ordersData.orderId)
                         .doOnNext {itemList ->
@@ -64,18 +54,13 @@ class AcceptedOrderRepository(application: Application) {
                         }
                 }
 
-                var ordersList = Flowable.just(orderList)
+                return@flatMap Flowable.just(orderList)
             }
+    }
 
-            override fun onError(t: Throwable?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
+    fun updateOrders(): Completable {
 
-        })
-
-
-    val orderApi = orderApiCall.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        return orderApiCall.subscribeOn(Schedulers.io())
             .doOnSuccess {
 
                 var orders = emptyList<OrdersData>()
@@ -92,8 +77,8 @@ class AcceptedOrderRepository(application: Application) {
                 acceptedOrderDao.insertOrder(orders)
                 acceptedOrderDao.insertOrderItems(items)
             }
-        .ignoreElement()
-
+            .ignoreElement()
+    }
 
     private fun OrdersPojo.toOrderData(): OrdersData{
         return OrdersData(orderId = orderId, status = status, otp = otp, timestamp = timestamp.toLong(), totalAmount = totalAmount)

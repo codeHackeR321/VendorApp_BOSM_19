@@ -6,6 +6,7 @@ import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import com.example.vendorapp.menu.model.room.MenuDao
 import com.example.vendorapp.shared.singletonobjects.RetrofitInstance
 import com.example.vendorapp.shared.singletonobjects.VendorDatabase
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.SingleObserver
@@ -29,20 +30,22 @@ class MenuRepository (application: Application){
         return menuDao.getMenu().subscribeOn(Schedulers.io())
     }
 
-    val menuApi = menuApiCall.subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .doOnSuccess {
+    fun updateMenu(): Completable{
 
-            var menu = emptyList<MenuItemData>()
+        return menuApiCall.subscribeOn(Schedulers.io())
+            .doOnSuccess {
 
-            it.forEach { menuPojo ->
-                menu.plus(menuPojo.toMenuItemData())
+                var menu = emptyList<MenuItemData>()
+
+                it.forEach { menuPojo ->
+                    menu.plus(menuPojo.toMenuItemData())
+                }
+
+                menuDao.deleteAll()
+                menuDao.insertMenu(menu)
             }
-
-            menuDao.deleteAll()
-            menuDao.insertMenu(menu)
-        }
-        .ignoreElement()
+            .ignoreElement()
+    }
 
     private fun MenuPojo.toMenuItemData(): MenuItemData{
         return MenuItemData(itemId, name, price, status)
