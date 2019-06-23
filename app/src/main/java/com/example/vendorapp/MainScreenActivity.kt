@@ -1,11 +1,17 @@
 package com.example.vendorapp
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.example.vendorapp.acceptedorderscreen.view.AcceptedOrderFragment
+import com.example.vendorapp.loginscreen.view.MainActivity
+import com.example.vendorapp.menu.view.MenuActivity
 import com.example.vendorapp.neworderscreen.view.NewOrderFragment
 import kotlinx.android.synthetic.main.activity_main_screen.*
 
@@ -20,6 +26,25 @@ class MainScreenActivity : AppCompatActivity() {
 
         viewPager = viewPager_activity_mainScreen
         viewPager.adapter = MyPagerAdapter()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.overflow_menu , menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item!!.itemId){
+            R.id.overflowMenu_toogle_availiblity ->
+                startActivity(Intent(this , MenuActivity::class.java))
+            R.id.overflowMenu_earnings ->
+                Toast.makeText(this , "Earnings Activity" , Toast.LENGTH_LONG).show()
+            R.id.overflowMenu_contactUs ->
+                Toast.makeText(this , "Contact Us Activity" , Toast.LENGTH_LONG).show()
+            R.id.overflowMenu_logout ->
+                Toast.makeText(this , "Logout" , Toast.LENGTH_LONG).show()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     inner class MyPagerAdapter : FragmentPagerAdapter(supportFragmentManager) {
@@ -47,6 +72,5 @@ class MainScreenActivity : AppCompatActivity() {
             }
             return super.getPageTitle(position)
         }
-
     }
 }

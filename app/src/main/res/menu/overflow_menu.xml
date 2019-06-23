@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/overflowMenu_toogle_availiblity"
+        android:title="@string/overflow_menu_toogle"/>
+
+    <item
+        android:id="@+id/overflowMenu_earnings"
+        android:title="@string/overflow_menu_earnings"/>
+
+    <item
+        android:id="@+id/overflowMenu_contactUs"
+        android:title="@string/overflow_menu_contactUs"/>
+
+    <item
+        android:id="@+id/overflowMenu_logout"
+        android:title="@string/overflow_menu_logout"/>
+
+</menu>
