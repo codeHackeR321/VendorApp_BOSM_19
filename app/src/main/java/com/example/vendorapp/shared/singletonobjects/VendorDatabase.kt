@@ -4,12 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.vendorapp.acceptedorderscreen.model.room.AcceptedOrderDao
+import com.example.vendorapp.shared.singletonobjects.model.room.OrderDao
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
 import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import com.example.vendorapp.shared.dataclasses.roomClasses.OrdersData
 import com.example.vendorapp.menu.model.room.MenuDao
-import com.example.vendorapp.neworderscreen.model.room.NewOrderDao
 
 @Database(entities = [OrdersData::class, MenuItemData::class, ItemData::class], version = 1)
 abstract class VendorDatabase: RoomDatabase() {
@@ -31,8 +30,7 @@ abstract class VendorDatabase: RoomDatabase() {
         }
     }
 
-    abstract fun newOrderDao(): NewOrderDao
-    abstract fun acceptedOrderDao(): AcceptedOrderDao
+    abstract fun orderDao(): OrderDao
     abstract fun menuDao(): MenuDao
 
 }

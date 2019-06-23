@@ -1,29 +1,29 @@
 package com.example.vendorapp.neworderscreen.viewModel
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
+import com.example.vendorapp.shared.singletonobjects.repositories.OrderRepositoryInstance
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
 import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
-import com.example.vendorapp.shared.singletonobjects.repositories.NewOrderRepositoryInstance
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 class NewOrderViewModel(context : Context) : ViewModel(){
 
     var orders : LiveData<List<ModifiedOrdersDataClass>> = MutableLiveData()
-    var newOrderRepo = NewOrderRepositoryInstance.getInstance(context)
+    var orderRepo = OrderRepositoryInstance.getInstance(context)
 
 
     @SuppressLint("CheckResult")
     fun getNewOrders() {
+
         var ordersList = emptyList<ModifiedOrdersDataClass>()
-        newOrderRepo.getNewOrdersList().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnNext {orders ->
+        orderRepo.getOrdersRoom().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnNext {orders ->
             orders.forEach {order ->
                 var itemList = emptyList<ChildDataClass>()
                 order.items.forEach {
@@ -34,6 +34,7 @@ class NewOrderViewModel(context : Context) : ViewModel(){
                             price = it.price,
                             quantity = it.quantity
                     ))
+
                 }
                 ordersList = ordersList.plus(ModifiedOrdersDataClass(
                     orderId = order.order.orderId,
@@ -52,6 +53,6 @@ class NewOrderViewModel(context : Context) : ViewModel(){
     }
 
     fun refreshOrderData() {
-        newOrderRepo.setnewOrderfromServer()
+        orderRepo.updateOrders()
     }
 }
