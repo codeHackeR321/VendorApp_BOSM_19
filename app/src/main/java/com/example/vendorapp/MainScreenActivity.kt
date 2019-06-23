@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.example.vendorapp.acceptedorderscreen.view.AcceptedOrderFragment
+import com.example.vendorapp.completedOrderScreen.view.CompletedOrdersActivity
 import com.example.vendorapp.loginscreen.view.MainActivity
 import com.example.vendorapp.menu.view.MenuActivity
 import com.example.vendorapp.neworderscreen.view.NewOrderFragment
@@ -38,7 +39,7 @@ class MainScreenActivity : AppCompatActivity() {
             R.id.overflowMenu_toogle_availiblity ->
                 startActivity(Intent(this , MenuActivity::class.java))
             R.id.overflowMenu_earnings ->
-                Toast.makeText(this , "Earnings Activity" , Toast.LENGTH_LONG).show()
+                startActivity(Intent(this,CompletedOrdersActivity::class.java))
             R.id.overflowMenu_contactUs ->
                 Toast.makeText(this , "Contact Us Activity" , Toast.LENGTH_LONG).show()
             R.id.overflowMenu_logout ->

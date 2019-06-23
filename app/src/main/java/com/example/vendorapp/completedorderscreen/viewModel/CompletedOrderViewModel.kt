@@ -5,11 +5,13 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
 import com.example.vendorapp.shared.singletonobjects.model.OrderRepository
 import com.example.vendorapp.shared.singletonobjects.repositories.OrderRepositoryInstance
 
 class CompletedOrderViewModel(context:Context) :ViewModel() {
 
+    var orders:LiveData<List<ModifiedOrdersDataClass>> =MutableLiveData()
     var earnings:LiveData<String> = MutableLiveData()
     var orderRepository:OrderRepository= OrderRepositoryInstance.getInstance(context)
 
@@ -22,6 +24,16 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
         // })
     }
 
+    fun updateData(){
+        orderRepository.updateOrders().doOnComplete {
+            getCompletedOrders()
+        }.subscribe()
+
+    }
+    fun getCompletedOrders(){
+
+
+    }
     fun getOrdersForDate(date:String){
 
     }

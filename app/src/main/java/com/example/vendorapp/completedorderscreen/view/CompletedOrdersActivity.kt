@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.vendorapp.R
 import com.example.vendorapp.completedOrderScreen.view.adapters.DatesAdapter
+import com.example.vendorapp.completedOrderScreen.view.adapters.OrdersAdapterFragment
 import com.example.vendorapp.completedOrderScreen.viewModel.CompletedOrderViewModel
 import com.example.vendorapp.completedOrderScreen.viewModel.CompletedOrderViewModelFactory
 import kotlinx.android.synthetic.main.activity_completed_orders.*
@@ -17,10 +18,10 @@ class CompletedOrdersActivity : AppCompatActivity(),DatesAdapter.DateSelectedLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_completed_orders)
-        nCompletedViewModel=ViewModelProviders.of(this,CompletedOrderViewModelFactory()).get(CompletedOrderViewModel::class.java)
+        nCompletedViewModel=ViewModelProviders.of(this,CompletedOrderViewModelFactory(this)).get(CompletedOrderViewModel::class.java)
         initialize()
         dates_recycler.adapter=DatesAdapter(this)
-        (dates_recycler.adapter as DatesAdapter).dates
+        (dates_recycler.adapter as DatesAdapter).dates = listOf("13","14","15","16")
         nCompletedViewModel.earnings.observe(this, Observer {
             earning.text=it
         })
@@ -28,7 +29,11 @@ class CompletedOrdersActivity : AppCompatActivity(),DatesAdapter.DateSelectedLis
     }
 
     fun initialize(){
-
+         orders_recycler.adapter=OrdersAdapterFragment()
+         nCompletedViewModel.updateData()
+        nCompletedViewModel.orders.observe(this, Observer {
+            (orders_recycler.adapter as OrdersAdapterFragment).orders=it
+        })
     }
 
     override fun OnDateSelected(date: String) {

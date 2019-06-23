@@ -31,7 +31,6 @@ class OrdersAdapterFragment:RecyclerView.Adapter<OrdersAdapterFragment.OrderView
         holder.recyclerOrderDetails.adapter = RecyclerAdapterExpandabeRecyclerView(inflater , list)
     }
 
-
     inner class OrderViewHolder(view: View):RecyclerView.ViewHolder(view){
         internal val textOrderNumber : TextView = view.text_card_new_order_order_id
         internal val textTotalAmount : TextView = view.text_card_new_order_total_amount
