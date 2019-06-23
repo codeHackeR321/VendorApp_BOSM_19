@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import com.example.vendorapp.R
 import com.example.vendorapp.neworderscreen.view.adapters.RecyclerAdapterFragment
@@ -16,23 +17,24 @@ import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 class NewOrderFragment : Fragment() , RecyclerAdapterFragment.RecyclerButtonClickListener{
 
     private val viewModel by lazy {
-        ViewModelProviders.of(viewLifecycleOwner as Fragment).get(NewOrderViewModel(context!!)::class.java)
+        // ViewModelProviders.of(viewLifecycleOwner as Fragment).get(NewOrderViewModel(context!!)::class.java)
+        NewOrderViewModel(context!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_fra_new_order, container, false)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initializeView()
+        super.onViewCreated(view, savedInstanceState)
     }
 
     fun initializeView()
     {
         recycler_new_order_screen.adapter = RecyclerAdapterFragment(this)
         viewModel.refreshOrderData()
+        viewModel.getNewOrders()
         viewModel.orders.observe(this , Observer {
             Log.d("Testing New Order View" , "Entered observer for orders")
             (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders = it
