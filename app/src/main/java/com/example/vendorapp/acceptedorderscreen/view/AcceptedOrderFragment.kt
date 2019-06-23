@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.example.vendorapp.R
 import com.example.vendorapp.acceptedorderscreen.view.adapters.AdapterForFragment
 import com.example.vendorapp.acceptedorderscreen.viewModel.AcceptedOrderViewModel
+import com.example.vendorapp.acceptedorderscreen.viewModel.AcceptedOrderViewModelFactory
 import kotlinx.android.synthetic.main.fragment_fra_accepted_order.*
 
 
@@ -21,8 +22,7 @@ class AcceptedOrderFragment : Fragment() , AdapterForFragment.RecyclerButtonClic
     }
 
      private val viewModel by lazy {
-         // ViewModelProviders.of(viewLifecycleOwner as Fragment).get(AcceptedOrderViewModel(context!!)::class.java)
-         AcceptedOrderViewModel(context!!)
+         ViewModelProviders.of(this , AcceptedOrderViewModelFactory(this.context!!)).get(AcceptedOrderViewModel::class.java)
      }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_fra_accepted_order, container, false)
