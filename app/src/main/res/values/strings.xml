@@ -19,6 +19,8 @@
 
     <string name="card_new_order_accept_bttn">Accept</string>
     <string name="card_new_order_decline_bttn">Decline</string>
+    <string name="card_accepted_order_ready_bttn">Ready</string>
+    <string name="card_accepted_order_finish_bttn">Finish</string>
     <string name="group_view_holder_new_order_heading">Order</string>
 
     <string name="number_of_pages_viewPger">2</string>

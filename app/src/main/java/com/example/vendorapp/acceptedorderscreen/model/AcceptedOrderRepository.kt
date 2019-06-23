@@ -1,6 +1,7 @@
 package com.example.vendorapp.acceptedorderscreen.model
 
 import android.app.Application
+import android.content.Context
 import com.example.vendorapp.acceptedorderscreen.model.room.AcceptedOrderDao
 import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
@@ -13,7 +14,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import org.reactivestreams.Subscription
 
-class AcceptedOrderRepository(application: Application) {
+class AcceptedOrderRepository(application: Context) {
 
     private val acceptedOrderDao: AcceptedOrderDao
     private val orderApiCall: Single<List<OrdersPojo>>
