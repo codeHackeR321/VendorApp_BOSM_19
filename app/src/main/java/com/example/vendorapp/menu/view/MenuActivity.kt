@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModelProviders
 import com.example.vendorapp.R
 import com.example.vendorapp.menu.viewModel.MenuViewModel
+import kotlinx.android.synthetic.main.activity_menu.*
 
 class MenuActivity : AppCompatActivity() {
     private lateinit var nMenuViewModel:MenuViewModel
@@ -14,6 +15,9 @@ class MenuActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         nMenuViewModel=ViewModelProviders.of(this).get(MenuViewModel::class.java)
         setContentView(R.layout.activity_menu)
+        menu_recycler.adapter=menuAdapter
+
+
        
     }
 }

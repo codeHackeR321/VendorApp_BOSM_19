@@ -1,6 +1,6 @@
 package com.example.vendorapp.menu.model
 
-import android.app.Application
+import android.content.Context
 import com.example.vendorapp.shared.dataclasses.retroClasses.MenuPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import com.example.vendorapp.menu.model.room.MenuDao
@@ -9,12 +9,9 @@ import com.example.vendorapp.shared.singletonobjects.VendorDatabase
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
-import io.reactivex.SingleObserver
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
-class MenuRepository (application: Application){
+class MenuRepository(application: Context){
 
     private val menuDao: MenuDao
     private val menuApiCall: Single<List<MenuPojo>>
