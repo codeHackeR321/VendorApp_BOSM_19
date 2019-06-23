@@ -6,10 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.example.vendorapp.R
 import com.example.vendorapp.acceptedorderscreen.view.adapters.AdapterForFragment
-import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
-import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
+import com.example.vendorapp.acceptedorderscreen.viewModel.AcceptedOrderViewModel
 import kotlinx.android.synthetic.main.fragment_fra_accepted_order.*
 
 
@@ -19,10 +20,9 @@ class AcceptedOrderFragment : Fragment() , AdapterForFragment.RecyclerButtonClic
         //   TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    /* private val viewModel by lazy {
-         ViewModelProviders.of(viewLifecycleOwner as Fragment).get(NewOrderViewModel(context!!)::class.java)
+     private val viewModel by lazy {
+         ViewModelProviders.of(viewLifecycleOwner as Fragment).get(AcceptedOrderViewModel(context!!)::class.java)
      }
-*/
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_fra_accepted_order, container, false)
     }
@@ -36,25 +36,25 @@ class AcceptedOrderFragment : Fragment() , AdapterForFragment.RecyclerButtonClic
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
-        // initializeView()
-        var ordersfake=ArrayList<ModifiedOrdersDataClass>()
+         initializeView()
+       /* var ordersfake=ArrayList<ModifiedOrdersDataClass>()
         var itemsfake:List<ChildDataClass> = listOf(ChildDataClass("Sandwicvh","200","2","2323"),ChildDataClass("Sandwicvh","200","2","2323"))
 
 
         ordersfake.add(ModifiedOrdersDataClass("692","Accepted","1234567890","6776","50000",itemsfake))
-        recycler_accepted_order_screen.adapter = AdapterForFragment(this,ordersfake)
+       recycler_accepted_order_screen.adapter = AdapterForFragment(this,ordersfake)
+*/
     }
 
-    /* fun initializeView()
+     fun initializeView()
      {
          recycler_accepted_order_screen.adapter = AdapterForFragment(this)
-         viewModel.refreshOrderData()
-         viewModel.orders.observe(this , Observer {
-             Log.d("Testing New Order View" , "Entered observer for orders")
-             (recycler_accepted_order_screen.adapter as RecyclerAdapterFragment).orders = it
+         viewModel.getPreviousOrders()
+         viewModel.acceptedOrders.observe(this , Observer {
+             Log.d("Testing Accepted View" , "Entered observer for orders")
+             (recycler_accepted_order_screen.adapter as AdapterForFragment).orders = it
          })
      }
- */
 
 
 

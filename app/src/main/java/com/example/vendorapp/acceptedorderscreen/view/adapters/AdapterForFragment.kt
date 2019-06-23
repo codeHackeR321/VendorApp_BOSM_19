@@ -17,14 +17,15 @@ import com.example.vendorapp.shared.expandableRecyclerView.GroupDataClass
 import kotlinx.android.synthetic.main.card_accepted_order_screen.view.*
 
 
-class AdapterForFragment(val listener : RecyclerButtonClickListener, private var orders: ArrayList<ModifiedOrdersDataClass>  ) : RecyclerView.Adapter<AdapterForFragment.OrderViewHolder>(){
+class AdapterForFragment(val listener : RecyclerButtonClickListener  ) : RecyclerView.Adapter<AdapterForFragment.OrderViewHolder>(){
 
+    var orders = emptyList<ModifiedOrdersDataClass>()
     interface RecyclerButtonClickListener{
 
         fun buttonClicked(orderId : String , status : String) // Ready or Finish
     }
 
-    //  var orders = emptyList<ModifiedOrdersDataClass>()
+
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
@@ -44,7 +45,7 @@ class AdapterForFragment(val listener : RecyclerButtonClickListener, private var
         holder.recyclerOrderDetails.adapter = RecyclerAdapterExpandabeRecyclerView(inflater , list)
 
         holder.bttnReadyOrder.setOnClickListener {
-            listener.buttonClicked(orders[position].orderId , "Ready")
+            listener.buttonClicked(orders[position].orderId , "ready")
         }
 
         /*holder.bttnDeclineOrder.setOnClickListener {
