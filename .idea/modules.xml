@@ -8,6 +8,8 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/Vendor App 19-20.iml" filepath="$PROJECT_DIR$/.idea/Vendor App 19-20.iml" />
       <module fileurl="file://$PROJECT_DIR$/VendorApp.iml" filepath="$PROJECT_DIR$/VendorApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/vendor-app-bosm-19.iml" filepath="$PROJECT_DIR$/vendor-app-bosm-19.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/vendor-app-bosm-19-app.iml" filepath="$PROJECT_DIR$/app/vendor-app-bosm-19-app.iml" />
     </modules>
   </component>
 </project>

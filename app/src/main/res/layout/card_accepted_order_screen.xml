@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools" android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <!--android:textSize="@dimen/heading_text_size"-->
+    <TextView
+            android:layout_width="0dp"
+            android:textSize="18sp"
+
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:layout_marginLeft="@dimen/default_margin"
+            android:layout_marginRight="@dimen/default_margin"
+            android:id="@+id/text_card_accepted_order_order_id"
+            android:text="@string/test_order_number"
+            android:layout_height="wrap_content" />
+
+    <TextView
+            android:layout_width="0dp"
+            android:textSize="14sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_card_accepted_order_order_id"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:layout_marginLeft="@dimen/default_margin"
+            android:layout_marginRight="@dimen/default_margin"
+            android:layout_marginBottom="@dimen/default_margin"
+            android:id="@+id/text_card_accepted_order_total_amount"
+            android:text="@string/test_total_amount"
+            android:layout_height="wrap_content" />
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            app:layout_constraintTop_toBottomOf="@id/text_card_accepted_order_total_amount"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_margin="@dimen/default_margin"
+            android:id="@+id/recycle_card_accepted_order_menu"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:layout_height="wrap_content"/>
+
+    <Button
+            android:layout_width="0dp"
+            android:id="@+id/bttn_card_accepted_order_ready"
+            android:layout_margin="@dimen/default_margin"
+            android:text="@string/card_accepted_order_ready_bttn"
+            android:textSize="18sp"
+            android:background="#06D306"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp" app:layout_constraintTop_toTopOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
