@@ -23,16 +23,16 @@ class NewOrderFragment : Fragment() , RecyclerAdapterFragment.RecyclerButtonClic
         return inflater.inflate(R.layout.fragment_fra_new_order, container, false)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initializeView()
+        super.onViewCreated(view, savedInstanceState)
     }
 
     fun initializeView()
     {
         recycler_new_order_screen.adapter = RecyclerAdapterFragment(this)
         viewModel.refreshOrderData()
+        viewModel.getNewOrders()
         viewModel.orders.observe(this , Observer {
             Log.d("Testing New Order View" , "Entered observer for orders")
             (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders = it
