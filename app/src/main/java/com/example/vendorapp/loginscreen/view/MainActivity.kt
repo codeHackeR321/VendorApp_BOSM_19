@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         // Since support libraries don't have a library for setting up notification channels, this check is necessary
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
-            val newOrderChanel = NotificationChannel("NewOrder" , getString(R.string.chanel_name_newOrder) , NotificationManager.IMPORTANCE_HIGH)
+            val newOrderChanel = NotificationChannel(getString(R.string.chanel_id_newOrder) , getString(R.string.chanel_name_newOrder) , NotificationManager.IMPORTANCE_HIGH)
             newOrderChanel.description = getString(R.string.chanel_desc_newOrder)
             newOrderChanel.canBypassDnd()
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
