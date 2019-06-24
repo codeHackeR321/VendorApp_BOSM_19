@@ -45,13 +45,13 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
     fun getCompletedOrders(){
 
         var ordersList = emptyList<ModifiedOrdersDataClass>()
-        orderRepository.getAllNewOrders().observeOn(AndroidSchedulers.mainThread()).doOnNext { orderList ->
+        orderRepository.getFinishedOrdersFromRoom().observeOn(AndroidSchedulers.mainThread()).doOnNext { orderList ->
             orderList.forEach {order ->
                 var itemList = emptyList<ChildDataClass>()
                 for (item in order.items) {
                     itemList = itemList.plus(
                         ChildDataClass(
-                            itemName = item.itemName,
+                            itemName = item.name,
                             itemId = item.itemId,
                             price = item.price,
                             quantity = item.quantity
@@ -59,11 +59,11 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
                     )
                 }
                 ordersList = ordersList.plus(ModifiedOrdersDataClass(
-                    orderId = order.orderId,
-                    otp = order.otp,
-                    status = order.status,
-                    totalAmount = order.totalAmount,
-                    timestamp = order.timestamp.toString(),
+                    orderId = order.order.orderId,
+                    otp = order.order.otp,
+                    status = order.order.status,
+                    totalAmount = order.order.totalAmount,
+                    timestamp = order.order.timestamp.toString(),
                     items = itemList
                 ))
 
