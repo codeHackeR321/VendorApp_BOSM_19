@@ -5,7 +5,10 @@
     <string name="login_activity_password">Password</string>
 
     <string name="chanel_name_newOrder">New Orders</string>
+    <string name="chanel_id_newOrder">NewOrder</string>
     <string name="chanel_desc_newOrder">Inform that a new order has been made</string>
+    <string name="notification_content_title">New Order</string>
+
 
     <string name="new_order_order_number">Order No. %1$s</string>
     <string name="new_order_total_amount">\u20B9 %1$s</string>
