@@ -47,7 +47,7 @@ class AcceptedOrderViewModel(context : Context) : ViewModel(){
                 (acceptedOrders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(acceptedOrdersList)
             }
         }.doOnError {
-            Log.e("Testing NO VM" , "Error in reading new orders from database")
+            Log.e("Testing NO VM" , it.localizedMessage)
         }.subscribe()
     }
 
@@ -57,7 +57,9 @@ class AcceptedOrderViewModel(context : Context) : ViewModel(){
 
     fun getPreviousOrders(){
 
-        orderRepo.updateOrders()
+        orderRepo.updateOrders().doOnComplete {
+            getAcceptedOrders()
+        }.subscribe()
     }
 }
 

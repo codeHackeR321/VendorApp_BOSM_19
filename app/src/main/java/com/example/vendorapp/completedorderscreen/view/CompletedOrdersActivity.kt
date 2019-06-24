@@ -18,6 +18,7 @@ class CompletedOrdersActivity : AppCompatActivity(),DatesAdapter.DateSelectedLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_completed_orders)
+
         nCompletedViewModel=ViewModelProviders.of(this,CompletedOrderViewModelFactory(this)).get(CompletedOrderViewModel::class.java)
         initialize()
         dates_recycler.adapter=DatesAdapter(this)
@@ -33,6 +34,7 @@ class CompletedOrdersActivity : AppCompatActivity(),DatesAdapter.DateSelectedLis
          nCompletedViewModel.updateData()
         nCompletedViewModel.orders.observe(this, Observer {
             (orders_recycler.adapter as OrdersAdapterFragment).orders=it
+            (orders_recycler.adapter as OrdersAdapterFragment).notifyDataSetChanged()
         })
     }
 

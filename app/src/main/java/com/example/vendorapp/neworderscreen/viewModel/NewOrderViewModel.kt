@@ -47,7 +47,7 @@ class NewOrderViewModel(context : Context) : ViewModel(){
                 (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(ordersList)
             }
         }.doOnError {
-            Log.e("Testing NO VM" , "Error in reading new orders from database")
+            Log.e("Testing NO VM" , it.stackTrace.toString())
         }.subscribe()
     }
 
