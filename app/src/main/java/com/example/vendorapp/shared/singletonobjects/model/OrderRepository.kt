@@ -56,8 +56,9 @@ class OrderRepository(application: Context) {
                 it.forEach { ordersData ->
                     orderDao.getItemsForOrder(ordersData.orderId)
                         .doOnSuccess{itemList ->
-                            orderList=orderList.plus(OrderItemsData(ordersData, itemList))
+                            orderList = orderList.plus(OrderItemsData(ordersData, itemList))
                         }.subscribe()
+
                 }
                 Log.d("CheckAcceptedList",orderList.size.toString())
                 return@flatMap Flowable.just(orderList)
@@ -79,12 +80,14 @@ class OrderRepository(application: Context) {
                 Log.d("check2",orderList.toString())
                 return@flatMap Flowable.just(orderList)
             }
+
     }
 
 
     fun getAllNewOrders() : Flowable<List<OrderItemsData>>
     {
-        return orderDao.trialQuery().subscribeOn(Schedulers.io()).flatMap {
+        return orderDao.trialQuery().subscribeOn(Schedulers.io())
+            .flatMap {
             var list = it.sortedBy { it.orderId }
             var orderItemList = emptyList<OrderItemsData>()
             var itemList = emptyList<ItemsModel>()
@@ -168,8 +171,8 @@ class OrderRepository(application: Context) {
 
                 it.forEach { ordersPojo ->
 
-                    orders= orders.plus(ordersPojo.toOrderData())
-                    items= items.plus(ordersPojo.toItemData())
+                    orders = orders.plus(ordersPojo.toOrderData())
+                    items = items.plus(ordersPojo.toItemData())
                 }
                 Log.d("check",orders.toString())
                 Log.d("check",items.toString())

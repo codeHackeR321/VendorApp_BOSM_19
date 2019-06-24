@@ -2,7 +2,7 @@
   "orders": [
     {
       "orderId": "1",
-      "status": "Pending",
+      "status": "accepted",
       "timestamp": "1635249654",
       "otp": "1234",
       "totalAmount": "1560",
@@ -38,6 +38,30 @@
         },
         {
           "itemId": "04",
+          "price": "560",
+          "quantity": "2"
+        }
+      ]
+    },
+    {
+      "orderId": "7",
+      "status": "ready",
+      "timestamp": "1634549654",
+      "otp": "1204",
+      "totalAmount": "1860",
+      "items": [
+        {
+          "itemId": "01",
+          "price": "560",
+          "quantity": "2"
+        },
+        {
+          "itemId": "02",
+          "price": "560",
+          "quantity": "2"
+        },
+        {
+          "itemId": "03",
           "price": "560",
           "quantity": "2"
         }
