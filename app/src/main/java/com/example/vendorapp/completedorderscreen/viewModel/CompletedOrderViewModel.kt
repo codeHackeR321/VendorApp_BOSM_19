@@ -1,4 +1,4 @@
-package com.example.vendorapp.completedOrderScreen.viewModel
+package com.example.vendorapp.completedorderscreen.viewModel
 
 import android.content.Context
 import android.util.Log
@@ -14,12 +14,12 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
     var orderRepository:OrderRepository= OrderRepositoryInstance.getInstance(context)
 
     init{
-        //orderRepository.getTotalEarnings().subscribe(earnings ->
-        // {
-        //(earnings as LiveData<String>).postValue(earnings)
-        // },{
-         //  Log.e("check",it.message.toString())
-        // })
+        /*orderRepository.getTotalEarnings().subscribe(earnings ->
+         {
+        (earnings as LiveData<String>).postValue(earnings)
+         },{
+          Log.e("check",it.message.toString())
+         })*/
     }
 
     fun getOrdersForDate(date:String){

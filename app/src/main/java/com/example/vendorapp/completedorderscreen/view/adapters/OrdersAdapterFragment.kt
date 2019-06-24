@@ -1,4 +1,4 @@
-package com.example.vendorapp.completedOrderScreen.view.adapters
+package com.example.vendorapp.completedorderscreen.view.adapters
 
 import android.app.Activity
 import android.view.LayoutInflater

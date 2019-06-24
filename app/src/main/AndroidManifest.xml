@@ -9,7 +9,7 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".completedOrderScreen.view.CompletedOrdersActivity">
+        <activity android:name=".completedorderscreen.view.CompletedOrdersActivity">
         </activity>
         <activity android:name=".MainScreenActivity">
         </activity>
