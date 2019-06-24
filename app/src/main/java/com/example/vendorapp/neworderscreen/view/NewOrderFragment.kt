@@ -34,10 +34,10 @@ class NewOrderFragment : Fragment() , RecyclerAdapterFragment.RecyclerButtonClic
     {
         recycler_new_order_screen.adapter = RecyclerAdapterFragment(this)
         viewModel.refreshOrderData()
-        viewModel.getNewOrders()
         viewModel.orders.observe(this , Observer {
             Log.d("Testing New Order View" , "Entered observer for orders")
             (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders = it
+            (recycler_new_order_screen.adapter as RecyclerAdapterFragment).notifyDataSetChanged()
         })
     }
 

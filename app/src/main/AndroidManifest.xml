@@ -9,6 +9,8 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
+        <activity android:name=".completedOrderScreen.view.CompletedOrdersActivity">
+        </activity>
         <activity android:name=".MainScreenActivity">
         </activity>
         <activity android:name=".menu.view.MenuActivity">
@@ -27,7 +29,8 @@
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service>AndroidManifest.xml
+        </service>
+
     </application>
 
 </manifest>

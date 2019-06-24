@@ -17,6 +17,7 @@
             android:layout_width="0dp"
             android:layout_weight="3"
             android:gravity="center"
+            android:fontFamily="@font/cabin"
             android:id="@+id/text_child_view_holder_new_order_item_name"
             android:layout_gravity="start"
             android:text="@string/test_item_name"
@@ -28,6 +29,7 @@
             android:id="@+id/text_child_view_holder_new_order_itemwise_price"
             android:paddingLeft="@dimen/default_padding"
             android:paddingTop="@dimen/default_padding"
+            android:fontFamily="@font/cabin"
             android:paddingBottom="@dimen/default_padding"
             android:layout_height="wrap_content" />
 
@@ -43,6 +45,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:fontFamily="@font/cabin"
             android:id="@+id/text_child_view_holder_new_order_item_cost"
             android:padding="@dimen/default_padding"
             android:text="@string/new_order_total_amount"

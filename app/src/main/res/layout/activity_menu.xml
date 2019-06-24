@@ -8,6 +8,7 @@
         tools:context=".menu.view.MenuActivity">
 
     <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/menu_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:layout_editor_absoluteY="8dp"

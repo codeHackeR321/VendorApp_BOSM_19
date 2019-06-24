@@ -1,6 +1,8 @@
 package com.example.vendorapp.shared.singletonobjects.model
 
 import android.content.Context
+import android.util.Log
+import com.example.vendorapp.shared.dataclasses.ItemsModel
 import com.example.vendorapp.shared.singletonobjects.model.room.OrderDao
 import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
@@ -34,38 +36,71 @@ class OrderRepository(application: Context) {
 
 
     fun getOrdersRoom(): Flowable<List<OrderItemsData>>{
-
         return orderDao.getOrders().subscribeOn(Schedulers.io())
             .flatMap {
                 var orderList = emptyList<OrderItemsData>()
-
                 it.forEach { ordersData ->
-
                     orderDao.getItemsForOrder(ordersData.orderId)
-                        .doOnNext {itemList ->
-
-                            orderList.plus(OrderItemsData(ordersData, itemList))
-                        }
+                        .doOnSuccess{itemList ->
+                            orderList=orderList.plus(OrderItemsData(ordersData, itemList))
+                        }.subscribe()
                 }
-
                 return@flatMap Flowable.just(orderList)
             }
+    }
+
+    fun getNewOrders(): Flowable<List<OrderItemsData>>{
+        Log.d("check","called")
+        return orderDao.getNewOrders().subscribeOn(Schedulers.io())
+            .flatMap {
+                var orderList = emptyList<OrderItemsData>()
+                for (ordersData in it) {
+                    orderDao.getItemsForOrder(ordersData.orderId)
+                        .doOnSuccess{itemList ->
+                            orderList=orderList.plus(OrderItemsData(ordersData, itemList))
+                            Log.d("check1",orderList.toString())
+                        }.subscribe()
+                }
+                Log.d("check2",orderList.toString())
+                return@flatMap Flowable.just(orderList)
+            }
+    }
+
+
+    fun getAllNewOrders() : Flowable<List<OrderItemsData>>
+    {
+        return orderDao.trialQuery().subscribeOn(Schedulers.io()).flatMap {
+            var list = it.sortedBy { it.orderId }
+            var orderItemList = emptyList<OrderItemsData>()
+            var itemList = emptyList<ItemsModel>()
+            for ((index , item) in list.iterator().withIndex())
+            {
+                itemList = itemList.plus(ItemsModel(item.itemId , item.price , item.quantity , item.name))
+                if (!(index != list.size - 1 && list[index].orderId == list[index + 1].orderId))
+                {
+                    orderItemList = orderItemList.plus(OrderItemsData(OrdersData(item.orderId , item.status , item.timestamp , item.otp , item.totalAmount) , itemList))
+                    itemList = emptyList<ItemsModel>()
+                }
+            }
+            return@flatMap Flowable.just(orderItemList)
+        }
     }
 
     fun updateOrders(): Completable {
 
         return orderApiCall.subscribeOn(Schedulers.io())
             .doOnSuccess {
-
+                 Log.d("checkP","$it")
                 var orders = emptyList<OrdersData>()
                 var items = emptyList<ItemData>()
 
                 it.forEach { ordersPojo ->
 
-                    orders.plus(ordersPojo.toOrderData())
-                    items.plus(ordersPojo.toItemData())
+                    orders= orders.plus(ordersPojo.toOrderData())
+                    items= items.plus(ordersPojo.toItemData())
                 }
-
+                Log.d("check",orders.toString())
+                Log.d("check",items.toString())
                 orderDao.deleteAllOrders()
                 orderDao.deleteAllOrderItems()
                 orderDao.insertOrders(orders)
@@ -83,9 +118,8 @@ class OrderRepository(application: Context) {
         var item = emptyList<ItemData>()
 
         items.forEach {
-            item.plus(ItemData(itemId = it.itemId, price = it.price, quantity = it.quantity, orderId = orderId, id = 0))
+           item = item.plus(ItemData(itemId = it.itemId, price = it.price, quantity = it.quantity, orderId = orderId, id = 0))
         }
-
         return item
     }
 }
