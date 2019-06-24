@@ -12,13 +12,13 @@ import androidx.lifecycle.ViewModelProviders
 import com.example.vendorapp.R
 import com.example.vendorapp.neworderscreen.view.adapters.RecyclerAdapterFragment
 import com.example.vendorapp.neworderscreen.viewModel.NewOrderViewModel
+import com.example.vendorapp.neworderscreen.viewModel.NewOrderViewModelFacory
 import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 
 class NewOrderFragment : Fragment() , RecyclerAdapterFragment.RecyclerButtonClickListener{
 
     private val viewModel by lazy {
-        // ViewModelProviders.of(viewLifecycleOwner as Fragment).get(NewOrderViewModel(context!!)::class.java)
-        NewOrderViewModel(context!!)
+        ViewModelProviders.of(this , NewOrderViewModelFacory(this.context!!)).get(NewOrderViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -34,10 +34,10 @@ class NewOrderFragment : Fragment() , RecyclerAdapterFragment.RecyclerButtonClic
     {
         recycler_new_order_screen.adapter = RecyclerAdapterFragment(this)
         viewModel.refreshOrderData()
-        viewModel.getNewOrders()
         viewModel.orders.observe(this , Observer {
             Log.d("Testing New Order View" , "Entered observer for orders")
             (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders = it
+            (recycler_new_order_screen.adapter as RecyclerAdapterFragment).notifyDataSetChanged()
         })
     }
 
