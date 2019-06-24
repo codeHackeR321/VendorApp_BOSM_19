@@ -3,11 +3,17 @@ package com.example.vendorapp.shared.singletonobjects.model
 import android.content.Context
 import android.util.Log
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
+import com.example.vendorapp.completedorderscreen.model.room.EarningDao
 import com.example.vendorapp.shared.dataclasses.ItemsModel
 import com.example.vendorapp.shared.singletonobjects.model.room.OrderDao
 import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
 import com.example.vendorapp.shared.dataclasses.OrderItemsData
+import com.example.vendorapp.shared.dataclasses.retroClasses.DayPojo
+import com.example.vendorapp.shared.dataclasses.retroClasses.EarningsPojo
+import com.example.vendorapp.shared.dataclasses.retroClasses.MenuPojo
+import com.example.vendorapp.shared.dataclasses.roomClasses.EarningData
+import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import com.example.vendorapp.shared.dataclasses.roomClasses.OrdersData
 import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
 import com.example.vendorapp.shared.singletonobjects.RetrofitInstance
@@ -19,6 +25,8 @@ class OrderRepository(application: Context) {
 
     private val orderDao: OrderDao
     private val orderApiCall: Single<List<OrdersPojo>>
+    private val earningDao: EarningDao
+    private val earningsApiCall: Single<EarningsPojo>
 
     init {
 
@@ -26,6 +34,10 @@ class OrderRepository(application: Context) {
         orderDao = database.orderDao()
 
         orderApiCall = RetrofitInstance.getRetroInstance().orders
+
+        // for daywise earnings
+        earningDao = database.earningDao()
+        earningsApiCall = RetrofitInstance.getRetroInstance().earnings
     }
 
     fun getOrderFromId(orderId: String): Flowable<OrdersData> {
@@ -37,6 +49,7 @@ class OrderRepository(application: Context) {
     }
 
 
+    // get accepted and ready orders from room
     fun getOrdersRoom(): Flowable<List<OrderItemsData>>{
         return orderDao.getOrders().subscribeOn(Schedulers.io())
             .flatMap {
@@ -44,9 +57,11 @@ class OrderRepository(application: Context) {
                 it.forEach { ordersData ->
                     orderDao.getItemsForOrder(ordersData.orderId)
                         .doOnSuccess{itemList ->
-                            orderList=orderList.plus(OrderItemsData(ordersData, itemList))
+                            orderList = orderList.plus(OrderItemsData(ordersData, itemList))
                         }.subscribe()
+
                 }
+                Log.d("CheckAcceptedList",orderList.size.toString())
                 return@flatMap Flowable.just(orderList)
             }
     }
@@ -66,12 +81,14 @@ class OrderRepository(application: Context) {
                 Log.d("check2",orderList.toString())
                 return@flatMap Flowable.just(orderList)
             }
+
     }
 
 
     fun getAllNewOrders() : Flowable<List<ModifiedOrdersDataClass>>
     {
-        return orderDao.trialQuery().subscribeOn(Schedulers.io()).flatMap {
+        return orderDao.trialQuery().subscribeOn(Schedulers.io())
+            .flatMap {
             var list = it.sortedBy { it.orderId }
             var orderItemList = emptyList<ModifiedOrdersDataClass>()
             var itemList = emptyList<ChildDataClass>()
@@ -88,6 +105,63 @@ class OrderRepository(application: Context) {
         }
     }
 
+
+    // returns orders with status "finish"
+    fun getFinishedOrdersFromRoom(): Flowable<List<OrderItemsData>>{
+        return orderDao.getFinishOrders().subscribeOn(Schedulers.io())
+            .flatMap {
+                var orderList = emptyList<OrderItemsData>()
+                it.forEach { ordersData ->
+                    orderDao.getItemsForOrder(ordersData.orderId)
+                        .doOnSuccess{itemList ->
+                            orderList=orderList.plus(OrderItemsData(ordersData, itemList))
+                        }.subscribe()
+                }
+                Log.d("CheckAcceptedList",orderList.size.toString())
+                return@flatMap Flowable.just(orderList)
+            }.doOnError {
+                Log.e("Finsh1","Error getting room data${it}")
+            }
+    }
+
+    //update room with earnings data
+    fun updateEarningsData(): Completable{
+
+        return earningsApiCall.subscribeOn(Schedulers.io())
+            .doOnSuccess {
+
+                var daywiseEarnings = emptyList<EarningData>()
+
+               it.daywise.forEach { dayPojo: DayPojo ->
+
+                   daywiseEarnings=daywiseEarnings.plus(dayPojo.toEarningData())
+               }
+
+                earningDao.deleteAll()
+                earningDao.insertEarningData(daywiseEarnings)
+            }.doOnError {
+                Log.e("Finish2", "error getting data from backend$it")
+            }
+            .ignoreElement()
+    }
+
+    private fun DayPojo.toEarningData(): EarningData{
+        return EarningData(day, earnings.toLong())
+    }
+
+    // get earnings data From ROOM
+    fun getdaywiseEarningRoom(): Flowable<List<EarningData>>{
+        return earningDao.getDayWiseEarnings().subscribeOn(Schedulers.io()).doOnError {
+            Log.e("Finish3", "error getting data from roomk daywise$it")
+        }
+    }
+
+    fun getOverallEarningsRoom():Flowable<Long>{
+        return earningDao.getOverallEarnings().subscribeOn(Schedulers.io()).doOnError {
+            Log.e("Finish4", "error getting data from roomk overall$it")
+        }
+    }
+
     fun updateOrders(): Completable {
 
         return orderApiCall.subscribeOn(Schedulers.io())
@@ -98,8 +172,8 @@ class OrderRepository(application: Context) {
 
                 it.forEach { ordersPojo ->
 
-                    orders= orders.plus(ordersPojo.toOrderData())
-                    items= items.plus(ordersPojo.toItemData())
+                    orders = orders.plus(ordersPojo.toOrderData())
+                    items = items.plus(ordersPojo.toItemData())
                 }
                 Log.d("check",orders.toString())
                 Log.d("check",items.toString())

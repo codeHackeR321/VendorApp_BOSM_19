@@ -39,18 +39,24 @@ class AdapterForFragment(val listener : RecyclerButtonClickListener  ) : Recycle
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
         holder.textOrderNumber.text = String.format(holder.itemView.resources.getString(R.string.new_order_order_number) , orders[position].orderId)
         holder.textTotalAmount.text = String.format(holder.itemView.resources.getString(R.string.new_order_total_amount) , orders[position].totalAmount)
+        if (orders[position].status=="accepted")
+            holder.bttnChangeOrderStatus.text="Ready"
+        else if (orders[position].status=="ready")
+            holder.bttnChangeOrderStatus.text="Finish"
+        else if (orders[position].status=="finish")
+            holder.bttnChangeOrderStatus.text="Completed"
+
+
         val inflater = holder.itemView.context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         var list = ArrayList<GroupDataClass>()
         list.add(GroupDataClass("Menu", orders[position].items))
         holder.recyclerOrderDetails.adapter = RecyclerAdapterExpandabeRecyclerView(inflater , list)
 
-        holder.bttnReadyOrder.setOnClickListener {
-            listener.buttonClicked(orders[position].orderId , "ready")
+        holder.bttnChangeOrderStatus.setOnClickListener {
+            listener.buttonClicked(orders[position].orderId , holder.bttnChangeOrderStatus.text.toString().decapitalize())
         }
 
-        /*holder.bttnDeclineOrder.setOnClickListener {
-            listener.buttonClicked(orders[position].orderId , false)
-        }*/
+
     }
 
     inner class OrderViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
@@ -58,7 +64,7 @@ class AdapterForFragment(val listener : RecyclerButtonClickListener  ) : Recycle
         internal val textOrderNumber : TextView = itemView.text_card_accepted_order_order_id
         internal val textTotalAmount : TextView = itemView.text_card_accepted_order_total_amount
         internal val recyclerOrderDetails : RecyclerView = itemView.recycle_card_accepted_order_menu
-        internal val bttnReadyOrder : Button = itemView.bttn_card_accepted_order_ready
+        internal val bttnChangeOrderStatus : Button = itemView.bttn_card_accepted_order_ready
 
 
     }

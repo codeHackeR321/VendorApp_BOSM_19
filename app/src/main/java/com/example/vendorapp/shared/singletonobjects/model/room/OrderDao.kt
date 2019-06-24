@@ -22,6 +22,9 @@ interface OrderDao {
     @Query("SELECT * FROM orders_table WHERE status = 'accepted' OR status = 'ready' ")
     fun getOrders(): Flowable<List<OrdersData>>
 
+    @Query("SELECT * FROM orders_table WHERE status = 'finish'")
+    fun getFinishOrders(): Flowable<List<OrdersData>>
+
     @Query("SELECT items_order.item_id AS itemId, price, quantity, item_name AS name from items_order INNER JOIN menu_table ON items_order.item_id = menu_table.item_id WHERE order_Id= :orderId")
     fun getItemsForOrder(orderId: String): Single<List<ItemsModel>>
 

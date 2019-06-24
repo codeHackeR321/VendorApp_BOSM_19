@@ -56,9 +56,10 @@ dependencies {
     implementation 'com.thoughtbot:expandablerecyclerview:1.3'
 
     //Dependencies for Firebase Functionalitites
-    implementation 'com.google.firebase:firebase-firestore:20.0.0'
-    implementation 'com.google.firebase:firebase-messaging:19.0.0'
+    implementation 'com.google.firebase:firebase-firestore:20.1.0'
+    implementation 'com.google.firebase:firebase-messaging:19.0.1'
     implementation 'com.google.firebase:firebase-core:17.0.0'
+    implementation 'com.google.firebase:firebase-auth:18.0.0'
 
 
     //RxJava
@@ -70,4 +71,7 @@ dependencies {
 
     //To use material design views
     implementation 'com.android.support:design:28.0.0'
+
+    //Google Sign-in
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
 }

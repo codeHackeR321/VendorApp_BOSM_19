@@ -17,21 +17,24 @@ class NewOrderViewModel(context : Context) : ViewModel(){
 
     var orders : LiveData<List<ModifiedOrdersDataClass>> = MutableLiveData()
     var orderRepo = OrderRepositoryInstance.getInstance(context)
+    var error : LiveData<String> = MutableLiveData()
 
 
     @SuppressLint("CheckResult")
     fun getNewOrders() {
-
         orderRepo.getAllNewOrders().observeOn(AndroidSchedulers.mainThread()).doOnNext {
             (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(it)
         }.doOnError {
             Log.e("Testing NO VM" , "Error in reading new orders from database")
+            (error as MutableLiveData<String>).postValue("Error in database. Please try after some time")
         }.subscribe()
     }
 
     fun refreshOrderData(){
         orderRepo.updateOrders().doOnComplete {
             getNewOrders()
+        }.doOnError {
+            (error as MutableLiveData<String>).postValue("Error in database. Please try after some time")
         }.subscribe()
     }
 }
