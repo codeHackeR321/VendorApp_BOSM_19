@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
 
         loginButton.setOnClickListener {
             startActivity(Intent(this , MainScreenActivity::class.java))
+            finish()
         }
     }
 

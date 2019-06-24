@@ -2,6 +2,7 @@ package com.example.vendorapp.shared.singletonobjects.model.room
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.vendorapp.shared.dataclasses.ItemsModel
 import com.example.vendorapp.shared.dataclasses.OrderItremCombinedDataClass
@@ -40,10 +41,10 @@ interface OrderDao {
     @Query("UPDATE orders_table SET status = :status WHERE order_id = :orderId")
     fun updateStatus(orderId: String, status: String): Completable
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertOrders(orders: List<OrdersData>)
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertOrderItems(items: List<ItemData>)
 
     @Query("SELECT * from orders_table WHERE order_id= :orderId ")

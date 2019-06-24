@@ -56,8 +56,11 @@ class AcceptedOrderViewModel(context : Context) : ViewModel(){
     }
 
     fun getPreviousOrders(){
-
-        orderRepo.updateOrders()
+        orderRepo.updateOrders().doOnComplete {
+            getAcceptedOrders()
+        }.doOnError {
+            Log.e("Testing Accepted VM" , "Error in network call ${it.toString()}")
+        }.subscribe()
     }
 }
 
