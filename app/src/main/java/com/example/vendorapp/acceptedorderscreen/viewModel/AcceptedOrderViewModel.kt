@@ -2,6 +2,7 @@ package com.example.vendorapp.acceptedorderscreen.viewModel
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,37 +14,50 @@ import io.reactivex.schedulers.Schedulers
 
 class AcceptedOrderViewModel(context : Context) : ViewModel(){
 
-    var acceptedOrders : LiveData<List<ModifiedOrdersDataClass>> = MutableLiveData()
-    var acceptedOrderRepo = OrderRepositoryInstance.getInstance(context)
+
+    var  acceptedOrders : LiveData<List<ModifiedOrdersDataClass>> = MutableLiveData()
+    var orderRepo = OrderRepositoryInstance.getInstance(context)
 
 
     @SuppressLint("CheckResult")
-    fun getAcceptedOrders() {
+    fun getAcceptedOrders(){
 
-        var list = emptyList<ModifiedOrdersDataClass>()
-        acceptedOrderRepo.getOrdersRoom().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-            .doOnNext { acceptedOrderList ->
-                acceptedOrderList.forEach { order ->
-                                            var childList = emptyList<ChildDataClass>()
-                        order.items.forEach {
-                            childList.plus(ChildDataClass(itemId = it.itemId , itemName = "Default Name" , price = it.price , quantity = it.quantity))
-                        }
-                        list.plus(ModifiedOrdersDataClass(timestamp = order.order.timestamp.toString() , totalAmount = order.order.totalAmount , status = order.order.status , otp = order.order.otp , items = childList , orderId = order.order.orderId))
-                    }
-                    (acceptedOrders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(list)
+        var acceptedOrdersList = emptyList<ModifiedOrdersDataClass>()
+        orderRepo.getOrdersRoom().observeOn(AndroidSchedulers.mainThread()).doOnNext {orderList ->
+            orderList.forEach {order ->
+                var itemList = emptyList<ChildDataClass>()
+                for (item in order.items) {
+                    itemList = itemList.plus(
+                        ChildDataClass(
+                            itemName = item.name,
+                            itemId = item.itemId,
+                            price = item.price,
+                            quantity = item.quantity
+                        ))
                 }
+                acceptedOrdersList = acceptedOrdersList.plus(ModifiedOrdersDataClass(
+                    orderId = order.order.orderId,
+                    otp = order.order.otp,
+                    status = order.order.status,
+                    totalAmount = order.order.totalAmount,
+                    timestamp = order.order.timestamp.toString(),
+                    items = itemList
+                ))
 
+                (acceptedOrders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(acceptedOrdersList)
+            }
+        }.doOnError {
+            Log.e("Testing NO VM" , "Error in reading new orders from database")
+        }.subscribe()
     }
 
-
     fun changeStatus(orderId:String, status:String) {
-        acceptedOrderRepo.updateStatus(orderId,status)
+        orderRepo.updateStatus(orderId,status)
     }
 
     fun getPreviousOrders(){
 
-        acceptedOrderRepo.updateOrders()
+        orderRepo.updateOrders()
     }
-
 }
 

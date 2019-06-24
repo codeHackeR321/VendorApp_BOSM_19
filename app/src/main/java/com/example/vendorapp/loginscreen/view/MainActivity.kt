@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.vendorapp.MainScreenActivity
 import com.example.vendorapp.R
+import com.example.vendorapp.notification.MyFirebaseMessagingService
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -47,5 +48,6 @@ class MainActivity : AppCompatActivity() {
      * */
     fun initializeApp(){
         setupNotificationChannel()
+        startService(Intent(this,MyFirebaseMessagingService::class.java))
     }
 }
