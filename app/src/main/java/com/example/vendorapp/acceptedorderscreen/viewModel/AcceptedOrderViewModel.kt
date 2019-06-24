@@ -59,6 +59,8 @@ class AcceptedOrderViewModel(context : Context) : ViewModel(){
 
         orderRepo.updateOrders().doOnComplete {
             getAcceptedOrders()
+        }.doOnError {
+            Log.e("Testing Accepted VM" , "Error in network call ${it.toString()}")
         }.subscribe()
     }
 }

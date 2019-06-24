@@ -1,4 +1,4 @@
-package com.example.vendorapp.completedOrderScreen.viewModel
+package com.example.vendorapp.completedorderscreen.viewModel
 
 import android.content.Context
 import android.util.Log
@@ -21,9 +21,11 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
 
 
     init{
+
             orderRepository.updateEarningsData().observeOn(AndroidSchedulers.mainThread()).doOnComplete {
                 getCompletedOrders()
             }.subscribe()
+
     }
 
    fun updateData(){
@@ -49,7 +51,7 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
                 for (item in order.items) {
                     itemList = itemList.plus(
                         ChildDataClass(
-                            itemName = item.name,
+                            itemName = item.itemName,
                             itemId = item.itemId,
                             price = item.price,
                             quantity = item.quantity
@@ -57,11 +59,11 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
                     )
                 }
                 ordersList = ordersList.plus(ModifiedOrdersDataClass(
-                    orderId = order.order.orderId,
-                    otp = order.order.otp,
-                    status = order.order.status,
-                    totalAmount = order.order.totalAmount,
-                    timestamp = order.order.timestamp.toString(),
+                    orderId = order.orderId,
+                    otp = order.otp,
+                    status = order.status,
+                    totalAmount = order.totalAmount,
+                    timestamp = order.timestamp.toString(),
                     items = itemList
                 ))
 

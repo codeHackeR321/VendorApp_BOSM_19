@@ -2,8 +2,8 @@ package com.example.vendorapp.shared.singletonobjects.model
 
 import android.content.Context
 import android.util.Log
+import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
 import com.example.vendorapp.completedorderscreen.model.room.EarningDao
-import com.example.vendorapp.menu.model.room.MenuDao
 import com.example.vendorapp.shared.dataclasses.ItemsModel
 import com.example.vendorapp.shared.singletonobjects.model.room.OrderDao
 import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
@@ -15,6 +15,7 @@ import com.example.vendorapp.shared.dataclasses.retroClasses.MenuPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.EarningData
 import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import com.example.vendorapp.shared.dataclasses.roomClasses.OrdersData
+import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
 import com.example.vendorapp.shared.singletonobjects.RetrofitInstance
 import com.example.vendorapp.shared.singletonobjects.VendorDatabase
 import io.reactivex.*
@@ -84,20 +85,20 @@ class OrderRepository(application: Context) {
     }
 
 
-    fun getAllNewOrders() : Flowable<List<OrderItemsData>>
+    fun getAllNewOrders() : Flowable<List<ModifiedOrdersDataClass>>
     {
         return orderDao.trialQuery().subscribeOn(Schedulers.io())
             .flatMap {
             var list = it.sortedBy { it.orderId }
-            var orderItemList = emptyList<OrderItemsData>()
-            var itemList = emptyList<ItemsModel>()
+            var orderItemList = emptyList<ModifiedOrdersDataClass>()
+            var itemList = emptyList<ChildDataClass>()
             for ((index , item) in list.iterator().withIndex())
             {
-                itemList = itemList.plus(ItemsModel(item.itemId , item.price , item.quantity , item.name))
+                itemList = itemList.plus(ChildDataClass(itemId = item.itemId , price = item.price , quantity = item.quantity , itemName = item.name))
                 if (!(index != list.size - 1 && list[index].orderId == list[index + 1].orderId))
                 {
-                    orderItemList = orderItemList.plus(OrderItemsData(OrdersData(item.orderId , item.status , item.timestamp , item.otp , item.totalAmount) , itemList))
-                    itemList = emptyList<ItemsModel>()
+                    orderItemList = orderItemList.plus(ModifiedOrdersDataClass(orderId = item.orderId , status = item.status , timestamp = item.timestamp.toString() , otp = item.otp , totalAmount = item.totalAmount , items = itemList))
+                    itemList = emptyList<ChildDataClass>()
                 }
             }
             return@flatMap Flowable.just(orderItemList)

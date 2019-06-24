@@ -17,43 +17,25 @@ class NewOrderViewModel(context : Context) : ViewModel(){
 
     var orders : LiveData<List<ModifiedOrdersDataClass>> = MutableLiveData()
     var orderRepo = OrderRepositoryInstance.getInstance(context)
+    var error : LiveData<String> = MutableLiveData()
 
 
     @SuppressLint("CheckResult")
     fun getNewOrders() {
-
-        var ordersList = emptyList<ModifiedOrdersDataClass>()
-        orderRepo.getAllNewOrders().observeOn(AndroidSchedulers.mainThread()).doOnNext {orderList ->
-            orderList.forEach {order ->
-                var itemList = emptyList<ChildDataClass>()
-                for (item in order.items) {
-                    itemList = itemList.plus(
-                        ChildDataClass(
-                            itemName = item.name,
-                            itemId = item.itemId,
-                            price = item.price,
-                            quantity = item.quantity
-                    ))
-                }
-                ordersList = ordersList.plus(ModifiedOrdersDataClass(
-                    orderId = order.order.orderId,
-                    otp = order.order.otp,
-                    status = order.order.status,
-                    totalAmount = order.order.totalAmount,
-                    timestamp = order.order.timestamp.toString(),
-                    items = itemList
-                ))
-
-                (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(ordersList)
-            }
+        orderRepo.getAllNewOrders().observeOn(AndroidSchedulers.mainThread()).doOnNext {
+            (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(it)
         }.doOnError {
-            Log.e("Testing NO VM" , it.stackTrace.toString())
+
+            Log.e("Testing NO VM" , "Error in reading new orders from database")
+            (error as MutableLiveData<String>).postValue("Error in database. Please try after some time")
         }.subscribe()
     }
 
     fun refreshOrderData(){
         orderRepo.updateOrders().doOnComplete {
             getNewOrders()
+        }.doOnError {
+            (error as MutableLiveData<String>).postValue("Error in database. Please try after some time")
         }.subscribe()
     }
 }
