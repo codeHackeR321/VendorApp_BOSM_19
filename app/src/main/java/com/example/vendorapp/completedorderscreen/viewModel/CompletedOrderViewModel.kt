@@ -37,4 +37,8 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
     fun getOrdersForDate(date:String){
 
     }
+
+
+    //from akshat
+    //Call func getEarningsdata() to recicve daywise earning and total amount
 }
