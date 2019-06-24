@@ -4,16 +4,13 @@ import android.content.Context
 import android.util.Log
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
 import com.example.vendorapp.completedorderscreen.model.room.EarningDao
-import com.example.vendorapp.shared.dataclasses.ItemsModel
 import com.example.vendorapp.shared.singletonobjects.model.room.OrderDao
 import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
 import com.example.vendorapp.shared.dataclasses.OrderItemsData
 import com.example.vendorapp.shared.dataclasses.retroClasses.DayPojo
 import com.example.vendorapp.shared.dataclasses.retroClasses.EarningsPojo
-import com.example.vendorapp.shared.dataclasses.retroClasses.MenuPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.EarningData
-import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import com.example.vendorapp.shared.dataclasses.roomClasses.OrdersData
 import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
 import com.example.vendorapp.shared.singletonobjects.RetrofitInstance
@@ -87,7 +84,7 @@ class OrderRepository(application: Context) {
 
     fun getAllNewOrders() : Flowable<List<ModifiedOrdersDataClass>>
     {
-        return orderDao.trialQuery().subscribeOn(Schedulers.io())
+        return orderDao.getAllNewOrders().subscribeOn(Schedulers.io())
             .flatMap {
             var list = it.sortedBy { it.orderId }
             var orderItemList = emptyList<ModifiedOrdersDataClass>()
@@ -174,10 +171,10 @@ class OrderRepository(application: Context) {
 
                     orders = orders.plus(ordersPojo.toOrderData())
                     items = items.plus(ordersPojo.toItemData())
+
                 }
-                Log.d("check",orders.toString())
-                Log.d("check",items.toString())
-                orderDao.deleteAllOrders()
+                Log.d("check Repo",orders.toString())
+                Log.d("check Repo",items.toString())
                 orderDao.deleteAllOrderItems()
                 orderDao.insertOrders(orders)
                 orderDao.insertOrderItems(items)

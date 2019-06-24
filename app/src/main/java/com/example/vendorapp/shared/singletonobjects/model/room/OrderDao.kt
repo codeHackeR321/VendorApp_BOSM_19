@@ -30,7 +30,7 @@ interface OrderDao {
     fun getItemsForOrder(orderId: String): Single<List<ItemsModel>>
 
     @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status, timestamp, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id WHERE status = 'Pending'")
-    fun trialQuery() : Flowable<List<OrderItremCombinedDataClass>>
+    fun getAllNewOrders() : Flowable<List<OrderItremCombinedDataClass>>
 
     @Query("DELETE FROM orders_table")
     fun deleteAllOrders()
@@ -44,7 +44,7 @@ interface OrderDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertOrders(orders: List<OrdersData>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     fun insertOrderItems(items: List<ItemData>)
 
     @Query("SELECT * from orders_table WHERE order_id= :orderId ")

@@ -58,7 +58,7 @@ class AcceptedOrderFragment : Fragment() , AdapterForFragment.RecyclerButtonClic
      fun initializeView()
      {
          recycler_accepted_order_screen.adapter = AdapterForFragment(this)
-         viewModel.getPreviousOrders()
+         viewModel.getAcceptedOrders()
          viewModel.acceptedOrders.observe(this , Observer {
              Log.d("Testing Accepted View" , "Entered observer for Accepted orders with list = ${it.toString()}")
              (recycler_accepted_order_screen.adapter as AdapterForFragment).orders = it
