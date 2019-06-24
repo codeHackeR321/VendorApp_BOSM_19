@@ -46,10 +46,12 @@ class OrderRepository(application: Context) {
 
                             orderList.plus(OrderItemsData(ordersData, itemList))
                         }
+
                 }
 
                 return@flatMap Flowable.just(orderList)
             }
+
     }
 
     fun updateOrders(): Completable {
