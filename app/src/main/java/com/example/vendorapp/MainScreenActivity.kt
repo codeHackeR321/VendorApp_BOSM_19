@@ -38,7 +38,8 @@ class MainScreenActivity : AppCompatActivity() {
             R.id.overflowMenu_toogle_availiblity ->
                 startActivity(Intent(this , MenuActivity::class.java))
             R.id.overflowMenu_earnings ->
-                startActivity(Intent(this , CompletedOrdersActivity::class.java))
+                startActivity(Intent(this,CompletedOrdersActivity::class.java))
+
             R.id.overflowMenu_contactUs ->
                 Toast.makeText(this , "Contact Us Activity" , Toast.LENGTH_LONG).show()
             R.id.overflowMenu_logout ->

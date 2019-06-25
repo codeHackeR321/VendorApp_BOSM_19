@@ -1,9 +1,6 @@
 package com.example.vendorapp.shared.singletonobjects.model.room
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.example.vendorapp.shared.dataclasses.ItemsModel
 import com.example.vendorapp.shared.dataclasses.OrderItremCombinedDataClass
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
@@ -32,12 +29,6 @@ interface OrderDao {
     @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status, timestamp, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id WHERE status = 'Pending'")
     fun getAllNewOrders() : Flowable<List<OrderItremCombinedDataClass>>
 
-    @Query("DELETE FROM orders_table")
-    fun deleteAllOrders()
-
-    @Query("DELETE FROM items_order")
-    fun deleteAllOrderItems()
-
     @Query("UPDATE orders_table SET status = :status WHERE order_id = :orderId")
     fun updateStatus(orderId: String, status: String): Completable
 
@@ -46,6 +37,9 @@ interface OrderDao {
 
     @Insert
     fun insertOrderItems(items: List<ItemData>)
+
+    @Query("DELETE FROM orders_table")
+    fun deleteAllOrderItems()
 
     @Query("SELECT * from orders_table WHERE order_id= :orderId ")
     fun getOrderById(orderId: String): Flowable<OrdersData>

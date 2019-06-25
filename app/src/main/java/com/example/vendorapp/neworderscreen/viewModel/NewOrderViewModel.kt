@@ -25,6 +25,7 @@ class NewOrderViewModel(context : Context) : ViewModel(){
         orderRepo.getAllNewOrders().observeOn(AndroidSchedulers.mainThread()).doOnNext {
             (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(it)
         }.doOnError {
+
             Log.e("Testing NO VM" , "Error in reading new orders from database")
             (error as MutableLiveData<String>).postValue("Error in database. Please try after some time")
         }.subscribe()

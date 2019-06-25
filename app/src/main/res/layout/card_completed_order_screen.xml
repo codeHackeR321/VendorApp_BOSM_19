@@ -18,7 +18,7 @@
             android:layout_marginLeft="@dimen/default_margin"
             android:layout_marginRight="@dimen/default_margin"
             android:layout_marginBottom="@dimen/default_margin"
-            android:id="@+id/text_card_new_order_order_id"
+            android:id="@+id/text_card_compl_order_order_id"
             android:text="@string/test_order_number"
             android:layout_height="wrap_content" />
 
@@ -34,17 +34,17 @@
             android:layout_marginLeft="@dimen/default_margin"
             android:layout_marginRight="@dimen/default_margin"
             android:layout_marginBottom="@dimen/default_margin"
-            android:id="@+id/text_card_new_order_total_amount"
+            android:id="@+id/text_card_compl_order_total_amount"
             android:text="@string/test_total_amount"
             android:layout_height="wrap_content" />
 
     <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
-            app:layout_constraintTop_toBottomOf="@id/text_card_new_order_order_id"
+            app:layout_constraintTop_toBottomOf="@id/text_card_compl_order_order_id"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_margin="@dimen/default_margin"
-            android:id="@+id/recycle_card_new_order_menu"
+            android:id="@+id/recycle_card_compl_order_menu"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:layout_height="wrap_content"/>
 

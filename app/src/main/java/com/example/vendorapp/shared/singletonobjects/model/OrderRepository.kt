@@ -117,7 +117,7 @@ class OrderRepository(application: Context) {
                 Log.d("CheckAcceptedList",orderList.size.toString())
                 return@flatMap Flowable.just(orderList)
             }.doOnError {
-                Log.e("Finsh1","Error getting room data${it}")
+                Log.e("Finish1","Error getting room data${it}")
             }
     }
 
@@ -129,12 +129,11 @@ class OrderRepository(application: Context) {
 
                 var daywiseEarnings = emptyList<EarningData>()
 
-               it.daywise.forEach { dayPojo: DayPojo ->
+               it.daywise.forEach { dayPojo ->
 
                    daywiseEarnings=daywiseEarnings.plus(dayPojo.toEarningData())
                }
-
-                earningDao.deleteAll()
+                Log.d("check",daywiseEarnings.toString())
                 earningDao.insertEarningData(daywiseEarnings)
             }.doOnError {
                 Log.e("Finish2", "error getting data from backend$it")
@@ -143,7 +142,7 @@ class OrderRepository(application: Context) {
     }
 
     private fun DayPojo.toEarningData(): EarningData{
-        return EarningData(day, earnings.toLong())
+        return EarningData(day = day,earnings = earnings)
     }
 
     // get earnings data From ROOM
@@ -153,11 +152,11 @@ class OrderRepository(application: Context) {
         }
     }
 
-    fun getOverallEarningsRoom():Flowable<Long>{
+  /*  fun getOverallEarningsRoom():Single<Long>{
         return earningDao.getOverallEarnings().subscribeOn(Schedulers.io()).doOnError {
-            Log.e("Finish4", "error getting data from roomk overall$it")
+            Log.e("Finish4", "$it")
         }
-    }
+    }*/
 
     fun updateOrders(): Completable {
 
