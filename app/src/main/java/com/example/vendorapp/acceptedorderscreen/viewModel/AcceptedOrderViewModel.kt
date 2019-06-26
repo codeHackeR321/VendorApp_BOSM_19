@@ -17,37 +17,16 @@ class AcceptedOrderViewModel(context : Context) : ViewModel(){
 
     var  acceptedOrders : LiveData<List<ModifiedOrdersDataClass>> = MutableLiveData()
     var orderRepo = OrderRepositoryInstance.getInstance(context)
-
+    var error : LiveData<String> = MutableLiveData()
 
     @SuppressLint("CheckResult")
     fun getAcceptedOrders(){
-
-        var acceptedOrdersList = emptyList<ModifiedOrdersDataClass>()
-        orderRepo.getOrdersRoom().observeOn(AndroidSchedulers.mainThread()).doOnNext {orderList ->
-            orderList.forEach {order ->
-                var itemList = emptyList<ChildDataClass>()
-                for (item in order.items) {
-                    itemList = itemList.plus(
-                        ChildDataClass(
-                            itemName = item.name,
-                            itemId = item.itemId,
-                            price = item.price,
-                            quantity = item.quantity
-                        ))
-                }
-                acceptedOrdersList = acceptedOrdersList.plus(ModifiedOrdersDataClass(
-                    orderId = order.order.orderId,
-                    otp = order.order.otp,
-                    status = order.order.status,
-                    totalAmount = order.order.totalAmount,
-                    timestamp = order.order.timestamp.toString(),
-                    items = itemList
-                ))
-
-                (acceptedOrders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(acceptedOrdersList)
-            }
+        orderRepo.getOrdersRoom().doOnNext {
+            Log.d("Testing AO VM" , "Entered observer with list = ${it.toString()}")
+            (acceptedOrders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(it)
         }.doOnError {
-            Log.e("Testing NO VM" , it.localizedMessage)
+            Log.e("Testing AO VM" , "Error in reading new orders from database")
+            (error as MutableLiveData<String>).postValue("Error in database. Please try after some time")
         }.subscribe()
     }
 

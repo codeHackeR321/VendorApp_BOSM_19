@@ -39,23 +39,6 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
     fun initialize(){
          orders_recycler.adapter=OrdersAdapterFragment()
          nCompletedViewModel.updateData()
-
-        // fake data check
-        /*var ordersfake=ArrayList<ModifiedOrdersDataClass>()
-        var itemsfake:List<ChildDataClass> = listOf(ChildDataClass("Sandwicvh","200","2","2323"),ChildDataClass("Sandwicvh","200","2","2323"))
-
-
-        ordersfake.add(ModifiedOrdersDataClass("692","Accepted","1234567890","6776","50000",itemsfake))
-
-        (orders_recycler.adapter as OrdersAdapterFragment).orders=ordersfake
-        (orders_recycler.adapter as OrdersAdapterFragment).notifyDataSetChanged()*/
-       /* nCompletedViewModel.dayWiseOrders.observe(this, Observer {
-            (orders_recycler.adapter as OrdersAdapterFragment).orders=it.find { dayWiseOrdersDataClass ->
-                dayWiseOrdersDataClass.date==
-            }
-            (orders_recycler.adapter as OrdersAdapterFragment).notifyDataSetChanged()
-        })*/
-
         // fun to update expandable recycler view with datewise data
         setDayWiseData(defaultDate)
     }
@@ -68,16 +51,25 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
 
         nCompletedViewModel.dayWiseOrders.observe(this, Observer {
            try {
+                //date wise data supplied
                (orders_recycler.adapter as OrdersAdapterFragment).orders=it.find { dayWiseOrdersDataClass ->
                    dayWiseOrdersDataClass.date==date
                }!!.dayWiseorders
+
+               //Check daywise data
+               Log.d("CompletedDataCheck","data Check${it.find { dayWiseOrdersDataClass ->
+                   dayWiseOrdersDataClass.date==date
+               }!!.dayWiseorders.toString()}")
+               (orders_recycler.adapter as OrdersAdapterFragment).notifyDataSetChanged()
            }
            catch (e :Exception){
                Log.d("CompletedError",e.toString())
-               Toast.makeText(this@CompletedOrdersActivity,e.toString(),Toast.LENGTH_SHORT).show()
+               Toast.makeText(this@CompletedOrdersActivity,e.toString(),Toast.LENGTH_LONG).show()
            }
-            Toast.makeText(this@CompletedOrdersActivity,"Date selected$date",Toast.LENGTH_LONG).show()
-            (orders_recycler.adapter as OrdersAdapterFragment).notifyDataSetChanged()
+
+
+            Toast.makeText(this@CompletedOrdersActivity,"Date slected$date",Toast.LENGTH_LONG).show()
+            
         })
     }
 }

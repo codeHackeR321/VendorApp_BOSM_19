@@ -47,19 +47,24 @@ class OrderRepository(application: Context) {
 
 
     // get accepted and ready orders from room
-    fun getOrdersRoom(): Flowable<List<OrderItemsData>>{
-        return orderDao.getOrders().subscribeOn(Schedulers.io())
+    fun getOrdersRoom(): Flowable<List<ModifiedOrdersDataClass>>{
+        return orderDao.getAllAcceptedOrders().subscribeOn(Schedulers.io())
             .flatMap {
-                var orderList = emptyList<OrderItemsData>()
-                it.forEach { ordersData ->
-                    orderDao.getItemsForOrder(ordersData.orderId)
-                        .doOnSuccess{itemList ->
-                            orderList = orderList.plus(OrderItemsData(ordersData, itemList))
-                        }.subscribe()
-
+                var list = it.sortedBy { it.orderId }
+                var orderItemList = emptyList<ModifiedOrdersDataClass>()
+                var itemList = emptyList<ChildDataClass>()
+                for ((index , item) in list.iterator().withIndex())
+                {
+                    itemList = itemList.plus(ChildDataClass(itemId = item.itemId , price = item.price , quantity = item.quantity , itemName = item.name))
+                    if (!(index != list.size - 1 && list[index].orderId == list[index + 1].orderId))
+                    {
+                        orderItemList = orderItemList.plus(ModifiedOrdersDataClass(orderId = item.orderId , status = item.status , timestamp = item.timestamp.toString() , otp = item.otp , totalAmount = item.totalAmount , items = itemList))
+                        itemList = emptyList<ChildDataClass>()
+                    }
                 }
-                Log.d("CheckAcceptedList",orderList.size.toString())
-                return@flatMap Flowable.just(orderList)
+                return@flatMap Flowable.just(orderItemList)
+            }.doOnError {
+                Log.e("Testing Repo" , "Error in reading database = ${it.message.toString()}")
             }
     }
 
@@ -86,19 +91,22 @@ class OrderRepository(application: Context) {
     {
         return orderDao.getAllNewOrders().subscribeOn(Schedulers.io())
             .flatMap {
-            var list = it.sortedBy { it.orderId }
-            var orderItemList = emptyList<ModifiedOrdersDataClass>()
-            var itemList = emptyList<ChildDataClass>()
-            for ((index , item) in list.iterator().withIndex())
-            {
-                itemList = itemList.plus(ChildDataClass(itemId = item.itemId , price = item.price , quantity = item.quantity , itemName = item.name))
-                if (!(index != list.size - 1 && list[index].orderId == list[index + 1].orderId))
+                Log.d("Testing Repo" , "Accepted Orders Recived = ${it.toString()}")
+                var list = it.sortedBy { it.orderId }
+                var orderItemList = emptyList<ModifiedOrdersDataClass>()
+                var itemList = emptyList<ChildDataClass>()
+                for ((index , item) in list.iterator().withIndex())
                 {
-                    orderItemList = orderItemList.plus(ModifiedOrdersDataClass(orderId = item.orderId , status = item.status , timestamp = item.timestamp.toString() , otp = item.otp , totalAmount = item.totalAmount , items = itemList))
-                    itemList = emptyList<ChildDataClass>()
+                    itemList = itemList.plus(ChildDataClass(itemId = item.itemId , price = item.price , quantity = item.quantity , itemName = item.name))
+                    if (!(index != list.size - 1 && list[index].orderId == list[index + 1].orderId))
+                    {
+                        orderItemList = orderItemList.plus(ModifiedOrdersDataClass(orderId = item.orderId , status = item.status , timestamp = item.timestamp.toString() , otp = item.otp , totalAmount = item.totalAmount , items = itemList))
+                        itemList = emptyList<ChildDataClass>()
+                    }
                 }
-            }
-            return@flatMap Flowable.just(orderItemList)
+                return@flatMap Flowable.just(orderItemList)
+        }.doOnError {
+            Log.e("Testing Repo" , "Error in reading database = ${it.message.toString()}")
         }
     }
 
@@ -171,6 +179,8 @@ class OrderRepository(application: Context) {
                 orderDao.deleteAllOrderItems()
                 orderDao.insertOrders(orders)
                 orderDao.insertOrderItems(items)
+            }.doOnError {
+                Log.e("Testing Repo" , "Error in fetching data = ${it.message.toString()}")
             }
             .ignoreElement()
     }
