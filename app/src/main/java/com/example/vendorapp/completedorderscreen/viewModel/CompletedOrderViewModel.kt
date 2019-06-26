@@ -72,8 +72,6 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
         }.doOnError {
             Log.e(" check" , it.stackTrace.toString())
         }.subscribe()
-
-
     }
     fun getOrdersForDate(date:String){
 
