@@ -36,17 +36,19 @@ class NewOrderFragment : Fragment() , RecyclerAdapterFragment.RecyclerButtonClic
 
     fun initializeView()
     {
+        Log.d("Testing NO View" , "Entered Initialize View")
         recycler_new_order_screen.adapter = RecyclerAdapterFragment(this)
         progBar_new_order_screen.visibility = View.VISIBLE
         activity!!.window.setFlags(
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        viewModel.refreshOrderData()
+        Log.d("Testing NO View" , "Refresh Data Called")
+        viewModel.doInitialFetch()
         viewModel.orders.observe(this , Observer {
-            Log.d("Testing New Order View" , "Entered observer for orders")
+            Log.d("Testing NO View" , "Entered observer for orders with data = ${it.toString()}")
             (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders = it
             (recycler_new_order_screen.adapter as RecyclerAdapterFragment).notifyDataSetChanged()
-            if (progBar_new_order_screen.isVisible) {
+            if (progBar_new_order_screen.isVisible && it.isNotEmpty()) {
                 progBar_new_order_screen.visibility = View.INVISIBLE
                 activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }

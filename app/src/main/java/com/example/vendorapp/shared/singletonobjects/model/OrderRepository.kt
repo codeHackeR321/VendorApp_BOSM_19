@@ -89,6 +89,7 @@ class OrderRepository(application: Context) {
 
     fun getAllNewOrders() : Flowable<List<ModifiedOrdersDataClass>>
     {
+        Log.d("Testing Repo" , "Entered to get orders")
         return orderDao.getAllNewOrders().subscribeOn(Schedulers.io())
             .flatMap {
                 Log.d("Testing Repo" , "Accepted Orders Recived = ${it.toString()}")
@@ -104,6 +105,7 @@ class OrderRepository(application: Context) {
                         itemList = emptyList<ChildDataClass>()
                     }
                 }
+                Log.d("Testing Repo" , "Returned From Repo = ${orderItemList.toString()}")
                 return@flatMap Flowable.just(orderItemList)
         }.doOnError {
             Log.e("Testing Repo" , "Error in reading database = ${it.message.toString()}")
@@ -170,7 +172,7 @@ class OrderRepository(application: Context) {
 
         return orderApiCall.subscribeOn(Schedulers.io())
             .doOnSuccess {
-                 Log.d("checkP","$it")
+                 Log.d("Testing Repo","Api success with ${it.toString()}")
                 var orders = emptyList<OrdersData>()
                 var items = emptyList<ItemData>()
 
@@ -180,8 +182,8 @@ class OrderRepository(application: Context) {
                     items = items.plus(ordersPojo.toItemData())
 
                 }
-                Log.d("check Repo",orders.toString())
-                Log.d("check Repo",items.toString())
+                Log.d("Testing Repo" , "Orders Added = ${orders.toString()}")
+                Log.d("Testing Repo" , "Items added = ${items.toString()}")
                 orderDao.deleteAllOrderItems()
                 orderDao.insertOrders(orders)
                 orderDao.insertOrderItems(items)
