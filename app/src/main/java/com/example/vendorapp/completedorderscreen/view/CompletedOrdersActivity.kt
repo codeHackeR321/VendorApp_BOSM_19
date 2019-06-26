@@ -76,7 +76,7 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
                Log.d("CompletedError",e.toString())
                Toast.makeText(this@CompletedOrdersActivity,e.toString(),Toast.LENGTH_SHORT).show()
            }
-            Toast.makeText(this@CompletedOrdersActivity,"Date slected$date",Toast.LENGTH_LONG).show()
+            Toast.makeText(this@CompletedOrdersActivity,"Date selected$date",Toast.LENGTH_LONG).show()
             (orders_recycler.adapter as OrdersAdapterFragment).notifyDataSetChanged()
         })
     }

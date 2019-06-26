@@ -152,12 +152,6 @@ class OrderRepository(application: Context) {
         }
     }
 
-  /*  fun getOverallEarningsRoom():Single<Long>{
-        return earningDao.getOverallEarnings().subscribeOn(Schedulers.io()).doOnError {
-            Log.e("Finish4", "$it")
-        }
-    }*/
-
     fun updateOrders(): Completable {
 
         return orderApiCall.subscribeOn(Schedulers.io())
