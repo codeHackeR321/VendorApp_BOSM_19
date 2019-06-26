@@ -23,6 +23,7 @@ class OrdersAdapterFragment:RecyclerView.Adapter<OrdersAdapterFragment.OrderView
    var orders:List<ModifiedOrdersDataClass> = emptyList()
     override fun getItemCount(): Int {
           return orders.size
+        Log.d("CompletedAdapter","orders.size${orders.size}")
     }
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {

@@ -18,7 +18,7 @@ import java.util.*
 
 class CompletedOrderViewModel(context:Context) :ViewModel() {
 
-    var orders:LiveData<List<ModifiedOrdersDataClass>> =MutableLiveData()
+   // var orders:LiveData<List<ModifiedOrdersDataClass>> =MutableLiveData()
     var dayWiseOrders:LiveData<List<DayWiseOrdersDataClass>> =MutableLiveData()
     var earnings:LiveData<String> = MutableLiveData()
     var orderRepository:OrderRepository= OrderRepositoryInstance.getInstance(context)
@@ -48,7 +48,7 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
 
     fun getCompletedOrders(){
 
-        var ordersList = emptyList<ModifiedOrdersDataClass>()
+     //   var ordersList = emptyList<ModifiedOrdersDataClass>()
         var daywiseOrdersList=  emptyList<DayWiseOrdersDataClass>()
         orderRepository.getFinishedOrdersFromRoom().observeOn(AndroidSchedulers.mainThread()).doOnNext { orderList ->
             orderList.forEach {order ->
@@ -63,14 +63,15 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
                         )
                     )
                 }
-                ordersList = ordersList.plus(ModifiedOrdersDataClass(
+                /*ordersList = ordersList.plus(ModifiedOrdersDataClass(
                     orderId = order.order.orderId,
                     otp = order.order.otp,
                     status = order.order.status,
                     totalAmount = order.order.totalAmount,
                     timestamp = order.order.timestamp.toString(),
                     items = itemList
-                ))
+                ))*/
+
                 var tempdate=SimpleDateFormat("dd").format(Date(order.order.timestamp.toString().toLong()*1000L))
                 if (daywiseOrdersList.any{ it.date ==tempdate})
                     daywiseOrdersList.find { it.date==tempdate }!!.dayWiseorders.plus(ModifiedOrdersDataClass(
@@ -92,14 +93,13 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
                         items = itemList
                     ))
                    daywiseOrdersList= daywiseOrdersList.plus(DayWiseOrdersDataClass(tempdate,tempList))
-                    Log.e("COmpleted3","daywiseLost${daywiseOrdersList.size} temp ${tempList.size}${ordersList.size}")
+                    Log.e("Completed3","daywiseLost${daywiseOrdersList.size} temp ${tempList.size}")
                 }
 
 
-                //SimpleDateFormat("dd").format(Date(x.toLong()*1000L))
-                //var date :Date = Date.from(Instant.EPOCH())
-                Log.e("COmpleted2","daywiseordeLost${daywiseOrdersList.size} ordersLost$ordersList.size")
-                (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(ordersList)
+
+                //Log.e("Completed2","daywiseordeLost${daywiseOrdersList.size} ordersLost${ordersList.size}\n${daywiseOrdersList.toString()}")
+                //(orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(ordersList)
                 (dayWiseOrders as MutableLiveData<List<DayWiseOrdersDataClass>>).postValue(daywiseOrdersList)
             }
         }.doOnError {
@@ -108,12 +108,7 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
 
 
     }
-    /*fun getOrdersForDate(minEpoch:String,maxEpoch:String):List<ModifiedOrdersDataClass>{
-            var datewiseOrderList= emptyList<ModifiedOrdersDataClass>()
-          var
-           for (i in 0 until orders)
-        return datewiseOrderList
-    }*/
+
 
 
 
