@@ -7,10 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
-import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
 import com.example.vendorapp.shared.singletonobjects.repositories.OrderRepositoryInstance
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 
 class AcceptedOrderViewModel(context : Context) : ViewModel(){
 
@@ -21,7 +18,7 @@ class AcceptedOrderViewModel(context : Context) : ViewModel(){
 
     @SuppressLint("CheckResult")
     fun getAcceptedOrders(){
-        orderRepo.getOrdersRoom().doOnNext {
+        orderRepo.getAcceptedOrdersRoom().doOnNext {
             Log.d("Testing AO VM" , "Entered observer with list = ${it.toString()}")
             (acceptedOrders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(it)
         }.doOnError {

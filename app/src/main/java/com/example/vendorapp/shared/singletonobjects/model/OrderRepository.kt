@@ -47,7 +47,7 @@ class OrderRepository(application: Context) {
 
 
     // get accepted and ready orders from room
-    fun getOrdersRoom(): Flowable<List<ModifiedOrdersDataClass>>{
+    fun getAcceptedOrdersRoom(): Flowable<List<ModifiedOrdersDataClass>>{
         return orderDao.getAllAcceptedOrders().subscribeOn(Schedulers.io())
             .flatMap {
                 var list = it.sortedBy { it.orderId }

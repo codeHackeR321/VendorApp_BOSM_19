@@ -1,5 +1,6 @@
 package com.example.vendorapp.completedorderscreen.viewModel
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -32,9 +33,10 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
 
     }
 
+   @SuppressLint("CheckResult")
    fun updateData(){
 
-       orderRepository.getdaywiseEarningRoom().observeOn(AndroidSchedulers.mainThread()).subscribe({
+       orderRepository.getdaywiseEarningRoom().observeOn(AndroidSchedulers.mainThread()).subscribe {
            Log.d("check1","called")
            var totalEarning:Long = 0
            it.forEach {
@@ -43,7 +45,7 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
            }
            Log.d("check1",totalEarning.toString())
            (earnings as MutableLiveData<String>).postValue(totalEarning.toString())
-   })
+       }
    }
 
     fun getCompletedOrders(){
