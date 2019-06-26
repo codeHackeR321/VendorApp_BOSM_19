@@ -6,16 +6,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
+import com.example.vendorapp.shared.dataclasses.DayWiseOrdersDataClass
 import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
 import com.example.vendorapp.shared.singletonobjects.model.OrderRepository
 import com.example.vendorapp.shared.singletonobjects.repositories.OrderRepositoryInstance
 import com.example.vendorapp.shared.singletonobjects.repositories.OrderRepositoryInstance.Companion.orderRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.util.*
 
 class CompletedOrderViewModel(context:Context) :ViewModel() {
 
     var orders:LiveData<List<ModifiedOrdersDataClass>> =MutableLiveData()
+    var dayWiseOrders:LiveData<List<DayWiseOrdersDataClass>> =MutableLiveData()
     var earnings:LiveData<String> = MutableLiveData()
     var orderRepository:OrderRepository= OrderRepositoryInstance.getInstance(context)
 
@@ -45,6 +49,7 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
     fun getCompletedOrders(){
 
         var ordersList = emptyList<ModifiedOrdersDataClass>()
+        var daywiseOrdersList=  emptyList<DayWiseOrdersDataClass>()
         orderRepository.getFinishedOrdersFromRoom().observeOn(AndroidSchedulers.mainThread()).doOnNext { orderList ->
             orderList.forEach {order ->
                 var itemList = emptyList<ChildDataClass>()
@@ -66,17 +71,47 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
                     timestamp = order.order.timestamp.toString(),
                     items = itemList
                 ))
+                var tempdate=SimpleDateFormat("dd").format(Date(order.order.timestamp.toString().toLong()*1000L))
+                if (daywiseOrdersList.any{ it.date ==tempdate})
+                    daywiseOrdersList.find { it.date==tempdate }!!.dayWiseorders.plus(ModifiedOrdersDataClass(
+                        orderId = order.order.orderId,
+                        otp = order.order.otp,
+                        status = order.order.status,
+                        totalAmount = order.order.totalAmount,
+                        timestamp = order.order.timestamp.toString(),
+                        items = itemList
+                    ))
+                else{
+                       var tempList= emptyList<ModifiedOrdersDataClass>()
+                    tempList=tempList.plus(ModifiedOrdersDataClass(
+                        orderId = order.order.orderId,
+                        otp = order.order.otp,
+                        status = order.order.status,
+                        totalAmount = order.order.totalAmount,
+                        timestamp = order.order.timestamp.toString(),
+                        items = itemList
+                    ))
+                   daywiseOrdersList= daywiseOrdersList.plus(DayWiseOrdersDataClass(tempdate,tempList))
+                    Log.e("COmpleted3","daywiseLost${daywiseOrdersList.size} temp ${tempList.size}${ordersList.size}")
+                }
 
+
+                //SimpleDateFormat("dd").format(Date(x.toLong()*1000L))
+                //var date :Date = Date.from(Instant.EPOCH())
+                Log.e("COmpleted2","daywiseordeLost${daywiseOrdersList.size} ordersLost$ordersList.size")
                 (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(ordersList)
+                (dayWiseOrders as MutableLiveData<List<DayWiseOrdersDataClass>>).postValue(daywiseOrdersList)
             }
         }.doOnError {
             Log.e(" check" , it.stackTrace.toString())
         }.subscribe()
     }
-    fun getOrdersForDate(date:String){
-
-
-    }
+    /*fun getOrdersForDate(minEpoch:String,maxEpoch:String):List<ModifiedOrdersDataClass>{
+            var datewiseOrderList= emptyList<ModifiedOrdersDataClass>()
+          var
+           for (i in 0 until orders)
+        return datewiseOrderList
+    }*/
 
 
 
