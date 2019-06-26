@@ -23,6 +23,7 @@ class NewOrderViewModel(context : Context) : ViewModel(){
     @SuppressLint("CheckResult")
     fun getNewOrders() {
         orderRepo.getAllNewOrders().observeOn(AndroidSchedulers.mainThread()).doOnNext {
+            Log.e("Testing NO VM" , "Reading new orders from database = ${it.toString()}")
             (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(it)
         }.doOnError {
 
