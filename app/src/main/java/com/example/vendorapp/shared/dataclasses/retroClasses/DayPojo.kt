@@ -6,5 +6,5 @@ data class DayPojo(
 
     var earnings: String//,
 
-   // var orders: List<OrdersPojo>
+  /* var orders: List<OrdersPojo>*/
 )

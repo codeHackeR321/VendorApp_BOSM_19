@@ -2,21 +2,17 @@ package com.example.vendorapp.shared.singletonobjects.model
 
 import android.content.Context
 import android.util.Log
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
 import com.example.vendorapp.completedorderscreen.model.room.EarningDao
-import com.example.vendorapp.menu.model.room.MenuDao
-import com.example.vendorapp.shared.dataclasses.ItemsModel
 import com.example.vendorapp.shared.singletonobjects.model.room.OrderDao
 import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
 import com.example.vendorapp.shared.dataclasses.OrderItemsData
 import com.example.vendorapp.shared.dataclasses.retroClasses.DayPojo
 import com.example.vendorapp.shared.dataclasses.retroClasses.EarningsPojo
-import com.example.vendorapp.shared.dataclasses.retroClasses.MenuPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.EarningData
-import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import com.example.vendorapp.shared.dataclasses.roomClasses.OrdersData
+import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
 import com.example.vendorapp.shared.singletonobjects.RetrofitInstance
 import com.example.vendorapp.shared.singletonobjects.VendorDatabase
 import io.reactivex.*
@@ -86,20 +82,20 @@ class OrderRepository(application: Context) {
     }
 
 
-    fun getAllNewOrders() : Flowable<List<OrderItemsData>>
+    fun getAllNewOrders() : Flowable<List<ModifiedOrdersDataClass>>
     {
-        return orderDao.trialQuery().subscribeOn(Schedulers.io())
+        return orderDao.getAllNewOrders().subscribeOn(Schedulers.io())
             .flatMap {
             var list = it.sortedBy { it.orderId }
-            var orderItemList = emptyList<OrderItemsData>()
-            var itemList = emptyList<ItemsModel>()
+            var orderItemList = emptyList<ModifiedOrdersDataClass>()
+            var itemList = emptyList<ChildDataClass>()
             for ((index , item) in list.iterator().withIndex())
             {
-                itemList = itemList.plus(ItemsModel(item.itemId , item.price , item.quantity , item.name))
+                itemList = itemList.plus(ChildDataClass(itemId = item.itemId , price = item.price , quantity = item.quantity , itemName = item.name))
                 if (!(index != list.size - 1 && list[index].orderId == list[index + 1].orderId))
                 {
-                    orderItemList = orderItemList.plus(OrderItemsData(OrdersData(item.orderId , item.status , item.timestamp , item.otp , item.totalAmount) , itemList))
-                    itemList = emptyList<ItemsModel>()
+                    orderItemList = orderItemList.plus(ModifiedOrdersDataClass(orderId = item.orderId , status = item.status , timestamp = item.timestamp.toString() , otp = item.otp , totalAmount = item.totalAmount , items = itemList))
+                    itemList = emptyList<ChildDataClass>()
                 }
             }
             return@flatMap Flowable.just(orderItemList)
@@ -121,7 +117,7 @@ class OrderRepository(application: Context) {
                 Log.d("CheckAcceptedList",orderList.size.toString())
                 return@flatMap Flowable.just(orderList)
             }.doOnError {
-                Log.e("Finsh1","Error getting room data${it}")
+                Log.e("Finish1","Error getting room data${it}")
             }
     }
 
@@ -133,12 +129,11 @@ class OrderRepository(application: Context) {
 
                 var daywiseEarnings = emptyList<EarningData>()
 
-               it.daywise.forEach { dayPojo: DayPojo ->
+               it.daywise.forEach { dayPojo ->
 
                    daywiseEarnings=daywiseEarnings.plus(dayPojo.toEarningData())
                }
-
-                earningDao.deleteAll()
+                Log.d("check",daywiseEarnings.toString())
                 earningDao.insertEarningData(daywiseEarnings)
             }.doOnError {
                 Log.e("Finish2", "error getting data from backend$it")
@@ -147,7 +142,7 @@ class OrderRepository(application: Context) {
     }
 
     private fun DayPojo.toEarningData(): EarningData{
-        return EarningData(day, earnings.toLong())
+        return EarningData(day = day,earnings = earnings)
     }
 
     // get earnings data From ROOM
@@ -157,11 +152,11 @@ class OrderRepository(application: Context) {
         }
     }
 
-    fun getOverallEarningsRoom():Flowable<Long>{
+  /*  fun getOverallEarningsRoom():Single<Long>{
         return earningDao.getOverallEarnings().subscribeOn(Schedulers.io()).doOnError {
-            Log.e("Finish4", "error getting data from roomk overall$it")
+            Log.e("Finish4", "$it")
         }
-    }
+    }*/
 
     fun updateOrders(): Completable {
 
@@ -175,10 +170,10 @@ class OrderRepository(application: Context) {
 
                     orders = orders.plus(ordersPojo.toOrderData())
                     items = items.plus(ordersPojo.toItemData())
+
                 }
-                Log.d("check",orders.toString())
-                Log.d("check",items.toString())
-                orderDao.deleteAllOrders()
+                Log.d("check Repo",orders.toString())
+                Log.d("check Repo",items.toString())
                 orderDao.deleteAllOrderItems()
                 orderDao.insertOrders(orders)
                 orderDao.insertOrderItems(items)

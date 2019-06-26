@@ -12,6 +12,6 @@ data class EarningData (
     var day: String,
 
     @ColumnInfo(name = "earnings")
-    var earnings: Long
+    var earnings: String
 
 )

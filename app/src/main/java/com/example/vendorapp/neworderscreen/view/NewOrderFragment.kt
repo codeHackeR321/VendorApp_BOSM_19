@@ -6,6 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
@@ -13,6 +16,7 @@ import com.example.vendorapp.R
 import com.example.vendorapp.neworderscreen.view.adapters.RecyclerAdapterFragment
 import com.example.vendorapp.neworderscreen.viewModel.NewOrderViewModel
 import com.example.vendorapp.neworderscreen.viewModel.NewOrderViewModelFacory
+import kotlinx.android.synthetic.main.card_new_order_screen.*
 import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 
 class NewOrderFragment : Fragment() , RecyclerAdapterFragment.RecyclerButtonClickListener{
@@ -33,17 +37,33 @@ class NewOrderFragment : Fragment() , RecyclerAdapterFragment.RecyclerButtonClic
     fun initializeView()
     {
         recycler_new_order_screen.adapter = RecyclerAdapterFragment(this)
+        progBar_new_order_screen.visibility = View.VISIBLE
+        activity!!.window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         viewModel.refreshOrderData()
         viewModel.orders.observe(this , Observer {
             Log.d("Testing New Order View" , "Entered observer for orders")
             (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders = it
             (recycler_new_order_screen.adapter as RecyclerAdapterFragment).notifyDataSetChanged()
+            if (progBar_new_order_screen.isVisible) {
+                progBar_new_order_screen.visibility = View.INVISIBLE
+                activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            }
         })
     }
 
     override fun buttonClicked(orderId: String, accepted: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (accepted)
+        {
+            Toast.makeText(context , "Accpted Order" , Toast.LENGTH_LONG).show()
+        }else{
+            Toast.makeText(context , "Declined Order" , Toast.LENGTH_LONG).show()
+        }
     }
 
+    fun displayError(message : String){
+        Toast.makeText(context , message , Toast.LENGTH_LONG).show()
+    }
 
 }

@@ -1,4 +1,4 @@
-package com.example.vendorapp.completedOrderScreen.view.adapters
+package com.example.vendorapp.completedorderscreen.view.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vendorapp.R
 
-class DatesAdapter(private val listener:DateSelectedListener):RecyclerView.Adapter<DatesAdapter.DatesViewHolder>() {
+class DatesAdapter(private val listener: DateSelectedListener):RecyclerView.Adapter<DatesAdapter.DatesViewHolder>() {
 
     interface DateSelectedListener{
 
