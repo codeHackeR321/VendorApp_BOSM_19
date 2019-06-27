@@ -42,7 +42,9 @@ class OrderRepository(application: Context) {
     }
 
     fun updateStatus(orderId: String, status: String): Completable{
-        return orderDao.updateStatus(orderId, status).subscribeOn(Schedulers.io())
+        return orderDao.updateStatus(orderId, status).subscribeOn(Schedulers.io()).doOnError {
+            Log.e("Error OrderRepo" , "Failed to update status in room")
+        }
     }
 
 
@@ -103,6 +105,8 @@ class OrderRepository(application: Context) {
                     orderDao.getItemsForOrder(ordersData.orderId)
                         .doOnSuccess{itemList ->
                             orderList=orderList.plus(OrderItemsData(ordersData, itemList))
+                        }.doOnError {
+                            Log.e("Testing Repo" , "Error in reading finished orders from room\nError = ${it.message.toString()}")
                         }.subscribe()
                 }
                 Log.d("CheckAcceptedList",orderList.size.toString())

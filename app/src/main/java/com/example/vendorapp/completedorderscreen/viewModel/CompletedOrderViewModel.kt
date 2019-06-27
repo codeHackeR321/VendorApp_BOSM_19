@@ -28,11 +28,14 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
 
             orderRepository.updateEarningsData().observeOn(AndroidSchedulers.mainThread()).doOnComplete {
                 getCompletedOrders()
+            }.doOnError {
+                Log.e("Testing Earnings VM" , "Error in updating data from room \nError = ${it.message.toString()}")
             }.subscribe()
 
     }
 
 
+    @SuppressLint("CheckResult")
     fun getEarningsForDate(date:String){
         Log.d("check","$date")
         orderRepository.getdaywiseEarningRoom().observeOn(AndroidSchedulers.mainThread()).subscribe(
@@ -53,7 +56,7 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
 
    fun updateData(){
 
-       orderRepository.getdaywiseEarningRoom().observeOn(AndroidSchedulers.mainThread()).subscribe {
+       orderRepository.getdaywiseEarningRoom().observeOn(AndroidSchedulers.mainThread()).doOnNext{
            Log.d("check1","called")
            var totalEarning:Long = 0
            it.forEach {
@@ -62,7 +65,9 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
                totalEarning = totalEarning + it.earnings.toLong()
            }
            (earnings as MutableLiveData<String>).postValue(totalEarning.toString())
-       }
+       }.doOnError {
+           Log.e("Error in COVM" , "Error in updating data = ${it.toString()}")
+       }.subscribe()
    }
 
     fun getCompletedOrders(){

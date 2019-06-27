@@ -25,7 +25,9 @@ class MenuRepository(application: Context){
     }
 
     fun getMenuRoom(): Flowable<List<MenuItemData>>{
-        return menuDao.getMenu().subscribeOn(Schedulers.io())
+        return menuDao.getMenu().subscribeOn(Schedulers.io()).doOnError {
+            Log.e("Error in Menu Repo" , "Error in getting items from room = ${it.toString()}")
+        }
     }
 
     fun updateMenu(): Completable{
@@ -41,6 +43,8 @@ class MenuRepository(application: Context){
 
                 menuDao.deleteAll()
                 menuDao.insertMenu(menu)
+            }.doOnError {
+                Log.e("Testing Menu Repo" , "Error in adding menu data to room = ${it.toString()}")
             }
             .ignoreElement()
     }
