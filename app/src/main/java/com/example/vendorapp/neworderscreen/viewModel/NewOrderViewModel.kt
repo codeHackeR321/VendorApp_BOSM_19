@@ -11,10 +11,11 @@ import com.example.vendorapp.shared.singletonobjects.repositories.OrderRepositor
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
 import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
 import com.example.vendorapp.shared.singletonobjects.repositories.MenuRepositoryInstance
+import com.example.vendorapp.shared.utils.NetworkConnectivityCheck
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class NewOrderViewModel(context : Context) : ViewModel(){
+class NewOrderViewModel(val context : Context) : ViewModel(){
 
     var orders : LiveData<List<ModifiedOrdersDataClass>> = MutableLiveData()
     var orderRepo = OrderRepositoryInstance.getInstance(context)
@@ -35,18 +36,24 @@ class NewOrderViewModel(context : Context) : ViewModel(){
     }
 
     fun doInitialFetch(){
-        orderRepo.updateOrders().doOnComplete {
-            Log.d("Testing NO ViewModel" , "Refresh Complete. Fetching Menu Items")
-            menuRepo.updateMenu().doOnComplete {
-                Log.d("Testing NO ViewModel" , "Fetching Menu Items Complete. Fetching orders")
-                getNewOrders()
+        if (NetworkConnectivityCheck().checkIntenetConnection(context))
+        {
+            orderRepo.updateOrders().doOnComplete {
+                Log.d("Testing NO ViewModel" , "Refresh Complete. Fetching Menu Items")
+                menuRepo.updateMenu().doOnComplete {
+                    Log.d("Testing NO ViewModel" , "Fetching Menu Items Complete. Fetching orders")
+                    getNewOrders()
+                }.doOnError {
+                    Log.e("Testing NO ViewModel" , "Error in updating menu items = ${it.message.toString()}")
+                    (error as MutableLiveData<String>).postValue("Error in database. Please try after some time")
+                }.subscribe()
             }.doOnError {
-                Log.e("Testing NO ViewModel" , "Error in updating menu items = ${it.message.toString()}")
+                Log.e("Testing NO ViewModel" , "Error in updating = ${it.message.toString()}")
                 (error as MutableLiveData<String>).postValue("Error in database. Please try after some time")
             }.subscribe()
-        }.doOnError {
-            Log.e("Testing NO ViewModel" , "Error in updating = ${it.message.toString()}")
-            (error as MutableLiveData<String>).postValue("Error in database. Please try after some time")
-        }.subscribe()
+        }
+        else{
+            (error as MutableLiveData<String>).postValue("Please check your internet connection and restart the app")
+        }
     }
 }
