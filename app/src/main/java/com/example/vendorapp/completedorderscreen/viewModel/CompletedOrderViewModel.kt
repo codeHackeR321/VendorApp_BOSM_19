@@ -42,6 +42,8 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
                         (tearning as MutableLiveData<String>).postValue(it.earnings)
                     }
                 }
+            },{
+                Log.e("error",it.message)
             }
         )
     }

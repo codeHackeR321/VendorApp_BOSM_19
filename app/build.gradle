@@ -6,6 +6,7 @@ apply plugin: 'kotlin-kapt'
 
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 28
@@ -60,6 +61,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:19.0.1'
     implementation 'com.google.firebase:firebase-core:17.0.0'
     implementation 'com.google.firebase:firebase-auth:18.0.0'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
 
     //RxJava
@@ -74,4 +76,6 @@ dependencies {
 
     //Google Sign-in
     implementation 'com.google.android.gms:play-services-auth:17.0.0'
+
+
 }

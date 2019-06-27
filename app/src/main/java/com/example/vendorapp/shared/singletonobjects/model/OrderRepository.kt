@@ -68,25 +68,6 @@ class OrderRepository(application: Context) {
             }
     }
 
-    fun getNewOrders(): Flowable<List<OrderItemsData>>{
-        Log.d("check","called")
-        return orderDao.getNewOrders().subscribeOn(Schedulers.io())
-            .flatMap {
-                var orderList = emptyList<OrderItemsData>()
-                for (ordersData in it) {
-                    orderDao.getItemsForOrder(ordersData.orderId)
-                        .doOnSuccess{itemList ->
-                            orderList=orderList.plus(OrderItemsData(ordersData, itemList))
-                            Log.d("check1",orderList.toString())
-                        }.subscribe()
-                }
-                Log.d("check2",orderList.toString())
-                return@flatMap Flowable.just(orderList)
-            }
-
-    }
-
-
     fun getAllNewOrders() : Flowable<List<ModifiedOrdersDataClass>>
     {
         Log.d("Testing Repo" , "Entered to get orders")
