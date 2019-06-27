@@ -156,7 +156,7 @@ class OrderRepository(application: Context) {
     // get earnings data From ROOM
     fun getdaywiseEarningRoom(): Flowable<List<EarningData>>{
         return earningDao.getDayWiseEarnings().subscribeOn(Schedulers.io()).doOnError {
-            Log.e("Finish3", "error getting data from roomk daywise$it")
+            Log.e("Finish3", "error getting data from room daywise$it")
         }
     }
 

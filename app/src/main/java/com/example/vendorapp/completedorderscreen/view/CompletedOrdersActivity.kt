@@ -21,6 +21,7 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
     private lateinit var nCompletedViewModel: CompletedOrderViewModel
     private var defaultDate="13"
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_completed_orders)
@@ -31,7 +32,11 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
         (dates_recycler.adapter as DatesAdapter).dates = listOf("13","14","15","16")
 
         nCompletedViewModel.earnings.observe(this, Observer {
-            earning.text=it
+            earning.text= String.format(resources.getString(R.string.new_order_total_amount),it)
+        })
+
+        nCompletedViewModel.tearning.observe(this, Observer {
+            t_earn_val.text= String.format(resources.getString(R.string.new_order_total_amount),it)
         })
 
     }
@@ -39,6 +44,7 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
     fun initialize(){
          orders_recycler.adapter=OrdersAdapterFragment()
          nCompletedViewModel.updateData()
+        nCompletedViewModel.getEarningsForDate("Day1")
         // fun to update expandable recycler view with datewise data
         setDayWiseData(defaultDate)
     }
@@ -61,6 +67,7 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
                    dayWiseOrdersDataClass.date==date
                }!!.dayWiseorders.toString()}")
                (orders_recycler.adapter as OrdersAdapterFragment).notifyDataSetChanged()
+
            }
            catch (e :Exception){
                Log.d("CompletedError",e.toString())
@@ -68,8 +75,16 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
            }
 
 
-            Toast.makeText(this@CompletedOrdersActivity,"Date slected$date",Toast.LENGTH_LONG).show()
-            
+            Toast.makeText(this@CompletedOrdersActivity,"Date selected$date",Toast.LENGTH_LONG).show()
+
         })
+        when(date){
+            "13" -> nCompletedViewModel.getEarningsForDate("Day1")
+            "14" -> nCompletedViewModel.getEarningsForDate("Day2")
+            "15" -> nCompletedViewModel.getEarningsForDate("Day3")
+            "16" -> nCompletedViewModel.getEarningsForDate("Day4")
+        }
+
     }
+
 }

@@ -22,8 +22,7 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
     var dayWiseOrders:LiveData<List<DayWiseOrdersDataClass>> =MutableLiveData()
     var earnings:LiveData<String> = MutableLiveData()
     var orderRepository:OrderRepository= OrderRepositoryInstance.getInstance(context)
-
-
+    var tearning:LiveData<String> =MutableLiveData()
     init{
 
             orderRepository.updateEarningsData().observeOn(AndroidSchedulers.mainThread()).doOnComplete {
@@ -32,16 +31,29 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
 
     }
 
+    fun getEarningsForDate(date:String){
+        Log.d("check","$date")
+        orderRepository.getdaywiseEarningRoom().observeOn(AndroidSchedulers.mainThread()).subscribe(
+            {
+                it.forEach {
+                    if(it.day==date){
+                        (tearning as MutableLiveData<String>).postValue(it.earnings)
+                    }
+                }
+            }
+        )
+    }
+
    fun updateData(){
 
        orderRepository.getdaywiseEarningRoom().observeOn(AndroidSchedulers.mainThread()).subscribe({
            Log.d("check1","called")
            var totalEarning:Long = 0
            it.forEach {
+
                Log.d("check1",it.earnings)
                totalEarning = totalEarning + it.earnings.toLong()
            }
-           Log.d("check1",totalEarning.toString())
            (earnings as MutableLiveData<String>).postValue(totalEarning.toString())
    })
    }
@@ -96,10 +108,6 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
                     Log.e("Completed3","daywiseLost${daywiseOrdersList.size} temp ${tempList.size}")
                 }
 
-
-
-                //Log.e("Completed2","daywiseordeLost${daywiseOrdersList.size} ordersLost${ordersList.size}\n${daywiseOrdersList.toString()}")
-                //(orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(ordersList)
                 (dayWiseOrders as MutableLiveData<List<DayWiseOrdersDataClass>>).postValue(daywiseOrdersList)
             }
         }.doOnError {

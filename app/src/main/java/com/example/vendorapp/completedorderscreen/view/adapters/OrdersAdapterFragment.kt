@@ -23,13 +23,13 @@ class OrdersAdapterFragment:RecyclerView.Adapter<OrdersAdapterFragment.OrderView
    var orders:List<ModifiedOrdersDataClass> = emptyList()
     override fun getItemCount(): Int {
           return orders.size
-        Log.d("CompletedAdapter","orders.size${orders.size}")
+
     }
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
-        Log.d("checkr","binded")
-        holder.textOrderNumber.text= String.format(R.string.new_order_order_number.toString(),orders.get(position).orderId)
-        holder.textTotalAmount.text= String.format(R.string.new_order_total_amount.toString(),orders.get(position).totalAmount)
+        Log.d("checkr",orders.get(position).orderId+orders.get(position).totalAmount)
+        holder.OrderNumber.text= String.format(holder.itemView.resources.getString(R.string.new_order_order_number),orders.get(position).orderId)
+        holder.TotalAmount.text= String.format(holder.itemView.resources.getString(R.string.new_order_total_amount),orders.get(position).totalAmount)
         val inflater = holder.itemView.context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         var list = ArrayList<GroupDataClass>()
         list.add(GroupDataClass("Menu", orders[position].items))
@@ -37,8 +37,8 @@ class OrdersAdapterFragment:RecyclerView.Adapter<OrdersAdapterFragment.OrderView
     }
 
     inner class OrderViewHolder(view: View):RecyclerView.ViewHolder(view){
-        internal val textOrderNumber : TextView = view.text_card_compl_order_order_id
-        internal val textTotalAmount : TextView = view.text_card_compl_order_total_amount
+        internal val OrderNumber : TextView = view.text_card_compl_order_order_id
+        internal val TotalAmount : TextView = view.text_card_compl_order_total_amount
         internal val recyclerOrderDetails : RecyclerView = view.recycle_card_compl_order_menu
     }
 }

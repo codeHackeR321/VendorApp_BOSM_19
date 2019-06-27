@@ -37,7 +37,7 @@ class MenuAdapter(private val listener: UpdateMenuListener) : RecyclerView.Adapt
 
     override fun onBindViewHolder(holder: MenuAdapter.MenuViewHolder, position: Int) {
         holder.itemName.text=itemList.get(position).name
-        holder.itemPrice.text=itemList.get(position).price
+        holder.itemPrice.text= String.format(holder.itemView.resources.getString(R.string.new_order_total_amount),itemList.get(position).price)
         if(itemList.get(position).status.equals("on"))
             holder.switch.isChecked=true
         else
