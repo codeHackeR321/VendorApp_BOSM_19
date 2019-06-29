@@ -12,6 +12,7 @@ import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
 import com.example.vendorapp.shared.singletonobjects.model.OrderRepository
 import com.example.vendorapp.shared.singletonobjects.repositories.OrderRepositoryInstance
 import com.example.vendorapp.shared.singletonobjects.repositories.OrderRepositoryInstance.Companion.orderRepository
+import com.example.vendorapp.shared.utils.NetworkConnectivityCheck
 import io.reactivex.android.schedulers.AndroidSchedulers
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -24,15 +25,24 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
     var earnings:LiveData<String> = MutableLiveData()
     var orderRepository:OrderRepository= OrderRepositoryInstance.getInstance(context)
     var tearning:LiveData<String> =MutableLiveData()
+    var error : LiveData<String> = MutableLiveData()
+
     init{
 
+        if (NetworkConnectivityCheck().checkIntenetConnection(context)) {
             orderRepository.updateEarningsData().observeOn(AndroidSchedulers.mainThread()).doOnComplete {
                 getCompletedOrders()
+            }.doOnError {
+                Log.e("Testing Earnings VM" , "Error in updating data from room \nError = ${it.message.toString()}")
             }.subscribe()
+        } else {
+            (error as MutableLiveData<String>).postValue("Please check your internet connection and restart the app")
+        }
 
     }
 
 
+    @SuppressLint("CheckResult")
     fun getEarningsForDate(date:String){
         Log.d("check","$date")
         orderRepository.getdaywiseEarningRoom().observeOn(AndroidSchedulers.mainThread()).subscribe(
@@ -53,7 +63,7 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
 
    fun updateData(){
 
-       orderRepository.getdaywiseEarningRoom().observeOn(AndroidSchedulers.mainThread()).subscribe {
+       orderRepository.getdaywiseEarningRoom().observeOn(AndroidSchedulers.mainThread()).doOnNext{
            Log.d("check1","called")
            var totalEarning:Long = 0
            it.forEach {
@@ -62,7 +72,9 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
                totalEarning = totalEarning + it.earnings.toLong()
            }
            (earnings as MutableLiveData<String>).postValue(totalEarning.toString())
-       }
+       }.doOnError {
+           Log.e("Error in COVM" , "Error in updating data = ${it.toString()}")
+       }.subscribe()
    }
 
     fun getCompletedOrders(){

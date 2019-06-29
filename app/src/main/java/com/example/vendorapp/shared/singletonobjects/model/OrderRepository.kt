@@ -15,10 +15,11 @@ import com.example.vendorapp.shared.dataclasses.roomClasses.OrdersData
 import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
 import com.example.vendorapp.shared.singletonobjects.RetrofitInstance
 import com.example.vendorapp.shared.singletonobjects.VendorDatabase
+import com.example.vendorapp.shared.utils.NetworkConnectivityCheck
 import io.reactivex.*
 import io.reactivex.schedulers.Schedulers
 
-class OrderRepository(application: Context) {
+class OrderRepository(val application: Context) {
 
     private val orderDao: OrderDao
     private val orderApiCall: Single<List<OrdersPojo>>
@@ -42,7 +43,9 @@ class OrderRepository(application: Context) {
     }
 
     fun updateStatus(orderId: String, status: String): Completable{
-        return orderDao.updateStatus(orderId, status).subscribeOn(Schedulers.io())
+        return orderDao.updateStatus(orderId, status).subscribeOn(Schedulers.io()).doOnError {
+            Log.e("Error OrderRepo" , "Failed to update status in room")
+        }
     }
 
 
@@ -103,6 +106,8 @@ class OrderRepository(application: Context) {
                     orderDao.getItemsForOrder(ordersData.orderId)
                         .doOnSuccess{itemList ->
                             orderList=orderList.plus(OrderItemsData(ordersData, itemList))
+                        }.doOnError {
+                            Log.e("Testing Repo" , "Error in reading finished orders from room\nError = ${it.message.toString()}")
                         }.subscribe()
                 }
                 Log.d("CheckAcceptedList",orderList.size.toString())
@@ -116,20 +121,20 @@ class OrderRepository(application: Context) {
     fun updateEarningsData(): Completable{
 
         return earningsApiCall.subscribeOn(Schedulers.io())
-            .doOnSuccess {
+                .doOnSuccess {
 
-                var daywiseEarnings = emptyList<EarningData>()
+                    var daywiseEarnings = emptyList<EarningData>()
 
-               it.daywise.forEach { dayPojo ->
+                    it.daywise.forEach { dayPojo ->
 
-                   daywiseEarnings=daywiseEarnings.plus(dayPojo.toEarningData())
-               }
-                Log.d("check",daywiseEarnings.toString())
-                earningDao.insertEarningData(daywiseEarnings)
-            }.doOnError {
-                Log.e("Finish2", "error getting data from backend$it")
-            }
-            .ignoreElement()
+                        daywiseEarnings=daywiseEarnings.plus(dayPojo.toEarningData())
+                    }
+                    Log.d("check",daywiseEarnings.toString())
+                    earningDao.insertEarningData(daywiseEarnings)
+                }.doOnError {
+                    Log.e("Finish2", "error getting data from backend$it")
+                }
+                .ignoreElement()
     }
 
     private fun DayPojo.toEarningData(): EarningData{
@@ -145,27 +150,27 @@ class OrderRepository(application: Context) {
 
     fun updateOrders(): Completable {
 
-        return orderApiCall.subscribeOn(Schedulers.io())
-            .doOnSuccess {
-                 Log.d("Testing Repo","Api success with ${it.toString()}")
-                var orders = emptyList<OrdersData>()
-                var items = emptyList<ItemData>()
+            return orderApiCall.subscribeOn(Schedulers.io())
+                .doOnSuccess {
+                     Log.d("Testing Repo","Api success with ${it.toString()}")
+                    var orders = emptyList<OrdersData>()
+                    var items = emptyList<ItemData>()
 
-                it.forEach { ordersPojo ->
+                    it.forEach { ordersPojo ->
 
-                    orders = orders.plus(ordersPojo.toOrderData())
-                    items = items.plus(ordersPojo.toItemData())
+                        orders = orders.plus(ordersPojo.toOrderData())
+                        items = items.plus(ordersPojo.toItemData())
 
+                    }
+                    Log.d("Testing Repo" , "Orders Added = ${orders.toString()}")
+                    Log.d("Testing Repo" , "Items added = ${items.toString()}")
+                    orderDao.deleteAllOrderItems()
+                    orderDao.insertOrders(orders)
+                    orderDao.insertOrderItems(items)
+                }.doOnError {
+                    Log.e("Testing Repo" , "Error in fetching data = ${it.message.toString()}")
                 }
-                Log.d("Testing Repo" , "Orders Added = ${orders.toString()}")
-                Log.d("Testing Repo" , "Items added = ${items.toString()}")
-                orderDao.deleteAllOrderItems()
-                orderDao.insertOrders(orders)
-                orderDao.insertOrderItems(items)
-            }.doOnError {
-                Log.e("Testing Repo" , "Error in fetching data = ${it.message.toString()}")
-            }
-            .ignoreElement()
+                .ignoreElement()
     }
 
     private fun OrdersPojo.toOrderData(): OrdersData{
