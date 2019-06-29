@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -33,6 +34,14 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
            }
        })
+
+        nMenuViewModel.error.observe(this , Observer {
+            Toast.makeText(this , it , Toast.LENGTH_LONG).show()
+            if (progBar_new_order_screen.isVisible && it.isNotEmpty()) {
+                progBar_new_order_screen.visibility = View.INVISIBLE
+                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            }
+        })
 
     }
     override fun onStatusChanged(itemId: String, status: String) {

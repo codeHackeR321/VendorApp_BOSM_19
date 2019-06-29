@@ -31,6 +31,14 @@ class NewOrderFragment : Fragment() , RecyclerAdapterFragment.RecyclerButtonClic
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initializeView()
+
+        viewModel.error.observe(this , Observer {
+            Toast.makeText(context , it , Toast.LENGTH_LONG).show()
+            if (progBar_new_order_screen.isVisible && it.isNotEmpty()) {
+                progBar_new_order_screen.visibility = View.INVISIBLE
+                activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            }
+        })
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -62,10 +70,6 @@ class NewOrderFragment : Fragment() , RecyclerAdapterFragment.RecyclerButtonClic
         }else{
             Toast.makeText(context , "Declined Order" , Toast.LENGTH_LONG).show()
         }
-    }
-
-    fun displayError(message : String){
-        Toast.makeText(context , message , Toast.LENGTH_LONG).show()
     }
 
 }

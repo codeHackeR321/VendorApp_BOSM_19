@@ -3,7 +3,10 @@ package com.example.vendorapp.completedorderscreen.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.vendorapp.R
@@ -14,6 +17,7 @@ import com.example.vendorapp.completedorderscreen.viewModel.CompletedOrderViewMo
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
 import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
 import kotlinx.android.synthetic.main.activity_completed_orders.*
+import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 import java.lang.Exception
 
 class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedListener {
@@ -37,6 +41,14 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
 
         nCompletedViewModel.tearning.observe(this, Observer {
             t_earn_val.text= String.format(resources.getString(R.string.new_order_total_amount),it)
+        })
+
+        nCompletedViewModel.error.observe(this , Observer {
+            Toast.makeText(this , it , Toast.LENGTH_LONG).show()
+            if (progBar_new_order_screen.isVisible && it.isNotEmpty()) {
+                progBar_new_order_screen.visibility = View.INVISIBLE
+                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            }
         })
 
     }
