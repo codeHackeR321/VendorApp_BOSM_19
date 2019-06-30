@@ -7,10 +7,7 @@ import com.google.gson.JsonObject
 import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface RetrofitApi {
 
@@ -23,7 +20,7 @@ interface RetrofitApi {
     @get:GET("earnings")
     val earnings: Single<EarningsPojo>
 
-    @POST("orders")
-    fun updateStatus(@Body body: JsonObject):Single<Response<Unit>>
+    @POST("orders/{id}/change_status")
+    fun updateStatus(@Body body: JsonObject,@Path("id")orderId:String):Single<Response<Unit>>
     //Add post when api available
 }

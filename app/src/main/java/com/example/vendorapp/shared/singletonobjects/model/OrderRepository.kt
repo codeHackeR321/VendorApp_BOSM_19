@@ -50,9 +50,15 @@ class OrderRepository(val application: Context) {
             it.addProperty("orderId", orderId)
         }
         Log.d("check",body.toString())
-        return orderService.updateStatus(body)
+        return orderService.updateStatus(body,orderId).doOnSuccess {
+            Log.d("check","${it.code()} : ${it.message()}")
+        }.ignoreElement()
     }
 
+
+    fun updateStatusInRoom(){
+
+    }
 
     // get accepted and ready orders from room
     fun getAcceptedOrdersRoom(): Flowable<List<ModifiedOrdersDataClass>> {
