@@ -42,7 +42,6 @@ class MenuRepository(val application: Context){
                    menu= menu.plus(menuPojo.toMenuItemData())
                 }
 
-                menuDao.deleteAll()
                 menuDao.insertMenu(menu)
             }.doOnError {
                 Log.e("Testing Menu Repo" , "Error in adding menu data to room = ${it.toString()}")

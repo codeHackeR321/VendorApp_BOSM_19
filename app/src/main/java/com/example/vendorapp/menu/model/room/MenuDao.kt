@@ -2,6 +2,7 @@ package com.example.vendorapp.menu.model.room
 
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import io.reactivex.Flowable
@@ -15,7 +16,7 @@ interface MenuDao {
     @Query("DELETE FROM menu_table ")
     fun deleteAll()
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMenu(menu: List<MenuItemData>)
 
     @Query("SELECT * FROM menu_table WHERE item_Id = :itemId")
