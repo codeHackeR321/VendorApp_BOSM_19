@@ -3,6 +3,7 @@ package com.example.vendorapp.completedorderscreen.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -29,7 +30,7 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_completed_orders)
-
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         nCompletedViewModel=ViewModelProviders.of(this,CompletedOrderViewModelFactory(this)).get(CompletedOrderViewModel::class.java)
         initialize()
         dates_recycler.adapter=DatesAdapter(this)
@@ -99,4 +100,12 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
 
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item!!.itemId)
+        {
+            android.R.id.home ->
+                finish()
+        }
+        return true
+    }
 }
