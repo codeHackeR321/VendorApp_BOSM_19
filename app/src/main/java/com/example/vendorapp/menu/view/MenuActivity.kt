@@ -2,6 +2,8 @@ package com.example.vendorapp.menu.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -22,6 +24,7 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
         super.onCreate(savedInstanceState)
         nMenuViewModel=ViewModelProviders.of(this,MenuViewModelFactory(this)).get(MenuViewModel::class.java)
         setContentView(R.layout.activity_menu)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         menu_recycler.adapter=MenuAdapter(this)
         window.setFlags(
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
@@ -46,5 +49,14 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
     }
     override fun onStatusChanged(itemId: String, status: String) {
         nMenuViewModel.updateStatus(itemId,status)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item!!.itemId)
+        {
+            android.R.id.home ->
+                finish()
+        }
+        return true
     }
 }

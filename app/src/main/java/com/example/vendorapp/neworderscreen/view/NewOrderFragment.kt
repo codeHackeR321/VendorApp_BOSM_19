@@ -51,6 +51,7 @@ class NewOrderFragment : Fragment() , RecyclerAdapterFragment.RecyclerButtonClic
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         Log.d("Testing NO View" , "Refresh Data Called")
+        viewModel.getNewOrders()
         viewModel.doInitialFetch()
         viewModel.orders.observe(this , Observer {
             Log.d("Testing NO View" , "Entered observer for orders with data = ${it.toString()}")
