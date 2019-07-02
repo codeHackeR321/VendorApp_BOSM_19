@@ -12,7 +12,7 @@
             android:networkSecurityConfig="@xml/network_security_config"
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
-            android:theme="@style/AppTheme" tools:ignore="GoogleAppIndexingWarning">
+            android:theme="@style/AppTheme" tools:ignore="GoogleAppIndexingWarning" tools:targetApi="n">
         <activity android:name=".completedorderscreen.view.CompletedOrdersActivity">
         </activity>
         <activity android:name=".MainScreenActivity">

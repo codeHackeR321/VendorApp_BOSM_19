@@ -1,5 +1,6 @@
 package com.example.vendorapp.shared.singletonobjects
 
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -16,7 +17,9 @@ class RetrofitInstance {
             {
                 //Base url of test api from sheety
                 //RxJava adapter for api calls
-                retrofitService = Retrofit.Builder().baseUrl("https://my-json-server.typicode.com/PrarabdhGarg/VendorApp/")
+                retrofitService = Retrofit.Builder()
+                    .baseUrl("https://my-json-server.typicode.com/PrarabdhGarg/VendorApp/")
+                    .client(OkHttpClient().newBuilder().addInterceptor(BaseInterceptor()).build())
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build().create(RetrofitApi::class.java)

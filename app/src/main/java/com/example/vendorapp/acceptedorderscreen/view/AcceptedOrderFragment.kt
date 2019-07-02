@@ -5,7 +5,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+
+import android.view.WindowManager
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -46,6 +49,14 @@ class AcceptedOrderFragment : Fragment() , ListenerRecyViewButtonClick{
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
        initializeView()
+
+        viewModel.error.observe(this , Observer {
+            Toast.makeText(context , it , Toast.LENGTH_LONG).show()
+            if (progBar_new_order_screen.isVisible && it.isNotEmpty()) {
+                progBar_new_order_screen.visibility = View.INVISIBLE
+                activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            }
+        })
         super.onViewCreated(view, savedInstanceState)
 /*
         var ordersfake=ArrayList<ModifiedOrdersDataClass>()

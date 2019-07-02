@@ -7,12 +7,13 @@ import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import com.example.vendorapp.menu.model.room.MenuDao
 import com.example.vendorapp.shared.singletonobjects.RetrofitInstance
 import com.example.vendorapp.shared.singletonobjects.VendorDatabase
+import com.example.vendorapp.shared.utils.NetworkConnectivityCheck
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
-class MenuRepository(application: Context){
+class MenuRepository(val application: Context){
 
     private val menuDao: MenuDao
     private val menuApiCall: Single<List<MenuPojo>>
@@ -32,7 +33,7 @@ class MenuRepository(application: Context){
 
     fun updateMenu(): Completable{
 
-        return menuApiCall.subscribeOn(Schedulers.io())
+    return menuApiCall.subscribeOn(Schedulers.io())
             .doOnSuccess {
 
                 var menu = emptyList<MenuItemData>()
@@ -41,12 +42,12 @@ class MenuRepository(application: Context){
                    menu= menu.plus(menuPojo.toMenuItemData())
                 }
 
-                menuDao.deleteAll()
                 menuDao.insertMenu(menu)
             }.doOnError {
                 Log.e("Testing Menu Repo" , "Error in adding menu data to room = ${it.toString()}")
             }
             .ignoreElement()
+
     }
 
     private fun MenuPojo.toMenuItemData(): MenuItemData{
