@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -16,15 +17,17 @@ import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
 import com.example.vendorapp.neworderscreen.view.adapters.RecyclerAdapterFragment
 import com.example.vendorapp.neworderscreen.viewModel.NewOrderViewModel
 import com.example.vendorapp.neworderscreen.viewModel.NewOrderViewModelFacory
+import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
 import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
 import kotlinx.android.synthetic.main.fragment_fra_accepted_order.*
 import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 
 
-class AcceptedOrderFragment : Fragment() , AdapterForFragment.RecyclerButtonClickListener{
+class AcceptedOrderFragment : Fragment() , ListenerRecyViewButtonClick{
 
 
     override fun buttonClicked(orderId: String, status: String) {
+       Toast.makeText(context,"id$orderId stau00s$status",Toast.LENGTH_LONG).show()
         viewModel.changeStatus(orderId,status)
     }
 

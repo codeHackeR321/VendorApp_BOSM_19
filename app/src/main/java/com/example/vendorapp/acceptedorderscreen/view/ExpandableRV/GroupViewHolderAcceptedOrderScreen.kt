@@ -1,22 +1,24 @@
-package com.example.vendorapp.shared.expandableRecyclerView
+package com.example.vendorapp.acceptedorderscreen.view.ExpandableRV
+
+
 
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.content.res.TypedArrayUtils
 import com.example.vendorapp.R
 import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
 import com.thoughtbot.expandablerecyclerview.listeners.OnGroupClickListener
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder
 
-class GroupViewHolderNewOrderCompactMenu(private val orderId: String , private val orderAmount : String,val listener3 :ListenerRecyViewButtonClick ,itemView : View?) :GroupViewHolder(itemView){
+class GroupViewHolderAcceptedOrderScreen(private var status : String,private val otp: String,private val orderId: String , private val orderAmount : String,val listener3 :ListenerRecyViewButtonClick ,itemView : View?) :GroupViewHolder(itemView){
 
     lateinit var textViewOrderId : TextView
     lateinit var textViewOrderAmount:TextView
     lateinit var textArrowButton:TextView
-    lateinit var buttonAccept:Button
-    lateinit var buttonDecline:Button
+    lateinit var buttonOtp:Button
+    lateinit var buttonReady:Button
+    lateinit var buttonFinish : Button
 /*
     interface RecyclerButtonClickListener3{
 
@@ -27,21 +29,45 @@ class GroupViewHolderNewOrderCompactMenu(private val orderId: String , private v
         textArrowButton = itemView!!.findViewById(R.id.text_group_view_holder_new_order_heading)
         textViewOrderId=itemView!!.findViewById(R.id.textView_order_id)
         textViewOrderAmount=itemView.findViewById(R.id.textView_order_amount)
-        buttonAccept=itemView.findViewById(R.id.button_accept)
-        buttonDecline=itemView.findViewById(R.id.button_decline)
+        buttonOtp=itemView.findViewById(R.id.button_OTP)
+        buttonReady=itemView.findViewById(R.id.button_ready)
+        buttonFinish=itemView.findViewById(R.id.button_finish)
 
-        textViewOrderId.text="Id#5666"+orderId
+        textViewOrderId.text="Id#"+orderId
         textViewOrderAmount.text="\u20B9"+"20"+orderAmount
+
         textViewOrderAmount.setOnClickListener{}
         textViewOrderId.setOnClickListener {  }
 
-        buttonAccept.setOnClickListener{
+        buttonReady.setOnClickListener{
 
-            onClickButtons("accepted")
+            onClickButtons("ready")
+            buttonFinish.visibility=View.VISIBLE
+            buttonOtp.visibility=View.VISIBLE
+            buttonReady.visibility=View.GONE
         }
 
-        buttonDecline.setOnClickListener{
-            onClickButtons("declined")
+        buttonOtp.setOnClickListener{
+            buttonOtp.text=otp
+        }
+
+        buttonFinish.setOnClickListener{
+            onClickButtons("finish")
+            //display toast and remove the order
+        }
+
+        if (status.equals("accepted"))
+        {
+            buttonOtp.visibility=View.INVISIBLE
+            buttonFinish.visibility=View.INVISIBLE
+            buttonReady.visibility=View.VISIBLE
+        }
+        else if(status.equals("ready"))
+        {
+            buttonOtp.visibility=View.VISIBLE
+            buttonFinish.visibility=View.VISIBLE
+            buttonReady.visibility=View.INVISIBLE
+
         }
     }
 
@@ -73,9 +99,9 @@ class GroupViewHolderNewOrderCompactMenu(private val orderId: String , private v
     }
 
     fun setHeading(){
-       // textHeading.text = "Menu"
-       // super.onClick(textHeading)
-       // super.expand()
+        // textHeading.text = "Menu"
+        // super.onClick(textHeading)
+        // super.expand()
     }
 
     private fun onClickButtons(status : String)

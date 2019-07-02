@@ -12,18 +12,17 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vendorapp.R
+import com.example.vendorapp.acceptedorderscreen.view.ExpandableRV.ExpandableRVAdapter
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
+import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
 import com.example.vendorapp.shared.expandableRecyclerView.GroupDataClass
 import kotlinx.android.synthetic.main.card_accepted_order_screen.view.*
 
 
-class AdapterForFragment(val listener : RecyclerButtonClickListener  ) : RecyclerView.Adapter<AdapterForFragment.OrderViewHolder>(){
+class AdapterForFragment(val listener : ListenerRecyViewButtonClick  ) : RecyclerView.Adapter<AdapterForFragment.OrderViewHolder>(){
 
     var orders = emptyList<ModifiedOrdersDataClass>()
-    interface RecyclerButtonClickListener{
 
-        fun buttonClicked(orderId : String , status : String) // Ready or Finish
-    }
 
 
 
@@ -37,35 +36,35 @@ class AdapterForFragment(val listener : RecyclerButtonClickListener  ) : Recycle
     }
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
-        holder.textOrderNumber.text = String.format(holder.itemView.resources.getString(R.string.new_order_order_number) , orders[position].orderId)
-        holder.textTotalAmount.text = String.format(holder.itemView.resources.getString(R.string.new_order_total_amount) , orders[position].totalAmount)
-        if (orders[position].status=="accepted")
+        /*holder.textOrderNumber.text = String.format(holder.itemView.resources.getString(R.string.new_order_order_number) , orders[position].orderId)
+        holder.textTotalAmount.text = String.format(holder.itemView.resources.getString(R.string.new_order_total_amount) , orders[position].totalAmount)*/
+     /*   if (orders[position].status=="accepted")
             holder.bttnChangeOrderStatus.text="Ready"
         else if (orders[position].status=="ready")
             holder.bttnChangeOrderStatus.text="Finish"
         else if (orders[position].status=="finish")
-            holder.bttnChangeOrderStatus.text="Completed"
+            holder.bttnChangeOrderStatus.text="Completed"*/
 
 
         val inflater = holder.itemView.context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         var list = ArrayList<GroupDataClass>()
         list.add(GroupDataClass("Menu", orders[position].items))
-        holder.recyclerOrderDetails.adapter = RecyclerAdapterExpandabeRecyclerView(inflater , list)
+        holder.recyclerOrderDetails.adapter = ExpandableRVAdapter(orders[position].status,orders[position].otp,orders[position].orderId,orders[position].totalAmount,listener,inflater , list)
 
-        holder.bttnChangeOrderStatus.setOnClickListener {
+        /*holder.bttnChangeOrderStatus.setOnClickListener {
             listener.buttonClicked(orders[position].orderId , holder.bttnChangeOrderStatus.text.toString().decapitalize())
-        }
+        }*/
 
 
     }
 
     inner class OrderViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
-
-        internal val textOrderNumber : TextView = itemView.text_card_accepted_order_order_id
-        internal val textTotalAmount : TextView = itemView.text_card_accepted_order_total_amount
         internal val recyclerOrderDetails : RecyclerView = itemView.recycle_card_accepted_order_menu
-        internal val bttnChangeOrderStatus : Button = itemView.bttn_card_accepted_order_ready
+        /*internal val textOrderNumber : TextView = itemView.text_card_accepted_order_order_id
+        internal val textTotalAmount : TextView = itemView.text_card_accepted_order_total_amount
 
+        internal val bttnChangeOrderStatus : Button = itemView.bttn_card_accepted_order_ready
+*/
 
     }
 

@@ -5,6 +5,7 @@ package com.example.vendorapp.acceptedorderscreen.view.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.example.vendorapp.R
+import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
 import com.example.vendorapp.shared.expandableRecyclerView.ChildViewHolderNewOrderOrderDetails
 import com.example.vendorapp.shared.expandableRecyclerView.GroupDataClass
 import com.example.vendorapp.shared.expandableRecyclerView.GroupViewHolderNewOrderCompactMenu
@@ -13,9 +14,14 @@ import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 
 
 class AdapterForExpandableRV(var inflater : LayoutInflater, var list: List<ExpandableGroup<*>>) :
-    ExpandableRecyclerViewAdapter<GroupViewHolderNewOrderCompactMenu, ChildViewHolderNewOrderOrderDetails>(list){
+    ExpandableRecyclerViewAdapter<GroupViewHolderNewOrderCompactMenu, ChildViewHolderNewOrderOrderDetails>(list),ListenerRecyViewButtonClick{
+    override fun buttonClicked(orderId: String, status: String) {
+
+    }
+
+
     override fun onCreateGroupViewHolder(parent: ViewGroup?, viewType: Int): GroupViewHolderNewOrderCompactMenu {
-        return(GroupViewHolderNewOrderCompactMenu(
+        return(GroupViewHolderNewOrderCompactMenu( "56677","6787", this,
             inflater.inflate(
                 R.layout.group_view_holder_new_order_screen,
                 parent,

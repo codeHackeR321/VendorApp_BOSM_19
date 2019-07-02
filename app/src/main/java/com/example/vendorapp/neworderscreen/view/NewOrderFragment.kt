@@ -16,10 +16,11 @@ import com.example.vendorapp.R
 import com.example.vendorapp.neworderscreen.view.adapters.RecyclerAdapterFragment
 import com.example.vendorapp.neworderscreen.viewModel.NewOrderViewModel
 import com.example.vendorapp.neworderscreen.viewModel.NewOrderViewModelFacory
+import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
 import kotlinx.android.synthetic.main.card_new_order_screen.*
 import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 
-class NewOrderFragment : Fragment() , RecyclerAdapterFragment.RecyclerButtonClickListener{
+class NewOrderFragment : Fragment() , ListenerRecyViewButtonClick{
 
     private val viewModel by lazy {
         ViewModelProviders.of(this , NewOrderViewModelFacory(this.context!!)).get(NewOrderViewModel::class.java)
@@ -55,12 +56,12 @@ class NewOrderFragment : Fragment() , RecyclerAdapterFragment.RecyclerButtonClic
         })
     }
 
-    override fun buttonClicked(orderId: String, accepted: Boolean) {
-        if (accepted)
+    override fun buttonClicked(orderId: String, status: String) {
+        if (status.equals(getString(R.string.status_accept)))
         {
-            Toast.makeText(context , "Accpted Order" , Toast.LENGTH_LONG).show()
-        }else{
-            Toast.makeText(context , "Declined Order" , Toast.LENGTH_LONG).show()
+            Toast.makeText(context , "Accpted Order$orderId" , Toast.LENGTH_LONG).show()
+        }else if(status.equals(getString(R.string.status_decline))){
+            Toast.makeText(context , "Declined Order$orderId" , Toast.LENGTH_LONG).show()
         }
     }
 

@@ -9,15 +9,17 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vendorapp.R
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
+import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
 import com.example.vendorapp.shared.expandableRecyclerView.GroupDataClass
 import kotlinx.android.synthetic.main.card_new_order_screen.view.*
 
-class RecyclerAdapterFragment(val listener : RecyclerButtonClickListener) : RecyclerView.Adapter<RecyclerAdapterFragment.OrderViewHolder>(){
+class RecyclerAdapterFragment(val listener : ListenerRecyViewButtonClick) : RecyclerView.Adapter<RecyclerAdapterFragment.OrderViewHolder>()/*, RecyclerAdapterExpandabeRecyclerView.RecyclerButtonClickListener2*/{
 
-    interface RecyclerButtonClickListener{
+
+ /*   interface RecyclerButtonClickListener{
 
         fun buttonClicked(orderId : String , accepted : Boolean)
-    }
+    }*/
 
     var orders = emptyList<ModifiedOrdersDataClass>()
 
@@ -30,29 +32,35 @@ class RecyclerAdapterFragment(val listener : RecyclerButtonClickListener) : Recy
     }
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
-        holder.textOrderNumber.text = String.format(holder.itemView.resources.getString(R.string.new_order_order_number) , orders[position].orderId)
-        holder.textTotalAmount.text = String.format(holder.itemView.resources.getString(R.string.new_order_total_amount) , orders[position].totalAmount)
+       /* holder.textOrderNumber.text = String.format(holder.itemView.resources.getString(R.string.new_order_order_number) , orders[position].orderId)
+        holder.textTotalAmount.text = String.format(holder.itemView.resources.getString(R.string.new_order_total_amount) , orders[position].totalAmount)*/
         val inflater = holder.itemView.context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         var list = ArrayList<GroupDataClass>()
         list.add(GroupDataClass("Menu", orders[position].items))
-        holder.recyclerOrderDetails.adapter = RecyclerAdapterExpandabeRecyclerView(inflater , list)
+        holder.recyclerOrderDetails.adapter = RecyclerAdapterExpandabeRecyclerView(orders[position].orderId
+            ,orders[position].totalAmount,listener,inflater , list)
 
-        holder.bttnAcceptOrder.setOnClickListener {
+       /* holder.bttnAcceptOrder.setOnClickListener {
             listener.buttonClicked(orders[position].orderId , true)
         }
 
         holder.bttnDeclineOrder.setOnClickListener {
             listener.buttonClicked(orders[position].orderId , false)
-        }
+        }*/
     }
 
-    inner class OrderViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
+   /* override fun buttonClicked2(orderId: String, accepted: Boolean) {
+        listener.buttonClicked(orderId,accepted)
 
-        internal val textOrderNumber : TextView = itemView.text_card_new_order_order_id
-        internal val textTotalAmount : TextView = itemView.text_card_new_order_total_amount
+    }*/
+
+    inner class OrderViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
         internal val recyclerOrderDetails : RecyclerView = itemView.recycle_card_new_order_menu
+        /*internal val textOrderNumber : TextView = itemView.text_card_new_order_order_id
+        internal val textTotalAmount : TextView = itemView.text_card_new_order_total_amount
+
         internal val bttnAcceptOrder : Button = itemView.bttn_card_new_order_accept
-        internal val bttnDeclineOrder : Button = itemView.bttn_card_new_order_decline
+        internal val bttnDeclineOrder : Button = itemView.bttn_card_new_order_decline*/
 
     }
 

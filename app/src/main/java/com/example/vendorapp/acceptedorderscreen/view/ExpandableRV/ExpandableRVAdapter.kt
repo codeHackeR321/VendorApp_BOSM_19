@@ -1,4 +1,5 @@
-package com.example.vendorapp.neworderscreen.view.adapters
+package com.example.vendorapp.acceptedorderscreen.view.ExpandableRV
+
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,22 +11,16 @@ import com.example.vendorapp.shared.expandableRecyclerView.GroupViewHolderNewOrd
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 
-class RecyclerAdapterExpandabeRecyclerView( private val orderId: String,private val orderAmount: String
+class ExpandableRVAdapter(private val status:String ,  private val otp:String,private val orderId: String,private val orderAmount: String
                                             , val listener2 : ListenerRecyViewButtonClick ,var inflater : LayoutInflater, var list: List<ExpandableGroup<*>>) :
 
-    ExpandableRecyclerViewAdapter<GroupViewHolderNewOrderCompactMenu, ChildViewHolderNewOrderOrderDetails>(list){
-   /* override fun buttonClicked3(orderId: String, accepted: Boolean) {
-       listener2.buttonClicked2(orderId,accepted)
-    }*/
+    ExpandableRecyclerViewAdapter<GroupViewHolderAcceptedOrderScreen, ChildViewHolderNewOrderOrderDetails>(list){
 
-   /* interface RecyclerButtonClickListener2{
 
-        fun buttonClicked2(orderId : String , accepted : Boolean)
-    }*/
-    override fun onCreateGroupViewHolder(parent: ViewGroup?, viewType: Int): GroupViewHolderNewOrderCompactMenu {
-        return(GroupViewHolderNewOrderCompactMenu(orderId , orderAmount,listener2,
+    override fun onCreateGroupViewHolder(parent: ViewGroup?, viewType: Int): GroupViewHolderAcceptedOrderScreen {
+        return(GroupViewHolderAcceptedOrderScreen(status,otp,orderId , orderAmount,listener2,
             inflater.inflate(
-                R.layout.group_view_holder_new_order_screen,
+                R.layout.group_view_holder_accepted_order_screen,
                 parent,
                 false
             )
@@ -47,7 +42,7 @@ class RecyclerAdapterExpandabeRecyclerView( private val orderId: String,private 
         holder!!.onBind(order , group)
     }
 
-    override fun onBindGroupViewHolder(holder: GroupViewHolderNewOrderCompactMenu?, flatPosition: Int, group: ExpandableGroup<*>?) {
+    override fun onBindGroupViewHolder(holder: GroupViewHolderAcceptedOrderScreen?, flatPosition: Int, group: ExpandableGroup<*>?) {
         //holder!!.setHeading()
     }
 

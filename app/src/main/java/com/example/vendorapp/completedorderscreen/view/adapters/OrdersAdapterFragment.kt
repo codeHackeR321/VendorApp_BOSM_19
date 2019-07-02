@@ -33,7 +33,7 @@ class OrdersAdapterFragment:RecyclerView.Adapter<OrdersAdapterFragment.OrderView
         val inflater = holder.itemView.context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         var list = ArrayList<GroupDataClass>()
         list.add(GroupDataClass("Menu", orders[position].items))
-        holder.recyclerOrderDetails.adapter = RecyclerAdapterExpandabeRecyclerView(inflater , list)
+       // holder.recyclerOrderDetails.adapter = RecyclerAdapterExpandabeRecyclerView(orders[position].orderId,orders[position].totalAmount,inflater , list)
     }
 
     inner class OrderViewHolder(view: View):RecyclerView.ViewHolder(view){
