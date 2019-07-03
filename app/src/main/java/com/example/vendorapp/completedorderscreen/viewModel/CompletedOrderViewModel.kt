@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
 import com.example.vendorapp.shared.dataclasses.DayWiseOrdersDataClass
+import com.example.vendorapp.shared.dataclasses.roomClasses.EarningData
 import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
 import com.example.vendorapp.shared.singletonobjects.model.OrderRepository
 import com.example.vendorapp.shared.singletonobjects.repositories.OrderRepositoryInstance
@@ -24,8 +25,9 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
     var dayWiseOrders:LiveData<List<DayWiseOrdersDataClass>> =MutableLiveData()
     var earnings:LiveData<String> = MutableLiveData()
     var orderRepository:OrderRepository= OrderRepositoryInstance.getInstance(context)
-    var tearning:LiveData<String> =MutableLiveData()
+    var totalEarning:LiveData<String> =MutableLiveData()
     var error : LiveData<String> = MutableLiveData()
+    var earningData:LiveData<List<EarningData>> = MutableLiveData()
 
     init{
 
@@ -43,15 +45,18 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
 
 
     @SuppressLint("CheckResult")
-    fun getEarningsForDate(date:String){
-        Log.d("check","$date")
+    fun getEarningData(){
+
         orderRepository.getdaywiseEarningRoom().observeOn(AndroidSchedulers.mainThread()).subscribe(
             {
-                it.forEach {
-                    if(it.day==date){
-                        (tearning as MutableLiveData<String>).postValue(it.earnings)
-                    }
+                Log.d("EarningData", "dd"+it.toString())
+                var totalEarnings: Long=0
+                for (i in 0 until it.size)
+                {
+                    totalEarnings=totalEarnings+it[i].earnings.toLong()
                 }
+                (earningData as MutableLiveData<List<EarningData>>).postValue(it)
+                (totalEarning as MutableLiveData<String>).postValue(totalEarnings.toString())
             },{
                 Log.e("error",it.message)
             }
@@ -59,7 +64,7 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
     }
 
 
-   @SuppressLint("CheckResult")
+/*   @SuppressLint("CheckResult")
 
    fun updateData(){
 
@@ -75,7 +80,7 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
        }.doOnError {
            Log.e("Error in COVM" , "Error in updating data = ${it.toString()}")
        }.subscribe()
-   }
+   }*/
 
     fun getCompletedOrders(){
 

@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.vendorapp.R
+import com.example.vendorapp.acceptedorderscreen.view.adapters.AdapterForFragment
 import com.example.vendorapp.completedorderscreen.view.adapters.DatesAdapter
 import com.example.vendorapp.completedorderscreen.view.adapters.OrdersAdapterFragment
 import com.example.vendorapp.completedorderscreen.viewModel.CompletedOrderViewModel
@@ -18,6 +19,7 @@ import com.example.vendorapp.completedorderscreen.viewModel.CompletedOrderViewMo
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
 import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
 import kotlinx.android.synthetic.main.activity_completed_orders.*
+import kotlinx.android.synthetic.main.fragment_fra_accepted_order.*
 import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 import java.lang.Exception
 
@@ -33,19 +35,19 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         nCompletedViewModel=ViewModelProviders.of(this,CompletedOrderViewModelFactory(this)).get(CompletedOrderViewModel::class.java)
         initialize()
-        dates_recycler.adapter=DatesAdapter(this)
-        (dates_recycler.adapter as DatesAdapter).dates = listOf("13","14","15","16")
 
-        nCompletedViewModel.earnings.observe(this, Observer {
+
+        /*nCompletedViewModel.earnings.observe(this, Observer {
             earning.text= String.format(resources.getString(R.string.new_order_total_amount),it)
         })
 
         nCompletedViewModel.tearning.observe(this, Observer {
             t_earn_val.text= String.format(resources.getString(R.string.new_order_total_amount),it)
         })
-
+*/
         nCompletedViewModel.error.observe(this , Observer {
             Toast.makeText(this , it , Toast.LENGTH_LONG).show()
+            Log.d("Check23","efh$it")
             if (progBar_new_order_screen.isVisible && it.isNotEmpty()) {
                 progBar_new_order_screen.visibility = View.INVISIBLE
                 window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -56,8 +58,21 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
 
     fun initialize(){
          orders_recycler.adapter=OrdersAdapterFragment()
-         nCompletedViewModel.updateData()
-        nCompletedViewModel.getEarningsForDate("Day1")
+        // nCompletedViewModel.updateData()
+        nCompletedViewModel.getEarningData()
+        nCompletedViewModel.earningData.observe(this , Observer {
+            Log.d("Testing Accepted View" , "Entered observer for Accepted orders with list = ${it.toString()}")
+
+            dates_recycler.adapter=DatesAdapter(this)
+            (dates_recycler.adapter as DatesAdapter).earningData = it
+            (dates_recycler.adapter as DatesAdapter).notifyDataSetChanged()
+        })
+
+        nCompletedViewModel.totalEarning.observe(this, Observer {
+            earning.text=it
+        })
+
+
         // fun to update expandable recycler view with datewise data
         setDayWiseData(defaultDate)
     }
@@ -91,13 +106,13 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
             Toast.makeText(this@CompletedOrdersActivity,"Date selected$date",Toast.LENGTH_LONG).show()
 
         })
-        when(date){
+        /*when(date){
             "13" -> nCompletedViewModel.getEarningsForDate("Day1")
             "14" -> nCompletedViewModel.getEarningsForDate("Day2")
             "15" -> nCompletedViewModel.getEarningsForDate("Day3")
             "16" -> nCompletedViewModel.getEarningsForDate("Day4")
         }
-
+*/
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
