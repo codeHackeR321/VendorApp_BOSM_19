@@ -27,10 +27,11 @@
     <string name="card_accepted_order_otp_bttn">OTP</string>
     <string name="group_view_holder_new_order_heading">Order</string>
 
-    <string name="status_accept">accept</string>
-    <string name="status_decline">decline</string>
+    <string name="status_accepted">accepted</string>
+    <string name="status_declined">declined</string>
     <string name="status_ready">ready</string>
     <string name="status_finish">finish</string>
+    <string name="status_pending">pending</string>
 
 
 

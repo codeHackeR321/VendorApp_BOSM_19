@@ -66,11 +66,11 @@ class NewOrderFragment : Fragment() , ListenerRecyViewButtonClick{
     }
 
     override fun buttonClicked(orderId: String, status: String) {
-        if (status.equals(getString(R.string.status_accept)))
+        if (status.equals(getString(R.string.status_accepted)))
         {
-            Toast.makeText(context , "Accpted Order$orderId" , Toast.LENGTH_LONG).show()
-        }else if(status.equals(getString(R.string.status_decline))){
-            Toast.makeText(context , "Declined Order$orderId" , Toast.LENGTH_LONG).show()
+            Toast.makeText(context , "$status$orderId" , Toast.LENGTH_LONG).show()
+        }else if(status.equals(getString(R.string.status_declined))){
+            Toast.makeText(context , "$status Order$orderId" , Toast.LENGTH_LONG).show()
         }
     }
 

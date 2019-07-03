@@ -38,7 +38,7 @@
             android:layout_marginTop="8dp" android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent" android:textSize="14sp"/>
     <Button
-            android:text="Accept"
+            android:text="@string/card_new_order_accept_bttn"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:id="@+id/button_accept" android:textSize="20sp"

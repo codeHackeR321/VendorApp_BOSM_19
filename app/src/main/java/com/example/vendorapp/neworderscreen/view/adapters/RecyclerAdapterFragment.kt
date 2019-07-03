@@ -15,12 +15,6 @@ import kotlinx.android.synthetic.main.card_new_order_screen.view.*
 
 class RecyclerAdapterFragment(val listener : ListenerRecyViewButtonClick) : RecyclerView.Adapter<RecyclerAdapterFragment.OrderViewHolder>()/*, RecyclerAdapterExpandabeRecyclerView.RecyclerButtonClickListener2*/{
 
-
- /*   interface RecyclerButtonClickListener{
-
-        fun buttonClicked(orderId : String , accepted : Boolean)
-    }*/
-
     var orders = emptyList<ModifiedOrdersDataClass>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
