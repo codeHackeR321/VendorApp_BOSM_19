@@ -36,15 +36,6 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
         nCompletedViewModel=ViewModelProviders.of(this,CompletedOrderViewModelFactory(this)).get(CompletedOrderViewModel::class.java)
         initialize()
 
-
-        /*nCompletedViewModel.earnings.observe(this, Observer {
-            earning.text= String.format(resources.getString(R.string.new_order_total_amount),it)
-        })
-
-        nCompletedViewModel.tearning.observe(this, Observer {
-            t_earn_val.text= String.format(resources.getString(R.string.new_order_total_amount),it)
-        })
-*/
         nCompletedViewModel.error.observe(this , Observer {
             Toast.makeText(this , it , Toast.LENGTH_LONG).show()
             Log.d("Check23","efh$it")
@@ -63,7 +54,7 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
         nCompletedViewModel.earningData.observe(this , Observer {
             Log.d("Testing Accepted View" , "Entered observer for Accepted orders with list = ${it.toString()}")
 
-            dates_recycler.adapter=DatesAdapter(this)
+            dates_recycler.adapter=DatesAdapter(defaultDate,this)
             (dates_recycler.adapter as DatesAdapter).earningData = it
             (dates_recycler.adapter as DatesAdapter).notifyDataSetChanged()
         })
@@ -95,6 +86,7 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
                    dayWiseOrdersDataClass.date==date
                }!!.dayWiseorders.toString()}")
                (orders_recycler.adapter as OrdersAdapterFragment).notifyDataSetChanged()
+               (dates_recycler.adapter as DatesAdapter).notifyDataSetChanged()
 
            }
            catch (e :Exception){
@@ -106,13 +98,7 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
             Toast.makeText(this@CompletedOrdersActivity,"Date selected$date",Toast.LENGTH_LONG).show()
 
         })
-        /*when(date){
-            "13" -> nCompletedViewModel.getEarningsForDate("Day1")
-            "14" -> nCompletedViewModel.getEarningsForDate("Day2")
-            "15" -> nCompletedViewModel.getEarningsForDate("Day3")
-            "16" -> nCompletedViewModel.getEarningsForDate("Day4")
-        }
-*/
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

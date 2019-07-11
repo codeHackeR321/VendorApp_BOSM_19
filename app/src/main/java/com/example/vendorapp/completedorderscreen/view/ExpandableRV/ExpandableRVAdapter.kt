@@ -1,10 +1,9 @@
-package com.example.vendorapp.acceptedorderscreen.view.adapters
-
-
+package com.example.vendorapp.completedorderscreen.view.ExpandableRV
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.example.vendorapp.R
+import com.example.vendorapp.acceptedorderscreen.view.ExpandableRV.GroupViewHolderAcceptedOrderScreen
 import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
 import com.example.vendorapp.shared.expandableRecyclerView.ChildViewHolderNewOrderOrderDetails
 import com.example.vendorapp.shared.expandableRecyclerView.GroupDataClass
@@ -12,18 +11,16 @@ import com.example.vendorapp.shared.expandableRecyclerView.GroupViewHolderNewOrd
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 
+class ExpandableRVAdapter( private val otp:String,private val orderId: String,private val orderAmount: String
+                           ,var inflater : LayoutInflater, var list: List<ExpandableGroup<*>>) :
 
-class AdapterForExpandableRV(var inflater : LayoutInflater, var list: List<ExpandableGroup<*>>) :
-    ExpandableRecyclerViewAdapter<GroupViewHolderNewOrderCompactMenu, ChildViewHolderNewOrderOrderDetails>(list),ListenerRecyViewButtonClick{
-    override fun buttonClicked(orderId: String, status: String) {
-
-    }
+    ExpandableRecyclerViewAdapter<GroupViewHolderCompletedOrderScreen, ChildViewHolderNewOrderOrderDetails>(list){
 
 
-    override fun onCreateGroupViewHolder(parent: ViewGroup?, viewType: Int): GroupViewHolderNewOrderCompactMenu {
-        return(GroupViewHolderNewOrderCompactMenu( "56677","6787", this,
+    override fun onCreateGroupViewHolder(parent: ViewGroup?, viewType: Int): GroupViewHolderCompletedOrderScreen {
+        return(GroupViewHolderCompletedOrderScreen(otp,orderId , orderAmount,
             inflater.inflate(
-                R.layout.group_view_holder_new_order_screen,
+                R.layout.group_view_holder_completed_order_screen,
                 parent,
                 false
             )
@@ -45,8 +42,8 @@ class AdapterForExpandableRV(var inflater : LayoutInflater, var list: List<Expan
         holder!!.onBind(order , group)
     }
 
-    override fun onBindGroupViewHolder(holder: GroupViewHolderNewOrderCompactMenu?, flatPosition: Int, group: ExpandableGroup<*>?) {
-        holder!!.setHeading()
+    override fun onBindGroupViewHolder(holder: GroupViewHolderCompletedOrderScreen?, flatPosition: Int, group: ExpandableGroup<*>?) {
+        //holder!!.setHeading()
     }
 
 }

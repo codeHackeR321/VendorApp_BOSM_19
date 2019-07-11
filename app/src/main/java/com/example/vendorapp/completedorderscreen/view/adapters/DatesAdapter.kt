@@ -1,5 +1,6 @@
 package com.example.vendorapp.completedorderscreen.view.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,12 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.vendorapp.R
 import com.example.vendorapp.shared.dataclasses.roomClasses.EarningData
 
-class DatesAdapter(private val listener: DateSelectedListener):RecyclerView.Adapter<DatesAdapter.DatesViewHolder>() {
+class DatesAdapter(private var lastSelectedDate:String, private val listener: DateSelectedListener):RecyclerView.Adapter<DatesAdapter.DatesViewHolder>() {
 
+    private var currentSelectedDate=lastSelectedDate
     interface DateSelectedListener{
 
        fun OnDateSelected(date:String)
     }
+
 
     var earningData:List<EarningData> = emptyList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DatesViewHolder {
@@ -28,9 +31,20 @@ class DatesAdapter(private val listener: DateSelectedListener):RecyclerView.Adap
 
     override fun onBindViewHolder(holder: DatesViewHolder, position: Int) {
         holder.date.text=earningData.get(position).day
-        holder.earning.text="\u20B9 " +earningData.get(position).earnings
+        holder.earning.text="\u20B9 "  +earningData.get(position).earnings
+        Log.d("DateCheck2","last$lastSelectedDate c $currentSelectedDate")
+        if (holder.date.text.equals(lastSelectedDate))
+        {
+            holder.parent.setBackgroundResource(R.drawable.shape_rectangle_white_bg)
+        }
+        if (holder.date.text.equals(currentSelectedDate))
+            holder.parent.setBackgroundResource(R.drawable.shape_rectangle_grey_bg)
+
 
         holder.parent.setOnClickListener {
+            lastSelectedDate=currentSelectedDate
+            currentSelectedDate=earningData.get(position).day
+            Log.d("Date Check","last$lastSelectedDate cuurr $currentSelectedDate")
             listener.OnDateSelected(earningData.get(position).day)
         }
     }

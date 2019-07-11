@@ -26,12 +26,13 @@
     <string name="card_accepted_order_finish_bttn">Finish</string>
     <string name="card_accepted_order_otp_bttn">OTP</string>
     <string name="group_view_holder_new_order_heading">Order</string>
-
+    <string name="card_completed_order_delivered">Delivered</string>
     <string name="status_accepted">accepted</string>
     <string name="status_declined">declined</string>
     <string name="status_ready">ready</string>
     <string name="status_finish">finish</string>
     <string name="status_pending">pending</string>
+
 
 
 
@@ -44,4 +45,5 @@
     <string name="overflow_menu_contactUs">Contact Us</string>
     <string name="overflow_menu_logout">Log Out</string>
 
+    <string name="defaultStartDate">13</string>
 </resources>
