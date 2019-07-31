@@ -6,22 +6,57 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.example.vendorapp.MainScreenActivity
+
 import com.example.vendorapp.R
+import com.example.vendorapp.loginscreen.viewModel.LoginViewModel
+import com.example.vendorapp.loginscreen.viewModel.LoginViewModelFactory
+
 import com.example.vendorapp.notification.MyFirebaseMessagingService
+
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+private lateinit var  viewModel: LoginViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        viewModel= ViewModelProviders.of(this, LoginViewModelFactory(this)).get(LoginViewModel::class.java)
 
         initializeApp()
 
-        loginButton.setOnClickListener {
-            startActivity(Intent(this , MainScreenActivity::class.java))
-            finish()
+        viewModel.loginStatus.observe(this , Observer {
+            when(it!!)
+            {
+                LoginUIState.GoToMainScreen -> {
+                    Toast.makeText(this@MainActivity, "Login Successfull",Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this@MainActivity,MainScreenActivity::class.java))
+                }
+
+              is LoginUIState.ErrorState ->  Toast.makeText(this@MainActivity,(it as LoginUIState.ErrorState).message,Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        buttonSignIn.setOnClickListener {
+            var username=editTextUsername.text.toString()
+            var password = editTextPassword.text.toString()
+            if (username.isBlank()&&password.isBlank())
+            {
+                Toast.makeText(this@MainActivity,"Enter valid username/password",Toast.LENGTH_SHORT).show()
+            }
+            else
+            {
+               /* val intent=Intent(this , MainScreenActivity::class.java)
+             //   intent.putExtra(getString(R.string.saved_jwt),jwt_token)
+                startActivity(intent)*/
+                viewModel.login(username,password)
+                //loader start
+            }
         }
     }
 
@@ -48,7 +83,23 @@ class MainActivity : AppCompatActivity() {
      * It sets up notification Channel
      * */
     fun initializeApp(){
+       /* val jwt_token=viewModel.getJWT()
+        if(jwt_token.equals(getString(R.string.default_jwt_value)))
+        {
+            //Loader hata
+            //snack bar dikhana h
+           Toast.makeText(this@MainActivity,"Please Login to Continue",Toast.LENGTH_LONG).show()        }
+        else
+        {
+            // login karwa
+            Toast.makeText(this,"Already Logged in, $jwt_token",Toast.LENGTH_LONG).show()
+           *//* val intent=Intent(this , MainScreenActivity::class.java)
+            intent.putExtra(getString(R.string.saved_jwt),jwt_token)
+            startActivity(intent)
+            finish()*//*
+        }*/
         setupNotificationChannel()
         startService(Intent(this,MyFirebaseMessagingService::class.java))
+
     }
 }

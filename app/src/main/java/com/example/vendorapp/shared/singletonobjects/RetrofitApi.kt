@@ -1,5 +1,6 @@
 package com.example.vendorapp.shared.singletonobjects
 
+import com.example.vendorapp.loginscreen.model.LoginResponse
 import com.example.vendorapp.shared.dataclasses.retroClasses.EarningsPojo
 import com.example.vendorapp.shared.dataclasses.retroClasses.MenuPojo
 import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
@@ -23,4 +24,8 @@ interface RetrofitApi {
     @POST("orders/{id}/change_status")
     fun updateStatus(@Body body: JsonObject,@Path("id")orderId:String):Single<Response<Unit>>
     //Add post when api available
+
+    //to obtain JWT
+    @POST("wallet/auth")
+    fun getJWTfromAuth(@Body body: JsonObject):Single<Response<LoginResponse>>
 }

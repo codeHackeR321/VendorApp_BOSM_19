@@ -3,6 +3,10 @@
 
     <string name="login_activity_username">Username</string>
     <string name="login_activity_password">Password</string>
+    <string name="login_activity_signin">Sign In</string>
+    <string name="login_failed">Login Failed. Try Again</string>
+    <string name="login_sucess">Login Successfull</string>
+    <string name="login_server_error">Server Error.Try Later</string>
 
     <string name="chanel_name_newOrder">New Orders</string>
     <string name="chanel_id_newOrder">NewOrder</string>
@@ -46,4 +50,14 @@
     <string name="overflow_menu_logout">Log Out</string>
 
     <string name="defaultStartDate">13</string>
+
+    <string name="bosm_heading">BOSM\'19</string>
+    <string name="vendorappheading">Vendor App</string>
+
+    <string name="saved_jwt">jwt</string>
+    <string name="default_jwt_value">no_jwt_found</string>
+    <string name="preference_file_login">loginfile</string>
+    <string name="base_url_bosm">http://test.bits-bosm.org/</string>
+    <string name="base_url_fake">https://my-json-server.typicode.com/PrarabdhGarg/VendorApp/</string>
+    <string name="saved_vendor_id">vendor_id</string>
 </resources>

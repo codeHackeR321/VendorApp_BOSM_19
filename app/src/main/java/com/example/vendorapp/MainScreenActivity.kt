@@ -23,6 +23,7 @@ class MainScreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_screen)
+        // recive jwt via intent
 
         viewPager = viewPager_activity_mainScreen
         viewPager.adapter = MyPagerAdapter()
