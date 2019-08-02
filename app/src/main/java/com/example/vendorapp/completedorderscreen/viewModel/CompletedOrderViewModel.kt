@@ -33,7 +33,7 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
 
         if (NetworkConnectivityCheck().checkIntenetConnection(context)) {
             orderRepository.updateEarningsData().observeOn(AndroidSchedulers.mainThread()).doOnComplete {
-                getCompletedOrders()
+               // getCompletedOrders()
             }.doOnError {
                 Log.e("Testing Earnings VM" , "Error in updating data from room \nError = ${it.message.toString()}")
             }.subscribe()
@@ -82,7 +82,7 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
        }.subscribe()
    }*/
 
-    fun getCompletedOrders(){
+  /*  fun getCompletedOrders(){
 
      //   var ordersList = emptyList<ModifiedOrdersDataClass>()
         var daywiseOrdersList=  emptyList<DayWiseOrdersDataClass>()
@@ -99,32 +99,32 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
                         )
                     )
                 }
-                /*ordersList = ordersList.plus(ModifiedOrdersDataClass(
+                *//*ordersList = ordersList.plus(ModifiedOrdersDataClass(
                     orderId = order.order.orderId,
                     otp = order.order.otp,
                     status = order.order.status,
                     totalAmount = order.order.totalAmount,
                     timestamp = order.order.timestamp.toString(),
                     items = itemList
-                ))*/
+                ))*//*
 
                 var tempdate=SimpleDateFormat("dd").format(Date(order.order.timestamp.toString().toLong()*1000L))
                 if (daywiseOrdersList.any{ it.date ==tempdate})
                     daywiseOrdersList.find { it.date==tempdate }!!.dayWiseorders.plus(ModifiedOrdersDataClass(
-                        orderId = order.order.orderId,
+                        orderId = order.order.orderId.toString(),
                         otp = order.order.otp,
-                        status = order.order.status,
-                        totalAmount = order.order.totalAmount,
+                        status = order.order.status.toString(),
+                        totalAmount = order.order.total_price.toString(),
                         timestamp = order.order.timestamp.toString(),
                         items = itemList
                     ))
                 else{
                        var tempList= emptyList<ModifiedOrdersDataClass>()
                     tempList=tempList.plus(ModifiedOrdersDataClass(
-                        orderId = order.order.orderId,
+                        orderId = order.order.orderId.toString(),
                         otp = order.order.otp,
-                        status = order.order.status,
-                        totalAmount = order.order.totalAmount,
+                        status = order.order.status.toString(),
+                        totalAmount = order.order.total_price.toString(),
                         timestamp = order.order.timestamp.toString(),
                         items = itemList
                     ))
@@ -137,7 +137,7 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
         }.doOnError {
             Log.e(" check" , it.stackTrace.toString())
         }.subscribe()
-    }
+    }*/
 
 
 

@@ -56,15 +56,17 @@ fun loginWithAuth(username: String, password: String): Single<LoginUIState>{
     Log.d("checkLogin Repo","ij,jhvhj")
 var x = activity.getString(R.string.login_failed)
    return loginApiCall.getJWTfromAuth(body).subscribeOn(Schedulers.io()).flatMap{
+       Log.d("checkLogin Repo2","code ${it.code()}")
        when(it.code())
        {
+
              200 -> {
                  sharedPref.edit().putString(activity.getString(R.string.saved_jwt), it.body()!!.jwt).apply()
                  sharedPref.edit().putString(activity.getString(R.string.saved_vendor_id), it.body()!!.id).apply()
                  Single.just(LoginUIState.GoToMainScreen)
              }
 
-           in 400..499-> Single.just(LoginUIState.ErrorState(it.body()!!.message))
+           in 400..499-> Single.just(LoginUIState.ErrorState("login error if 401 code: ${it.code()}"))
 
            in 500..599 -> Single.just(LoginUIState.ErrorState("Server error"))
 

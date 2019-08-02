@@ -28,4 +28,9 @@ interface RetrofitApi {
     //to obtain JWT
     @POST("wallet/auth")
     fun getJWTfromAuth(@Body body: JsonObject):Single<Response<LoginResponse>>
+
+    //obtain order from orderid
+
+     @GET("wallet/vendor/order/{order_id}")
+     fun getOrderFromOrderId(@Header("Authorization") jwt: String,@Path("id")orderId:String):Single<Response<OrdersPojo>>
 }

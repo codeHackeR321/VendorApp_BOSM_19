@@ -29,14 +29,14 @@ interface OrderDao {
     @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status, timestamp, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id WHERE status = 'pending'")
     fun getAllNewOrders() : Flowable<List<OrderItremCombinedDataClass>>
 
-    @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status, timestamp, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id WHERE status = 'accepted' OR status = 'ready'")
+    @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status,timestamp, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id WHERE status = 'accepted' OR status = 'ready'")
     fun getAllAcceptedOrders() : Flowable<List<OrderItremCombinedDataClass>>
 
     @Query("UPDATE orders_table SET status = :status WHERE order_id = :orderId")
     fun updateStatus(orderId: String, status: String): Completable
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertOrders(orders: List<OrdersData>)
+    fun insertOrders(orders: OrdersData)
 
     @Insert
     fun insertOrderItems(items: List<ItemData>)

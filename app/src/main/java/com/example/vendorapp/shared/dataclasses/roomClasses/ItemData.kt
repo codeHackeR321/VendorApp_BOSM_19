@@ -11,14 +11,14 @@ data class ItemData (
     var id: Int,
 
     @ColumnInfo(name = "item_id")
-    var itemId: String,
+    var itemId: Int,
 
     @ColumnInfo(name = "order_Id")
-    var orderId: String,
+    var orderId: Int,
 
     @ColumnInfo(name = "price")
-    var price: String,
+    var price: Int,
 
     @ColumnInfo(name = "quantity")
-    var quantity: String
+    var quantity: Int
 )

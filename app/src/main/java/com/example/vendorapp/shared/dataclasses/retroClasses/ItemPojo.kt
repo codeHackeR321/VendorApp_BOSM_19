@@ -2,11 +2,11 @@ package com.example.vendorapp.shared.dataclasses.retroClasses
 
 data class ItemPojo(
 
-    var itemId: String,
+    var id: Int,
 
-    var price: String,
+    var unit_price: Int,
 
-    var quantity: String
+    var quantity: Int
 )
 
 

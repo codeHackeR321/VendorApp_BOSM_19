@@ -2,15 +2,17 @@ package com.example.vendorapp.shared.dataclasses.retroClasses
 
 data class OrdersPojo(
 
-    var orderId: String,
+    //var orderId: String,
 
-    var status: String,
+    var status: Int,
 
-    var timestamp: String,
+    //var timestamp: String,
 
-    var otp: String,
+    //var otp: String,
 
-    var totalAmount: String,
 
-    var items: List<ItemPojo>
+
+    var items: List<ItemPojo>,
+
+    var total_price:Int
 )

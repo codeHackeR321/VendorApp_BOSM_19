@@ -18,7 +18,7 @@ class RetrofitInstance {
                 //Base url of test api from sheety
                 //RxJava adapter for api calls
                 retrofitService = Retrofit.Builder()
-                    .baseUrl("http://test.bits-bosm.orgo/")
+                    .baseUrl("http://test.bits-bosm.org/")
                     .client(OkHttpClient().newBuilder().addInterceptor(BaseInterceptor()).build())
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

@@ -9,10 +9,10 @@ data class OrdersData (
 
     @PrimaryKey
     @ColumnInfo(name = "order_id")
-    var orderId: String,
+    var orderId: Int,
 
     @ColumnInfo(name = "status")
-    var status: String,
+    var status: Int,
 
     @ColumnInfo(name = "timestamp")
     var timestamp: Long,
@@ -21,6 +21,6 @@ data class OrdersData (
     var otp: String,
 
     @ColumnInfo(name = "total_amount")
-    var totalAmount: String
+    var total_price:Int
 
 )
