@@ -21,6 +21,7 @@ import com.example.vendorapp.neworderscreen.view.adapters.RecyclerAdapterFragmen
 import com.example.vendorapp.neworderscreen.viewModel.NewOrderViewModel
 import com.example.vendorapp.neworderscreen.viewModel.NewOrderViewModelFacory
 import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.card_new_order_screen.*
 import kotlinx.android.synthetic.main.fragment_fra_new_order.*
@@ -64,6 +65,18 @@ class NewOrderFragment : Fragment() , ListenerRecyViewButtonClick{
         },{
             Log.d("Firestore77","observe observe ui statre eror$it")
         })
+
+        viewModel.getNewOrders().observeOn(AndroidSchedulers.mainThread()).doOnNext {
+            Log.d("Testing NO View" , "Entered observer for orders with data = ${it.toString()}")
+            (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders = it
+            (recycler_new_order_screen.adapter as RecyclerAdapterFragment).notifyDataSetChanged()
+            if (progBar_new_order_screen.isVisible && it.isNotEmpty()) {
+                progBar_new_order_screen.visibility = View.INVISIBLE
+                activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            }
+        }.doOnError {
+            Log.e("Room1" , "Error NO Fragment = $it")
+        }.subscribe()
 
         viewModel.error.observe(this , Observer {
             Toast.makeText(context , it , Toast.LENGTH_LONG).show()
@@ -110,17 +123,6 @@ class NewOrderFragment : Fragment() , ListenerRecyViewButtonClick{
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         Log.d("Testing NO View" , "Refresh Data Called")
 
-        viewModel.getNewOrders()
-
-        viewModel.orders.observe(this , Observer {
-            Log.d("Testing NO View" , "Entered observer for orders with data = ${it.toString()}")
-            (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders = it
-            (recycler_new_order_screen.adapter as RecyclerAdapterFragment).notifyDataSetChanged()
-            if (progBar_new_order_screen.isVisible && it.isNotEmpty()) {
-                progBar_new_order_screen.visibility = View.INVISIBLE
-                activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            }
-        })
 
 
     }

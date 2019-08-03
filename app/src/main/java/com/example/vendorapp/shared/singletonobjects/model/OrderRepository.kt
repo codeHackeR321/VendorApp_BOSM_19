@@ -8,6 +8,7 @@ import com.example.vendorapp.R
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
 import com.example.vendorapp.completedorderscreen.model.room.EarningDao
 import com.example.vendorapp.loginscreen.view.UIState
+import com.example.vendorapp.shared.dataclasses.OrderItremCombinedDataClass
 import com.example.vendorapp.shared.singletonobjects.model.room.OrderDao
 import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
@@ -116,8 +117,8 @@ initFirestore()
                          orderDao.insertOrders(it.body()!!.toOrderData(orderId = orderId.toInt()))
                          orderDao.insertOrderItems(it.body()!!.toItemData(orderId = orderId.toInt()))
 
-                         var  ordersData= emptyList<OrdersData>()
-                         ordersData=ordersData.plus(orderDao.getCheckNewOrders())
+                         var  ordersData= emptyList<OrderItremCombinedDataClass>()
+                         ordersData=ordersData.plus(orderDao.getCheckAllNewOrders())
                          Log.d("Firestore3","data saved in room  order data $ordersData \n ${it.body()!!.status}, items ${it.body()!!.items} ")
                          ui_status_subject.onNext(UIState.SuccessState("Order$orderId recieved "))
 

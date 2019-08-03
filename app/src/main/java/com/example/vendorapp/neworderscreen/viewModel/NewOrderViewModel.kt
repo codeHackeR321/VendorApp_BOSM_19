@@ -28,40 +28,13 @@ class NewOrderViewModel(val context : Context) : ViewModel(){
     var ui_status:LiveData<UIState> = MutableLiveData()
 
 
-    init {
-        /*  loginRepo.loginWithAuth(username, password).subscribe({
-            (loginStatus as MutableLiveData).postValue(it)
-
-        },{
-            Log.d("LoginViewodel6","error$it")
-        })*/
-
-
-
-      /*  val liveData = MediatorLiveData<UIState>()
-        liveData.addSource(ui_status, Observer {
-            if (it != null) {
-                (ui_status as MutableLiveData<UIState>).postValue(it)
-            }
-        })
-*/
-        observeUIState()
-
-    }
-
     @SuppressLint("CheckResult")
-    fun getNewOrders() {
-        orderRepo.getAllNewOrders().observeOn(AndroidSchedulers.mainThread()).doOnNext {
-            Log.e("Testing NO VM" , "Reading new orders from database = ${it.toString()}")
-            (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(it)
-        }.doOnError {
+    fun getNewOrders():Flowable<List<ModifiedOrdersDataClass>> {
 
-            Log.e("Testing NO VM" , "Error in reading new orders from database $it")
-            (error as MutableLiveData<String>).postValue("Error in database. Please try after some time")
-        }.subscribe()
+      return  orderRepo.getAllNewOrders()
     }
 
-    fun doInitialFetch(){
+    /*fun doInitialFetch(){
         if (NetworkConnectivityCheck().checkIntenetConnection(context))
         {
             orderRepo.updateOrders().doOnComplete {
@@ -81,19 +54,14 @@ class NewOrderViewModel(val context : Context) : ViewModel(){
         else{
             (error as MutableLiveData<String>).postValue("Please check your internet connection and restart the app")
         }
-    }
+    }*/
 
     @SuppressLint("CheckResult")
     fun observeUIState(): Flowable<UIState>{
 
       return  orderRepo.getUIStateFlowable()
-        /*orderRepo.getUIStateFlowable().observeOn(Schedulers.io()).doOnNext {
-            (ui_status as MutableLiveData<UIState>).postValue(it)
-            Log.d("Firestore57","obser")
-        }*/
+
     }
 
-   /* fun start(id : Long) : LiveData<UIState>? {
 
-    }*/
 }
