@@ -52,7 +52,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView3" android:layout_marginTop="28dp"
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp" app:layout_constraintStart_toEndOf="@+id/textViewUsername"
-            android:layout_marginStart="16dp" android:layout_marginLeft="16dp" android:text="sneha"/>
+            android:layout_marginStart="16dp" android:layout_marginLeft="16dp" android:text="Vendor1"/>
 
     <TextView
             android:text="@string/login_activity_password"
@@ -79,7 +79,7 @@
             app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             app:layout_constraintStart_toEndOf="@+id/textViewPassword"
-            android:layout_marginStart="16dp" android:layout_marginLeft="16dp" android:text="lolmao12345"/>
+            android:layout_marginStart="16dp" android:layout_marginLeft="16dp" android:text="firebasesucks"/>
     <Button
             android:text="@string/login_activity_signin"
             android:layout_width="wrap_content"

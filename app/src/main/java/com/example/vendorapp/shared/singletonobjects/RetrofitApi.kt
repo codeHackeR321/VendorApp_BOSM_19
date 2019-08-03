@@ -21,8 +21,8 @@ interface RetrofitApi {
     @get:GET("earnings")
     val earnings: Single<EarningsPojo>
 
-    @POST("orders/{id}/change_status")
-    fun updateStatus(@Body body: JsonObject,@Path("id")orderId:String):Single<Response<Unit>>
+    @POST("/vendor/orders/{id}/change_status")
+    fun updateStatus(@Body body: JsonObject,@Path("id")order_id:String):Single<Response<Unit>>
     //Add post when api available
 
     //to obtain JWT
@@ -31,6 +31,6 @@ interface RetrofitApi {
 
     //obtain order from orderid
 
-     @GET("wallet/vendor/order/{order_id}")
+     @GET("wallet/vendor/order/{id}")
      fun getOrderFromOrderId(@Header("Authorization") jwt: String,@Path("id")orderId:String):Single<Response<OrdersPojo>>
 }

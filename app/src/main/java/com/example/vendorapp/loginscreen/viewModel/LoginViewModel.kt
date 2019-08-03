@@ -6,17 +6,15 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.vendorapp.loginscreen.view.LoginUIState
+import com.example.vendorapp.loginscreen.view.UIState
 import com.example.vendorapp.shared.singletonobjects.repositories.LoginRepositoryInstance
-import io.reactivex.schedulers.Schedulers
-import kotlin.math.log
 
 
 class LoginViewModel(val context : Context) : ViewModel(){
 
 
     var loginRepo = LoginRepositoryInstance.getInstance(context)
-    var loginStatus  : LiveData<LoginUIState> = MutableLiveData()
+    var loginStatus  : LiveData<UIState> = MutableLiveData()
 
 
 init {

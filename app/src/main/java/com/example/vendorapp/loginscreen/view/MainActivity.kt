@@ -33,12 +33,12 @@ private lateinit var  viewModel: LoginViewModel
         viewModel.loginStatus.observe(this , Observer {
             when(it!!)
             {
-                LoginUIState.GoToMainScreen -> {
+                UIState.GoToMainScreen -> {
                     Toast.makeText(this@MainActivity, "Login Successfull",Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this@MainActivity,MainScreenActivity::class.java))
                 }
 
-              is LoginUIState.ErrorState ->  Toast.makeText(this@MainActivity,(it as LoginUIState.ErrorState).message,Toast.LENGTH_SHORT).show()
+              is UIState.ErrorState ->  Toast.makeText(this@MainActivity,(it as UIState.ErrorState).message,Toast.LENGTH_SHORT).show()
             }
         })
 

@@ -14,8 +14,12 @@ import retrofit2.http.POST
 @Dao
 interface OrderDao {
 
-    @Query("SELECT * FROM orders_table WHERE status = 'pending'")
+    @Query("SELECT * FROM orders_table")
     fun getNewOrders():Flowable<List<OrdersData>>
+//WHERE status = 'pending'
+
+    @Query("SELECT * FROM orders_table")
+    fun getCheckNewOrders():List<OrdersData>
 
     @Query("SELECT * FROM orders_table WHERE status = 'accepted' OR status = 'ready' ")
     fun getOrders(): Flowable<List<OrdersData>>
@@ -26,9 +30,9 @@ interface OrderDao {
     @Query("SELECT items_order.item_id AS itemId, price, quantity, item_name AS name from items_order INNER JOIN menu_table ON items_order.item_id = menu_table.item_id WHERE order_Id= :orderId")
     fun getItemsForOrder(orderId: String): Single<List<ItemsModel>>
 
-    @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status, timestamp, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id WHERE status = 'pending'")
+    @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status, timestamp, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id ")
     fun getAllNewOrders() : Flowable<List<OrderItremCombinedDataClass>>
-
+//WHERE status = 'pending'
     @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status,timestamp, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id WHERE status = 'accepted' OR status = 'ready'")
     fun getAllAcceptedOrders() : Flowable<List<OrderItremCombinedDataClass>>
 

@@ -1,31 +1,15 @@
 package com.example.vendorapp.loginscreen.model
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import android.view.View
-import android.view.WindowManager
-import android.widget.Toast
-import androidx.annotation.CheckResult
-import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.vendorapp.R
-import com.example.vendorapp.loginscreen.view.LoginUIState
-import com.example.vendorapp.menu.model.room.MenuDao
-import com.example.vendorapp.shared.dataclasses.retroClasses.MenuPojo
-import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
+import com.example.vendorapp.loginscreen.view.UIState
 import com.example.vendorapp.shared.singletonobjects.RetrofitInstance
-import com.example.vendorapp.shared.singletonobjects.VendorDatabase
 import com.google.gson.JsonObject
-import io.reactivex.Completable
-import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_fra_new_order.*
-import okhttp3.RequestBody
-import org.json.JSONObject
-import retrofit2.http.Body
 
 class LoginRepository(val activity: Context) {
 
@@ -47,7 +31,7 @@ class LoginRepository(val activity: Context) {
     }
 
 
-fun loginWithAuth(username: String, password: String): Single<LoginUIState>{
+fun loginWithAuth(username: String, password: String): Single<UIState>{
         val body = JsonObject().also {
             it.addProperty("username", username)
             it.addProperty("password",  password)
@@ -62,15 +46,16 @@ var x = activity.getString(R.string.login_failed)
 
              200 -> {
                  sharedPref.edit().putString(activity.getString(R.string.saved_jwt), it.body()!!.jwt).apply()
+                 Log.d("FirestoreLogin", "Jwt = ${it.body()!!.jwt}")
                  sharedPref.edit().putString(activity.getString(R.string.saved_vendor_id), it.body()!!.id).apply()
-                 Single.just(LoginUIState.GoToMainScreen)
+                 Single.just(UIState.GoToMainScreen)
              }
 
-           in 400..499-> Single.just(LoginUIState.ErrorState("login error if 401 code: ${it.code()}"))
+           in 400..499-> Single.just(UIState.ErrorState("login error if 401 code: ${it.code()}"))
 
-           in 500..599 -> Single.just(LoginUIState.ErrorState("Server error"))
+           in 500..599 -> Single.just(UIState.ErrorState("Server error"))
 
-           else -> Single.just(LoginUIState.ErrorState("Unknown  error"))
+           else -> Single.just(UIState.ErrorState("Unknown  error"))
 
 
        }
