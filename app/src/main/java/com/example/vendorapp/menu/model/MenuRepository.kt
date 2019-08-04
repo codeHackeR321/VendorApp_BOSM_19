@@ -5,6 +5,7 @@ import android.util.Log
 import com.example.vendorapp.shared.dataclasses.retroClasses.MenuPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import com.example.vendorapp.menu.model.room.MenuDao
+import com.example.vendorapp.shared.singletonobjects.RetrofitApi
 import com.example.vendorapp.shared.singletonobjects.RetrofitInstance
 import com.example.vendorapp.shared.singletonobjects.VendorDatabase
 import com.example.vendorapp.shared.utils.NetworkConnectivityCheck
@@ -16,13 +17,13 @@ import io.reactivex.schedulers.Schedulers
 class MenuRepository(val application: Context){
 
     private val menuDao: MenuDao
-    private val menuApiCall: Single<List<MenuPojo>>
+   private val menuApiCall: RetrofitApi
 
     init {
         val database = VendorDatabase.getDatabaseInstance(application)
         menuDao = database.menuDao()
 
-        menuApiCall = RetrofitInstance.getRetroInstance().menu
+        menuApiCall = RetrofitInstance.getRetroInstance()
     }
 
     fun getMenuRoom(): Flowable<List<MenuItemData>>{
@@ -33,15 +34,15 @@ class MenuRepository(val application: Context){
 
     fun updateMenu(): Completable{
 
-    return menuApiCall.subscribeOn(Schedulers.io())
+    return menuApiCall.getMenu("Basic VmVuZG9yMTpmaXJlYmFzZXN1Y2tz","1").subscribeOn(Schedulers.io())
             .doOnSuccess {
-
+   Log.d("Menu","Menu api call code ${it.code()}")
                 var menu = emptyList<MenuItemData>()
-
-                it.forEach { menuPojo ->
-                   menu= menu.plus(menuPojo.toMenuItemData())
-                }
-
+if (it.isSuccessful) {
+    it.body()!!.forEach{ menuPojo ->
+        menu = menu.plus(menuPojo.toMenuItemData())
+    }
+}
                 menuDao.insertMenu(menu)
             }.doOnError {
                 Log.e("Testing Menu Repo" , "Error in adding menu data to room = ${it.toString()}")
@@ -51,7 +52,8 @@ class MenuRepository(val application: Context){
     }
 
     private fun MenuPojo.toMenuItemData(): MenuItemData{
-        return MenuItemData(itemId, name, price, status)
+        return MenuItemData(id, name, price,  is_available)
+
     }
 
 }

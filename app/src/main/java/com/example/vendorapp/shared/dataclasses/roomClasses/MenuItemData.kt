@@ -9,14 +9,14 @@ data class MenuItemData (
 
     @PrimaryKey
     @ColumnInfo(name = "item_id")
-    var itemId: String,
+    var itemId: Int,
 
     @ColumnInfo(name = "item_name")
     var name: String,
 
     @ColumnInfo(name = "item_price")
-    var price: String,
+    var price: Int,
 
     @ColumnInfo(name = "item_status")
-    var status: String
+    var status: Boolean
 )

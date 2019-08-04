@@ -2,11 +2,15 @@ package com.example.vendorapp.shared.dataclasses.retroClasses
 
 data class MenuPojo (
 
-    var itemId: String,
+    var price:Int,
 
-    var name: String,
+    var id: Int,
 
-    var price: String,
+    var is_available: Boolean,
 
-    var status: String
+    var name: String
+
+
+
+
 )

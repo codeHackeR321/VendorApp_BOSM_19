@@ -141,6 +141,7 @@ initFirestore()
                  }
 
                  },{
+                 Log.d("Firestoreff","error$it")
                  ui_status_subject.onNext(UIState.ErrorState("Unknown error code: ${it}"))
 
 
@@ -344,7 +345,7 @@ var item = emptyList<ItemData>()
 items.forEach {
    item = item.plus(
        ItemData(
-           itemId = it.id,
+           itemId = 3,
            price = it.unit_price,
            quantity = it.quantity,
            orderId = orderId,

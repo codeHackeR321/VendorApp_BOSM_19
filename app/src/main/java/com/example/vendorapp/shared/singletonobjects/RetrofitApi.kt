@@ -15,8 +15,11 @@ interface RetrofitApi {
     @get:GET("orders")
     val orders: Single<List<OrdersPojo>>
 
-    @get:GET("menu")
-    val menu: Single<List<MenuPojo>>
+  /*  @get:GET("menu")
+    val menu: Single<List<MenuPojo>>*/
+
+    @GET("wallet/vendor/{vendor_id}/items")
+    fun getMenu(@Header("Authorization") jwt: String,@Path("vendor_id")vendor_id:String): Single<Response<List<MenuPojo>>>
 
     @get:GET("earnings")
     val earnings: Single<EarningsPojo>

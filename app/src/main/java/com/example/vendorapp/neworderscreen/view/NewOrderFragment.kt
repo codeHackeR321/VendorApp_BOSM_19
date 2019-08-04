@@ -38,53 +38,21 @@ class NewOrderFragment : Fragment() , ListenerRecyViewButtonClick{
 
     @SuppressLint("CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+       observeUIState()
         initializeView()
-        viewModel.observeUIState().observeOn(Schedulers.io()).subscribe({
-            Log.d("Firestore78","in Neworderfrag ui state$it")
-            when(it!!)
-            {
-                UIState.ShowLoadingState -> {
-                    //to be enabled in group view holder
-                    progBar_new_order_screen.visibility = View.VISIBLE
-                    Log.d("Firestore76","in Neworderfrag ui loading state")
 
-                }
+        viewModel.getNewOrders()
 
-                is   UIState.SuccessState->{
-                    if (progBar_new_order_screen.isVisible ) {
-                        progBar_new_order_screen.visibility = View.INVISIBLE
-                        activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                        Log.d("Firestore56","Sucess New order frag")
-                    }
-
-                    Toast.makeText(activity,(it as UIState.SuccessState).message,Toast.LENGTH_SHORT).show()
-                }
-                is UIState.ErrorState ->  Toast.makeText(activity,(it as UIState.ErrorState).message,Toast.LENGTH_SHORT).show()
-            }
-
-        },{
-            Log.d("Firestore77","observe observe ui statre eror$it")
-        })
-
-        viewModel.getNewOrders().observeOn(AndroidSchedulers.mainThread()).doOnNext {
-            Log.d("Testing NO View" , "Entered observer for orders with data = ${it.toString()}")
+        viewModel.orders.observe(this, Observer {
+            Log.d("Testing NO View10" , "Entered observer for orders with data = ${it.toString()}")
             (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders = it
             (recycler_new_order_screen.adapter as RecyclerAdapterFragment).notifyDataSetChanged()
             if (progBar_new_order_screen.isVisible && it.isNotEmpty()) {
                 progBar_new_order_screen.visibility = View.INVISIBLE
                 activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             }
-        }.doOnError {
-            Log.e("Room1" , "Error NO Fragment = $it")
-        }.subscribe()
-
-        viewModel.error.observe(this , Observer {
-            Toast.makeText(context , it , Toast.LENGTH_LONG).show()
-            if (progBar_new_order_screen.isVisible && it.isNotEmpty()) {
-                progBar_new_order_screen.visibility = View.INVISIBLE
-                activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            }
         })
+
 
         /*viewModel.ui_status.observe(this , Observer {
             Log.d("Firestore78","in Neworderfrag ui state$it")
@@ -123,7 +91,7 @@ class NewOrderFragment : Fragment() , ListenerRecyViewButtonClick{
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         Log.d("Testing NO View" , "Refresh Data Called")
 
-
+     viewModel.doInitialFetch()
 
     }
 
@@ -135,5 +103,34 @@ class NewOrderFragment : Fragment() , ListenerRecyViewButtonClick{
             Toast.makeText(context , "$status Order$orderId" , Toast.LENGTH_LONG).show()
         }
     }
+@SuppressLint("CheckResult")
+private fun observeUIState(){
 
+    viewModel.observeUIState().observeOn(Schedulers.io()).subscribe({
+        Log.d("Firestore78","in Neworderfrag ui state$it")
+        when(it!!)
+        {
+            UIState.ShowLoadingState -> {
+                //to be enabled in group view holder
+                progBar_new_order_screen.visibility = View.VISIBLE
+                Log.d("Firestore76","in Neworderfrag ui loading state")
+
+            }
+
+            is   UIState.SuccessState->{
+                if (progBar_new_order_screen.isVisible ) {
+                    progBar_new_order_screen.visibility = View.INVISIBLE
+                    activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    Log.d("Firestore56","Sucess New order frag")
+                }
+
+                Toast.makeText(activity,(it as UIState.SuccessState).message,Toast.LENGTH_SHORT).show()
+            }
+            is UIState.ErrorState ->  Toast.makeText(activity,(it as UIState.ErrorState).message,Toast.LENGTH_SHORT).show()
+        }
+
+    },{
+        Log.d("Firestore77","observe observe ui statre eror$it")
+    })
+}
 }

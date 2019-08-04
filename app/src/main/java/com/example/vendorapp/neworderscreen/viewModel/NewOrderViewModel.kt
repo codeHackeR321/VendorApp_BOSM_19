@@ -29,16 +29,20 @@ class NewOrderViewModel(val context : Context) : ViewModel(){
 
 
     @SuppressLint("CheckResult")
-    fun getNewOrders():Flowable<List<ModifiedOrdersDataClass>> {
+    fun getNewOrders() {
 
-      return  orderRepo.getAllNewOrders()
+      orderRepo.getAllNewOrders().subscribeOn(Schedulers.io()).doOnNext {
+          Log.d("Firestore51", "Error in Orders from room fetch ${it}")
+          (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(it)
+      }.doOnError {
+          Log.e("Firestore50", "Error in Orders from room fetch ${it.message}")
+      }.subscribe()
     }
 
-    /*fun doInitialFetch(){
+    fun doInitialFetch(){
         if (NetworkConnectivityCheck().checkIntenetConnection(context))
         {
-            orderRepo.updateOrders().doOnComplete {
-                Log.d("Testing NO ViewModel" , "Refresh Complete. Fetching Menu Items")
+
                 menuRepo.updateMenu().doOnComplete {
                     Log.d("Testing NO ViewModel" , "Fetching Menu Items Complete. Fetching orders")
                     getNewOrders()
@@ -46,15 +50,12 @@ class NewOrderViewModel(val context : Context) : ViewModel(){
                     Log.e("Testing NO ViewModel" , "Error in updating menu items = ${it.message.toString()}")
                     (error as MutableLiveData<String>).postValue("Error in database. Please try after some time")
                 }.subscribe()
-            }.doOnError {
-                Log.e("Testing NO ViewModel" , "Error in updating = ${it.message.toString()}")
-                (error as MutableLiveData<String>).postValue("Error in database. Please try after some time")
-            }.subscribe()
+
         }
         else{
             (error as MutableLiveData<String>).postValue("Please check your internet connection and restart the app")
         }
-    }*/
+    }
 
     @SuppressLint("CheckResult")
     fun observeUIState(): Flowable<UIState>{

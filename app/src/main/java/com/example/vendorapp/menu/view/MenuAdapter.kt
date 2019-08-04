@@ -44,10 +44,10 @@ class MenuAdapter(private val listener: UpdateMenuListener) : RecyclerView.Adapt
             holder.switch.isChecked=false
         holder.switch.setOnClickListener {item ->
             when(item.on_off.isActivated){
-                true->{ listener.onStatusChanged(itemList.get(position).itemId,"on")
+                true->{ listener.onStatusChanged(itemList.get(position).itemId.toString(),"on")
                     holder.switch.isChecked=true
                 }
-                false -> {listener.onStatusChanged(itemList.get(position).itemId,"off")
+                false -> {listener.onStatusChanged(itemList.get(position).itemId.toString(),"off")
                            holder.switch.isChecked=false
                          }
             }
