@@ -55,9 +55,14 @@
     <string name="vendorappheading">Vendor App</string>
 
     <string name="saved_jwt">jwt</string>
+    <string name="saved_basic_jwt">Basic YXBwZDpmaXJlYmFzZXN1Y2tz</string>
     <string name="default_jwt_value">no_jwt_found</string>
     <string name="preference_file_login">loginfile</string>
     <string name="base_url_bosm">http://test.bits-bosm.org/</string>
     <string name="base_url_fake">https://my-json-server.typicode.com/PrarabdhGarg/VendorApp/</string>
     <string name="saved_vendor_id">vendor_id</string>
+    <string name="confirm_logout">Are you sure you want to logout?</string>
+    <string name="confirm">Confirm</string>
+    <string name="default_vendor_id">no_vendor_found</string>
+
 </resources>

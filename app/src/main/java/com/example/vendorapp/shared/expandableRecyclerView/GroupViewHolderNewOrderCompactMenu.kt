@@ -17,11 +17,7 @@ class GroupViewHolderNewOrderCompactMenu(private val orderId: String , private v
     lateinit var textArrowButton:TextView
     lateinit var buttonAccept:Button
     lateinit var buttonDecline:Button
-/*
-    interface RecyclerButtonClickListener3{
 
-        fun buttonClicked3(orderId : String , accepted : Boolean)
-    }*/
 
     init {
         textArrowButton = itemView!!.findViewById(R.id.text_group_view_holder_new_order_heading)

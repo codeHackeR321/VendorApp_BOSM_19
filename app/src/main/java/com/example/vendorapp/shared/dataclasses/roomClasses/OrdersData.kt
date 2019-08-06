@@ -18,7 +18,7 @@ data class OrdersData (
     var timestamp: Long,
 
     @ColumnInfo(name = "otp")
-    var otp: String,
+    var otp: Int,
 
     @ColumnInfo(name = "total_amount")
     var total_price:Int

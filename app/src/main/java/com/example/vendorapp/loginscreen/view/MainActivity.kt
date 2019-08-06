@@ -36,6 +36,8 @@ private lateinit var  viewModel: LoginViewModel
                 UIState.GoToMainScreen -> {
                     Toast.makeText(this@MainActivity, "Login Successfull",Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this@MainActivity,MainScreenActivity::class.java))
+                    finish()
+
                 }
 
               is UIState.ErrorState ->  Toast.makeText(this@MainActivity,(it as UIState.ErrorState).message,Toast.LENGTH_SHORT).show()
@@ -83,7 +85,7 @@ private lateinit var  viewModel: LoginViewModel
      * It sets up notification Channel
      * */
     fun initializeApp(){
-       /* val jwt_token=viewModel.getJWT()
+        val jwt_token=viewModel.getJWT()
         if(jwt_token.equals(getString(R.string.default_jwt_value)))
         {
             //Loader hata
@@ -92,12 +94,11 @@ private lateinit var  viewModel: LoginViewModel
         else
         {
             // login karwa
-            Toast.makeText(this,"Already Logged in, $jwt_token",Toast.LENGTH_LONG).show()
-           *//* val intent=Intent(this , MainScreenActivity::class.java)
-            intent.putExtra(getString(R.string.saved_jwt),jwt_token)
+            Toast.makeText(this,"Already Logged in",Toast.LENGTH_LONG).show()
+            val intent=Intent(this , MainScreenActivity::class.java)
             startActivity(intent)
-            finish()*//*
-        }*/
+            finish()
+        }
         setupNotificationChannel()
         startService(Intent(this,MyFirebaseMessagingService::class.java))
 

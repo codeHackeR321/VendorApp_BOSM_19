@@ -14,38 +14,27 @@ import retrofit2.http.POST
 @Dao
 interface OrderDao {
 
-    @Query("SELECT * FROM orders_table")
+    @Query("SELECT * FROM orders_table WHERE status = 0")
     fun getNewOrders():Flowable<List<OrdersData>>
-//WHERE status = 'pending'
 
-    @Query("SELECT * FROM orders_table")
-    fun getCheckNewOrders():List<OrdersData>
 
-    @Query("SELECT * FROM orders_table  ")
-    //WHERE status = 'accepted' OR status = 'ready'
+    @Query("SELECT * FROM orders_table WHERE status = 1 OR status = 2 ")
     fun getOrders(): Flowable<List<OrdersData>>
 
-    @Query("SELECT * FROM orders_table ")
-    //WHERE status = 'finish'
+    @Query("SELECT * FROM orders_table WHERE status = 3")
     fun getFinishOrders(): Flowable<List<OrdersData>>
 
     @Query("SELECT items_order.item_id AS itemId, price, quantity, item_name AS name from items_order INNER JOIN menu_table ON items_order.item_id = menu_table.item_id WHERE order_Id= :orderId")
     fun getItemsForOrder(orderId: String): Single<List<ItemsModel>>
 
-    @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status, timestamp, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id ")
+    @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status, timestamp, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id WHERE status = 0")
     fun getAllNewOrders() : Flowable<List<OrderItremCombinedDataClass>>
-//WHERE status = 'pending'
 
-    @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status, timestamp, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id")
-    fun getCheckAllNewOrders() : List<OrderItremCombinedDataClass>
-
-
-    @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status,timestamp, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id ")
+    @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status,timestamp, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id WHERE status = 1 OR status = 2")
     fun getAllAcceptedOrders() : Flowable<List<OrderItremCombinedDataClass>>
-//WHERE status = 'accepted' OR status = 'ready'
 
     @Query("UPDATE orders_table SET status = :status WHERE order_id = :orderId")
-    fun updateStatus(orderId: String, status: String): Completable
+    fun updateOrderStatusRoom(orderId: Int, status: Int): Completable
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertOrders(orders: OrdersData)
@@ -56,6 +45,9 @@ interface OrderDao {
     @Query("DELETE FROM items_order")
     fun deleteAllOrderItems()
 
+    @Query("DELETE FROM items_order WHERE order_Id=:orderId    ")
+    fun deleteItemsWithOrderId(orderId: Int)
+
     @Query("SELECT * from orders_table WHERE order_id= :orderId ")
-    fun getOrderById(orderId: String): Flowable<OrdersData>
+    fun getOrderById(orderId: Int): Flowable<OrdersData>
 }

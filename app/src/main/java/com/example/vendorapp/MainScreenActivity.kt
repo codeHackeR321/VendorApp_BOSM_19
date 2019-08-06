@@ -1,6 +1,8 @@
 package com.example.vendorapp
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -11,6 +13,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.example.vendorapp.acceptedorderscreen.view.AcceptedOrderFragment
 import com.example.vendorapp.completedorderscreen.view.CompletedOrdersActivity
+import com.example.vendorapp.loginscreen.view.MainActivity
 import com.example.vendorapp.menu.view.MenuActivity
 import com.example.vendorapp.neworderscreen.view.NewOrderFragment
 import kotlinx.android.synthetic.main.activity_main_screen.*
@@ -19,14 +22,18 @@ class MainScreenActivity : AppCompatActivity() {
 
     private lateinit var viewPager : ViewPager
     private lateinit var viewPagerAdapter : FragmentPagerAdapter
+   private lateinit  var sharedPref:SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_screen)
         // recive jwt via intent
-
+        sharedPref = this.getSharedPreferences(
+            this.getString(R.string.preference_file_login), Context.MODE_PRIVATE
+        )
         viewPager = viewPager_activity_mainScreen
         viewPager.adapter = MyPagerAdapter()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -44,7 +51,12 @@ class MainScreenActivity : AppCompatActivity() {
             R.id.overflowMenu_contactUs ->
                 Toast.makeText(this , "Contact Us Activity" , Toast.LENGTH_LONG).show()
             R.id.overflowMenu_logout ->
-                Toast.makeText(this , "Logout" , Toast.LENGTH_LONG).show()
+            {
+                //add alert dialog box
+               sharedPref.edit().clear().apply()
+                startActivity(Intent(this@MainScreenActivity, MainActivity::class.java))
+                finish()
+            }
         }
         return super.onOptionsItemSelected(item)
     }

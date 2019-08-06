@@ -56,8 +56,8 @@ class OrderRepository(val application: Context) {
         // for daywise earnings
         earningDao = database.earningDao()
         earningsApiCall = RetrofitInstance.getRetroInstance().earnings
-         jwt_token = sharedPref.getString(application.getString(R.string.saved_jwt), "")
-         vendor_id = sharedPref.getString(application.getString(R.string.saved_vendor_id), "1")
+         jwt_token = sharedPref.getString(application.getString(R.string.saved_jwt), application.getString(R.string.default_jwt_value))
+         vendor_id = sharedPref.getString(application.getString(R.string.saved_vendor_id), application.getString(R.string.default_vendor_id))
         Log.d("Firestore99", "Vendor id = $vendor_id")
 
 initFirestore()
@@ -91,7 +91,11 @@ initFirestore()
 
                     }
                     DocumentChange.Type.MODIFIED ->
-                        Log.d("sports3", "Modified city: ${dc.document.data}")
+                    {
+                        Log.d("Firestore103", "Entered  document modifued ${dc.document.data}")
+                        var order_id=dc.document.id
+                        onOrderStatusModified(order_id!!.toInt(),dc.document["status"].toString().toInt())
+                    }
                     DocumentChange.Type.REMOVED ->
                         Log.d("sports4", "Removed city: ${dc.document.data}")
 
@@ -105,21 +109,19 @@ initFirestore()
     }
     @SuppressLint("CheckResult")
      fun onNewOrderAdded(orderId: String){
-        Log.d("Firestore10","entered on new order jwt = ${jwt_token!!}\norderid = $orderId")
-         orderService.getOrderFromOrderId(jwt = "Basic YXBwZDpmaXJlYmFzZXN1Y2tz",orderId = orderId)
+        Log.d("Firestore10","entered on new order jwt = ${jwt_token!!}\norderid = $orderId")//"Basic YXBwZDpmaXJlYmFzZXN1Y2tz"
+         orderService.getOrderFromOrderId(jwt = "JWT "+jwt_token!!,orderId = orderId)
             .subscribeOn(Schedulers.io()).subscribe({Log.d("Firestore14","data saved in room $it ")
                  Log.d("Firestore9","code ${it.code()}")
                  when(it.code())
                  {
 
                      200 -> {
-
+                         orderDao.deleteItemsWithOrderId(orderId = orderId.toInt())
                          orderDao.insertOrders(it.body()!!.toOrderData(orderId = orderId.toInt()))
                          orderDao.insertOrderItems(it.body()!!.toItemData(orderId = orderId.toInt()))
 
-                         var  ordersData= emptyList<OrderItremCombinedDataClass>()
-                         ordersData=ordersData.plus(orderDao.getCheckAllNewOrders())
-                         Log.d("Firestore3","data saved in room  order data $ordersData \n ${it.body()!!.status}, items ${it.body()!!.items} ")
+                         Log.d("Firestore3","data saved in room   \n ${it.body()!!.status}, items ${it.body()!!.items} ")
                          ui_status_subject.onNext(UIState.SuccessState("Order$orderId recieved "))
 
                          /*Single.just(UIState.SuccessState("Data updated for Order Id: $orderId"))*/
@@ -151,28 +153,40 @@ initFirestore()
 
 }
 
+ private fun onOrderStatusModified(orderId: Int,status: Int){
+     Log.d("Firestore104","upddate order $orderId  s $status")
+        orderDao.updateOrderStatusRoom(orderId,status)
+
+ }
     fun getUIStateFlowable(): Flowable<UIState>{
      return   ui_status_subject.toFlowable(BackpressureStrategy.LATEST)
     }
-fun getOrderFromId(orderId: String): Flowable<OrdersData> {
-return orderDao.getOrderById(orderId).subscribeOn(Schedulers.io())
-}
 
-fun updateStatus(orderId: String, status: String): Completable {
+
+fun updateStatus(orderId: String, status: Int): Completable {
 val body = JsonObject().also {
    it.addProperty("new_status", status)
 
 }
-Log.d("check", body.toString())
-return orderService.updateStatus(body, orderId).doOnSuccess {
-   Log.d("check", "${it.code()} : ${it.message()}")
+Log.d("check5", body.toString())
+return orderService.updateStatus("JWT "+jwt_token!!,body, orderId).doOnSuccess {
+   Log.d("check2", "${it.code()} : ${it.message()}, body :${it.body()}")
+}.doOnError {
+  Log.d("check3","error change staus $it")
 }.ignoreElement()
 }
 
+//decline  an order
+    fun declineOrder(orderId: String): Completable {
 
-fun updateStatusInRoom() {
 
-}
+        return orderService.declineOrder("JWT "+jwt_token!!, orderId).doOnSuccess {
+            Log.d("check2", "${it.code()} : ${it.message()}, body :${it.body()}")
+        }.doOnError {
+            Log.d("check3","error decline $it")
+        }.ignoreElement()
+    }
+
 
 // get accepted and ready orders from room
 fun getAcceptedOrdersRoom(): Flowable<List<ModifiedOrdersDataClass>> {
@@ -303,37 +317,14 @@ return earningDao.getDayWiseEarnings().subscribeOn(Schedulers.io()).doOnError {
 }
 }
 
-fun updateOrders(): Completable {
 
-return orderApiCall.subscribeOn(Schedulers.io())
-   .doOnSuccess {
-       /* Log.d("Testing Repo", "Api success with ${it.toString()}")
-        var orders = emptyList<OrdersData>()
-        var items = emptyList<ItemData>()
-
-        it.forEach { ordersPojo ->
-
-            orders = orders.plus(ordersPojo.toOrderData())
-            items = items.plus(ordersPojo.toItemData())
-
-        }
-        Log.d("Testing Repo", "Orders Added = ${orders.toString()}")
-        Log.d("Testing Repo", "Items added = ${items.toString()}")
-        orderDao.deleteAllOrderItems()
-        orderDao.insertOrders(orders)
-        orderDao.insertOrderItems(items)*/
-   }.doOnError {
-       Log.e("Testing Repo", "Error in fetching data = ${it.message.toString()}")
-   }
-   .ignoreElement()
-}
 
 private fun OrdersPojo.toOrderData(orderId: Int): OrdersData {
 return OrdersData(
    orderId = orderId,
    status = status,
-   otp = "1234",
-   total_price = total_price,
+   otp = otp,
+   total_price = totalPrice,
    timestamp = 1564760765
 )
 }
@@ -345,8 +336,8 @@ var item = emptyList<ItemData>()
 items.forEach {
    item = item.plus(
        ItemData(
-           itemId = 3,
-           price = it.unit_price,
+           itemId = it.itemId,
+           price = it.unitPrice,
            quantity = it.quantity,
            orderId = orderId,
            id = 0

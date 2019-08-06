@@ -32,11 +32,29 @@ class NewOrderViewModel(val context : Context) : ViewModel(){
     fun getNewOrders() {
 
       orderRepo.getAllNewOrders().subscribeOn(Schedulers.io()).doOnNext {
-          Log.d("Firestore51", "Error in Orders from room fetch ${it}")
+          Log.d("Firestore51", " Orders from room fetch ${it}")
           (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(it)
       }.doOnError {
           Log.e("Firestore50", "Error in Orders from room fetch ${it.message}")
       }.subscribe()
+    }
+
+    @SuppressLint("CheckResult")
+    fun changeStatus(orderId:String, status:Int) {
+        orderRepo.updateStatus(orderId,status).subscribeOn(Schedulers.io()).subscribe({
+            Log.d("Status3","staus chenged ")
+        },{
+            Log.d("Status2","error viewmodel change stuas$it")
+        })
+    }
+
+    @SuppressLint("CheckResult")
+    fun declineOrder(orderId:String) {
+        orderRepo.declineOrder(orderId).subscribeOn(Schedulers.io()).subscribe({
+            Log.d("Status4","declines ")
+        },{
+            Log.d("Status5","error viewmodel decline order$it")
+        })
     }
 
     fun doInitialFetch(){

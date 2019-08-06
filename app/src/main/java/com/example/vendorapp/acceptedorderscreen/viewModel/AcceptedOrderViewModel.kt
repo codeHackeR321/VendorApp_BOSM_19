@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
 import com.example.vendorapp.shared.singletonobjects.repositories.OrderRepositoryInstance
+import io.reactivex.schedulers.Schedulers
 
 class AcceptedOrderViewModel(context : Context) : ViewModel(){
 
@@ -27,17 +28,15 @@ class AcceptedOrderViewModel(context : Context) : ViewModel(){
         }.subscribe()
     }
 
-    fun changeStatus(orderId:String, status:String) {
-        orderRepo.updateStatus(orderId,status)
+    @SuppressLint("CheckResult")
+    fun changeStatus(orderId:String, status:Int) {
+        orderRepo.updateStatus(orderId,status).subscribeOn(Schedulers.io()).subscribe({
+            Log.d("Status3","staus chenged ")
+        },{
+            Log.d("Status2","error viewmodel change stuas$it")
+        })
     }
 
-    fun getPreviousOrders(){
 
-        orderRepo.updateOrders().doOnComplete {
-            getAcceptedOrders()
-        }.doOnError {
-            Log.e("Testing Accepted VM" , "Error in network call ${it.toString()}")
-        }.subscribe()
-    }
 }
 

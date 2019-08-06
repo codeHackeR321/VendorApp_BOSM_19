@@ -22,6 +22,7 @@ import com.example.vendorapp.neworderscreen.viewModel.NewOrderViewModel
 import com.example.vendorapp.neworderscreen.viewModel.NewOrderViewModelFacory
 import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
 import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
+import com.example.vendorapp.shared.utils.StatusKeyValue
 import kotlinx.android.synthetic.main.fragment_fra_accepted_order.*
 import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 
@@ -30,8 +31,9 @@ class AcceptedOrderFragment : Fragment() , ListenerRecyViewButtonClick{
 
 
     override fun buttonClicked(orderId: String, status: String) {
-       Toast.makeText(context,"id$orderId stau00s$status",Toast.LENGTH_LONG).show()
-        viewModel.changeStatus(orderId,status)
+       Toast.makeText(context,"id$orderId stautuss$status",Toast.LENGTH_LONG).show()
+        Log.d("Status","id; $orderId status: $status")
+        viewModel.changeStatus(orderId,StatusKeyValue().getStatusInt(status))
     }
 
      private val viewModel by lazy {
