@@ -93,7 +93,7 @@ class RecyclerAdapterFragment(val context: Context,val listener : ListenerRecyVi
                 holderIncompleteOrder.textViewTryAgainMessage.visibility=View.INVISIBLE
                 holderIncompleteOrder.prog_bar.visibility=View.VISIBLE
             }
-            else if (emptyOrderIds[position].status.equals(context.getString(R.string.new_order_incomp_order_status_try_again)))
+            else if (emptyOrderIds[position].status.equals(context.getString(R.string.status_try_again)))
             {
                 holderIncompleteOrder.buttonTryAgain.visibility=View.VISIBLE
                 holderIncompleteOrder.textViewTryAgainMessage.visibility=View.VISIBLE

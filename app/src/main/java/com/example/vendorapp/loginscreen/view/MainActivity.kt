@@ -117,6 +117,7 @@ private lateinit var  viewModel: LoginViewModel
     }
 
     private fun showLoadingStateFragment(){
+        buttonSignIn.isClickable=false
         if (!prog_bar_main_activity.isVisible) {
             prog_bar_main_activity.visibility = View.VISIBLE
             window.setFlags(
@@ -126,6 +127,7 @@ private lateinit var  viewModel: LoginViewModel
         }}
 
     private fun removeLoadingStateFragment(){
+        buttonSignIn.isClickable=true
         if (prog_bar_main_activity.isVisible) {
             prog_bar_main_activity.visibility = View.INVISIBLE
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
