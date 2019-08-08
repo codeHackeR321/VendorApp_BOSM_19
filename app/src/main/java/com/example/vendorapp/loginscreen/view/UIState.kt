@@ -13,7 +13,7 @@ sealed class UIState {
     object GoToMainScreen : UIState()
     data class ErrorState(val message:String):UIState()
 
-    data class SuccessStateFetchingOrders(val message:String,val orderId :Int,val incompleteOrderList: MutableList<IncompleteOrderStatus>): UIState()
+    data class SuccessStateFetchingOrders(val message:String,val orderId :Int,val incompleteOrderList: List<IncompleteOrderStatus>): UIState()
 
-    data class ErrorStateFetchingOrders(val message:String,val orderId :Int,val incompleteOrderList: MutableList<IncompleteOrderStatus>): UIState()
+    data class ErrorStateFetchingOrders(val message:String,val orderId :Int,val incompleteOrderList: List<IncompleteOrderStatus>): UIState()
 }

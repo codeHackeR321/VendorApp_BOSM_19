@@ -38,7 +38,7 @@ class OrderRepository(val application: Context) {
     private val orderService = RetrofitInstance.getRetroInstance()
     var ui_status_repo : Flowable<UIState> = Flowable.just(UIState.ShowInitialState)
     var ui_status_subject = BehaviorSubject.create<UIState>()
-    var incomp_order_status_list= mutableListOf<IncompleteOrderStatus>()
+    var incomp_order_status_list= emptyList<IncompleteOrderStatus>()
 
     private val db = FirebaseFirestore.getInstance()
 
@@ -112,7 +112,7 @@ initFirestore()
     @SuppressLint("CheckResult")
      fun onNewOrderAdded(orderId: String){
         Log.d("OrderRepo_Firestore7","entered on new order jwt = ${jwt_token!!}\norderid = $orderId")//"Basic YXBwZDpmaXJlYmFzZXN1Y2tz"
-         orderService.getOrderFromOrderId(jwt = "JWT "+jwt_token!!,orderId = orderId)
+         orderService.getOrderFromOrderId(jwt = "JWT"+jwt_token!!,orderId = orderId)
             .subscribeOn(Schedulers.io()).subscribe({Log.d("Firestore14","data saved in room $it ")
                  Log.d("OrderRepo_Firestore8","code ${it.code()}")
                  when(it.code())
@@ -126,7 +126,7 @@ initFirestore()
                          Log.d("OrderRepo_Firestore9","data saved in room   \n ${it.body()!!.status}, items ${it.body()!!.items} ")
                          //remove if incomnplte order present
                          if(incomp_order_status_list.find{it.orderId==orderId.toInt()}!=null){
-                             incomp_order_status_list.remove(incomp_order_status_list.find{it.orderId==orderId.toInt()})
+                           incomp_order_status_list=  incomp_order_status_list.minus(incomp_order_status_list.find{it.orderId==orderId.toInt()}!!)
                            //  incomp_order_status_subject.onNext(incomp_order_status_list)
                          }
                          ui_status_subject.onNext(UIState.SuccessStateFetchingOrders("Order$orderId recieved ",orderId = orderId.toInt(),incompleteOrderList = incomp_order_status_list))
@@ -137,24 +137,24 @@ initFirestore()
 
                      in 400..499-> {
                          if(incomp_order_status_list.find{it.orderId==orderId.toInt()}!=null){
-                            incomp_order_status_list.set(incomp_order_status_list.
-                                indexOf(incomp_order_status_list.
-                                    find{it.orderId==orderId.toInt()}), IncompleteOrderStatus(orderId.toInt(),application.getString(R.string.status_try_again))
-                            )
+                             incomp_order_status_list=incomp_order_status_list.minus(incomp_order_status_list.find{it.orderId==orderId.toInt()}!!)
+                            incomp_order_status_list=incomp_order_status_list.plus(IncompleteOrderStatus(orderId.toInt(),application.getString(R.string.status_try_again)))
                             // incomp_order_status_subject.onNext(incomp_order_status_list)
                          }
+                         else{
+                             incomp_order_status_list=incomp_order_status_list.plus(IncompleteOrderStatus(orderId.toInt(),application.getString(R.string.status_try_again)))
+
+                         }
                          ui_status_subject
-                             .onNext(UIState.ErrorStateFetchingOrders("Error code: ${it.code()} message: ${it.body()!!}"
+                             .onNext(UIState.ErrorStateFetchingOrders("Error code: ${it.code()} "
                                  ,orderId.toInt(),incomp_order_status_list))
 
                      }
 
                      in 500..599-> {
                          if(incomp_order_status_list.find{it.orderId==orderId.toInt()}!=null){
-                             incomp_order_status_list.set(incomp_order_status_list.
-                                 indexOf(incomp_order_status_list.
-                                     find{it.orderId==orderId.toInt()}), IncompleteOrderStatus(orderId.toInt(),application.getString(R.string.status_try_again))
-                             )
+                             incomp_order_status_list=incomp_order_status_list.minus(incomp_order_status_list.find{it.orderId==orderId.toInt()}!!)
+                             incomp_order_status_list=incomp_order_status_list.plus(IncompleteOrderStatus(orderId.toInt(),application.getString(R.string.status_try_again)))
                            //  incomp_order_status_subject.onNext(incomp_order_status_list)
                          }
                          ui_status_subject.onNext(UIState.ErrorStateFetchingOrders("Server error code: ${it.code()}",orderId.toInt(),incomp_order_status_list))
@@ -163,10 +163,9 @@ initFirestore()
 
                      else -> {
                          if(incomp_order_status_list.find{it.orderId==orderId.toInt()}!=null){
-                             incomp_order_status_list.set(incomp_order_status_list.
-                                 indexOf(incomp_order_status_list.
-                                     find{it.orderId==orderId.toInt()}), IncompleteOrderStatus(orderId.toInt(),application.getString(R.string.status_try_again))
-                             )
+                             incomp_order_status_list=incomp_order_status_list.minus(incomp_order_status_list.find{it.orderId==orderId.toInt()}!!)
+                             incomp_order_status_list=incomp_order_status_list.plus(IncompleteOrderStatus(orderId.toInt(),application.getString(R.string.status_try_again)))
+
                              //incomp_order_status_subject.onNext(incomp_order_status_list)
                          }
                          ui_status_subject.onNext(UIState.ErrorStateFetchingOrders("Unknown error code: ${it.code()}",orderId.toInt(),incomp_order_status_list))
@@ -180,10 +179,9 @@ initFirestore()
                  },{
                  Log.d("OrderRepo_Firestore10","error$it")
                  if(incomp_order_status_list.find{it.orderId==orderId.toInt()}!=null){
-                     incomp_order_status_list.set(incomp_order_status_list.
-                         indexOf(incomp_order_status_list.
-                             find{it.orderId==orderId.toInt()}), IncompleteOrderStatus(orderId.toInt(),application.getString(R.string.status_try_again))
-                     )
+                     incomp_order_status_list=incomp_order_status_list.minus(incomp_order_status_list.find{it.orderId==orderId.toInt()}!!)
+                     incomp_order_status_list=incomp_order_status_list.plus(IncompleteOrderStatus(orderId.toInt(),application.getString(R.string.status_try_again)))
+
                   //   incomp_order_status_subject.onNext(incomp_order_status_list)
                  }
                  ui_status_subject.onNext(UIState.ErrorStateFetchingOrders("Unknown error code: ${it}",orderId.toInt(),incomp_order_status_list))
