@@ -1,7 +1,6 @@
 package com.example.vendorapp.neworderscreen.view
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,9 +11,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
-import com.example.vendorapp.MainScreenActivity
 import com.example.vendorapp.R
 import com.example.vendorapp.loginscreen.view.UIState
 import com.example.vendorapp.neworderscreen.view.adapters.RecyclerAdapterFragment
@@ -23,8 +20,6 @@ import com.example.vendorapp.neworderscreen.viewModel.NewOrderViewModelFacory
 import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
 import com.example.vendorapp.shared.utils.StatusKeyValue
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.card_new_order_screen.*
 import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 
 class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
@@ -45,41 +40,46 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
         viewModel.getNewOrders()
 
         viewModel.orders.observe(this, Observer {
-            Log.d("Testing NO View10", "Entered observer for orders with data = ${it.toString()}")
+            Log.d("NewOrderFrag4", "Entered observer for orders with data = ${it.toString()}")
             (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders = it
             (recycler_new_order_screen.adapter as RecyclerAdapterFragment).notifyDataSetChanged()
-            if (progBar_new_order_screen.isVisible && it.isNotEmpty()) {
-                progBar_new_order_screen.visibility = View.INVISIBLE
-                activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            }
+           removeLoadingStateFragment()
+        })
+
+        viewModel.error.observe(this, Observer {
+            Log.d("NewOrderFrag3","error$it")
+            Toast.makeText(activity,"Error: $it",Toast.LENGTH_LONG).show()
+            removeLoadingStateFragment()
         })
         super.onViewCreated(view, savedInstanceState)
     }
 
     fun initializeView() {
-        Log.d("Testing NO View", "Entered Initialize View")
-        recycler_new_order_screen.adapter = RecyclerAdapterFragment(this)
-        progBar_new_order_screen.visibility = View.VISIBLE
-        activity!!.window.setFlags(
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-        )
-        Log.d("Testing NO View", "Refresh Data Called")
-
+        Log.d("NewOrderFrag1", "Entered Initialize View")
+        recycler_new_order_screen.adapter = RecyclerAdapterFragment(context!!,this)
+        showLoadingStateFragment()
+        Log.d("NewOrderFrag2", "Refresh Data Called")
         viewModel.doInitialFetch()
 
     }
 
-    override fun buttonClicked(orderId: String, status: String) {
-        if (status.equals(getString(R.string.status_accepted))) {
-            viewModel.changeStatus(orderId, StatusKeyValue().getStatusInt(status))
+    override fun buttonClicked(orderId: Int, status: Int) {
+        //set ui state for group view holder
+        if (status==StatusKeyValue().getStatusInt(getString(R.string.status_accepted))) {
 
-        } else if (status.equals(getString(R.string.status_declined))) {
+            viewModel.changeStatus(orderId, status)
+
+        } else if (status==StatusKeyValue().getStatusInt(getString(R.string.status_declined))) {
             viewModel.declineOrder(orderId)
 
         }
+        else if (status==StatusKeyValue().getStatusInt(getString(R.string.status_try_again)))
+        {
+            viewModel.fetchOrderAgain(orderId)
+        }
     }
 
+    //loaders for grouyp view holder
     @SuppressLint("CheckResult")
     private fun observeUIState() {
 
@@ -88,30 +88,48 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
             when (it!!) {
                 UIState.ShowLoadingState -> {
                     //to be enabled in group view holder
-                    progBar_new_order_screen.visibility = View.VISIBLE
+                   // progBar_new_order_screen.visibility = View.VISIBLE
+                    // not yet decided for group view holder
                     Log.d("Firestore76", "in Neworderfrag ui loading state")
 
                 }
 
-                is UIState.SuccessState -> {
-                    if (progBar_new_order_screen.isVisible) {
-                        progBar_new_order_screen.visibility = View.INVISIBLE
-                        activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                        Log.d("Firestore56", "Sucess New order frag")
-                    }
+                is UIState.SuccessStateFetchingOrders -> {
+                    //removeLoadingStateFragment()
 
-                    Toast.makeText(activity, (it as UIState.SuccessState).message, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity, (it as UIState.SuccessStateFetchingOrders).message, Toast.LENGTH_SHORT).show()
+                    (recycler_new_order_screen.adapter as RecyclerAdapterFragment)
+                        .emptyOrderIds = (it as UIState.ErrorStateFetchingOrders).incompleteOrderList
+                    (recycler_new_order_screen.adapter as RecyclerAdapterFragment).notifyDataSetChanged()
                 }
-                is UIState.ErrorState -> {if (progBar_new_order_screen.isVisible) {
-                    progBar_new_order_screen.visibility = View.INVISIBLE
-                    activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                    Log.d("Firestore56", "Sucess New order frag")
-                    Toast.makeText(activity, (it as UIState.ErrorState).message,Toast.LENGTH_SHORT).show()
-                }}
+                is UIState.ErrorStateFetchingOrders -> {
+                   // removeLoadingStateFragment()
+                    Log.d("Firestore56", "Error state fetching orders")
+                    Toast.makeText(activity, (it as UIState.ErrorStateFetchingOrders).message,Toast.LENGTH_SHORT).show()
+                    (recycler_new_order_screen.adapter as RecyclerAdapterFragment)
+                        .emptyOrderIds = (it as UIState.ErrorStateFetchingOrders).incompleteOrderList
+                    (recycler_new_order_screen.adapter as RecyclerAdapterFragment).notifyDataSetChanged()
+                }
             }
 
         }, {
             Log.d("Firestore77", "observe observe ui statre eror$it")
         })
+    }
+
+    private fun showLoadingStateFragment(){
+        if (!progBar_new_order_screen.isVisible) {
+            progBar_new_order_screen.visibility = View.VISIBLE
+            activity!!.window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        )
+    }}
+
+    private fun removeLoadingStateFragment(){
+        if (progBar_new_order_screen.isVisible) {
+            progBar_new_order_screen.visibility = View.INVISIBLE
+            activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        }
     }
 }

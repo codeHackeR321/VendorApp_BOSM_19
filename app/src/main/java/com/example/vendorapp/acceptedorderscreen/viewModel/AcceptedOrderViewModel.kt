@@ -29,7 +29,7 @@ class AcceptedOrderViewModel(context : Context) : ViewModel(){
     }
 
     @SuppressLint("CheckResult")
-    fun changeStatus(orderId:String, status:Int) {
+    fun changeStatus(orderId:Int, status:Int) {
         orderRepo.updateStatus(orderId,status).subscribeOn(Schedulers.io()).subscribe({
             Log.d("Status3","staus chenged ")
         },{

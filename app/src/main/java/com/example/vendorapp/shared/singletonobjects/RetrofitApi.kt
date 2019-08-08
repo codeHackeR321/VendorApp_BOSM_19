@@ -30,7 +30,7 @@ interface RetrofitApi {
 
     //decline an order
     @POST("wallet/vendor/orders/{id}/decline")
-    fun declineOrder(@Header("Authorization") jwt: String,@Path("id")order_id:String):Single<Response<Unit>>
+    fun declineOrder(@Header("Authorization") jwt: String,@Path("id")order_id:Int):Single<Response<Unit>>
 
     //to obtain JWT
     @POST("wallet/auth")

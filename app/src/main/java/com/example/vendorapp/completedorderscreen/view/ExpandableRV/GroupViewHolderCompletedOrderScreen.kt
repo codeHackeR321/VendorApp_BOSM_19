@@ -9,7 +9,7 @@ import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
 import com.thoughtbot.expandablerecyclerview.listeners.OnGroupClickListener
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder
 
-class GroupViewHolderCompletedOrderScreen ( private val otp: String, private val orderId: String, private val orderAmount : String, itemView : View?) :
+class GroupViewHolderCompletedOrderScreen ( private val otp: Int, private val orderId: Int, private val orderAmount : Int, itemView : View?) :
     GroupViewHolder(itemView){
 
     lateinit var textViewOrderId : TextView
@@ -28,7 +28,7 @@ class GroupViewHolderCompletedOrderScreen ( private val otp: String, private val
 
         textViewOrderId.text="Id#"+orderId
         textViewOrderAmount.text="\u20B9"+"20"+orderAmount
-        textViewOtp.text=otp
+        textViewOtp.text=otp.toString()
 
         textViewOrderAmount.setOnClickListener{}
         textViewOrderId.setOnClickListener {  }

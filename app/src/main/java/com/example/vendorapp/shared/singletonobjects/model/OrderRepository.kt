@@ -3,12 +3,13 @@ package com.example.vendorapp.shared.singletonobjects.model
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
+
 import com.example.vendorapp.R
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
 import com.example.vendorapp.completedorderscreen.model.room.EarningDao
 import com.example.vendorapp.loginscreen.view.UIState
-import com.example.vendorapp.shared.dataclasses.OrderItremCombinedDataClass
+import com.example.vendorapp.neworderscreen.model.IncompleteOrderStatus
+
 import com.example.vendorapp.shared.singletonobjects.model.room.OrderDao
 import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
@@ -37,6 +38,7 @@ class OrderRepository(val application: Context) {
     private val orderService = RetrofitInstance.getRetroInstance()
     var ui_status_repo : Flowable<UIState> = Flowable.just(UIState.ShowInitialState)
     var ui_status_subject = BehaviorSubject.create<UIState>()
+    var incomp_order_status_list= mutableListOf<IncompleteOrderStatus>()
 
     private val db = FirebaseFirestore.getInstance()
 
@@ -58,7 +60,7 @@ class OrderRepository(val application: Context) {
         earningsApiCall = RetrofitInstance.getRetroInstance().earnings
          jwt_token = sharedPref.getString(application.getString(R.string.saved_jwt), application.getString(R.string.default_jwt_value))
          vendor_id = sharedPref.getString(application.getString(R.string.saved_vendor_id), application.getString(R.string.default_vendor_id))
-        Log.d("Firestore99", "Vendor id = $vendor_id")
+        Log.d("OrderRepo_API1", "Vendor id = $vendor_id")
 
 initFirestore()
 
@@ -69,8 +71,8 @@ initFirestore()
         var  order_id:String?=null
         db.collection("orders").whereEqualTo("vendorid", vendor_id!!.toInt()).addSnapshotListener { snapshots, e ->
 
-            Log.d("Firestore98", "Snapshot = ${snapshots.toString()}")
-            Log.d("Firestore97", "Error = ${e.toString()}")
+            Log.d("OrderRepo_Firestore1", "Snapshot = ${snapshots.toString()}")
+            Log.d("OrderRepo_Firestore2", "Error = ${e.toString()}")
 
             if (e != null) {
                 Log.w("Sports", "listen:error", e)
@@ -78,13 +80,13 @@ initFirestore()
             }
 
             for (dc in snapshots!!.documents) {
-                Log.d("Firestore96", "Document = ${dc.data.toString()}")
+                Log.d("OrderRepo_Firestore3", "Document = ${dc.data.toString()}")
             }
 
             for (dc in snapshots!!.documentChanges) {
                 when (dc.type) {
                     DocumentChange.Type.ADDED -> {
-                        Log.d("Firestore100", "Entered new document addition")
+                        Log.d("OrderRepo_Firestore4", "Entered new document addition")
                        order_id=dc.document.id
 
                         onNewOrderAdded(order_id!!)
@@ -92,12 +94,12 @@ initFirestore()
                     }
                     DocumentChange.Type.MODIFIED ->
                     {
-                        Log.d("Firestore103", "Entered  document modifued ${dc.document.data}")
+                        Log.d("OrderRepo_Firestore5", "Entered  document modifued ${dc.document.data}")
                         var order_id=dc.document.id
                         onOrderStatusModified(order_id!!.toInt(),dc.document["status"].toString().toInt())
                     }
                     DocumentChange.Type.REMOVED ->
-                        Log.d("sports4", "Removed city: ${dc.document.data}")
+                        Log.d("OrderRepo_Firestore6", "Removed city: ${dc.document.data}")
 
                 }
             }
@@ -109,10 +111,10 @@ initFirestore()
     }
     @SuppressLint("CheckResult")
      fun onNewOrderAdded(orderId: String){
-        Log.d("Firestore10","entered on new order jwt = ${jwt_token!!}\norderid = $orderId")//"Basic YXBwZDpmaXJlYmFzZXN1Y2tz"
+        Log.d("OrderRepo_Firestore7","entered on new order jwt = ${jwt_token!!}\norderid = $orderId")//"Basic YXBwZDpmaXJlYmFzZXN1Y2tz"
          orderService.getOrderFromOrderId(jwt = "JWT "+jwt_token!!,orderId = orderId)
             .subscribeOn(Schedulers.io()).subscribe({Log.d("Firestore14","data saved in room $it ")
-                 Log.d("Firestore9","code ${it.code()}")
+                 Log.d("OrderRepo_Firestore8","code ${it.code()}")
                  when(it.code())
                  {
 
@@ -121,31 +123,70 @@ initFirestore()
                          orderDao.insertOrders(it.body()!!.toOrderData(orderId = orderId.toInt()))
                          orderDao.insertOrderItems(it.body()!!.toItemData(orderId = orderId.toInt()))
 
-                         Log.d("Firestore3","data saved in room   \n ${it.body()!!.status}, items ${it.body()!!.items} ")
-                         ui_status_subject.onNext(UIState.SuccessState("Order$orderId recieved "))
+                         Log.d("OrderRepo_Firestore9","data saved in room   \n ${it.body()!!.status}, items ${it.body()!!.items} ")
+                         //remove if incomnplte order present
+                         if(incomp_order_status_list.find{it.orderId==orderId.toInt()}!=null){
+                             incomp_order_status_list.remove(incomp_order_status_list.find{it.orderId==orderId.toInt()})
+                           //  incomp_order_status_subject.onNext(incomp_order_status_list)
+                         }
+                         ui_status_subject.onNext(UIState.SuccessStateFetchingOrders("Order$orderId recieved ",orderId = orderId.toInt(),incompleteOrderList = incomp_order_status_list))
+
 
                          /*Single.just(UIState.SuccessState("Data updated for Order Id: $orderId"))*/
                      }
 
-                     in 400..499->
-                         ui_status_subject.onNext(UIState.ErrorState("login error if 401 code: ${it.code()}"))
+                     in 400..499-> {
+                         if(incomp_order_status_list.find{it.orderId==orderId.toInt()}!=null){
+                            incomp_order_status_list.set(incomp_order_status_list.
+                                indexOf(incomp_order_status_list.
+                                    find{it.orderId==orderId.toInt()}), IncompleteOrderStatus(orderId.toInt(),application.getString(R.string.status_try_again))
+                            )
+                            // incomp_order_status_subject.onNext(incomp_order_status_list)
+                         }
+                         ui_status_subject
+                             .onNext(UIState.ErrorStateFetchingOrders("Error code: ${it.code()} message: ${it.body()!!}"
+                                 ,orderId.toInt(),incomp_order_status_list))
+
+                     }
+
+                     in 500..599-> {
+                         if(incomp_order_status_list.find{it.orderId==orderId.toInt()}!=null){
+                             incomp_order_status_list.set(incomp_order_status_list.
+                                 indexOf(incomp_order_status_list.
+                                     find{it.orderId==orderId.toInt()}), IncompleteOrderStatus(orderId.toInt(),application.getString(R.string.status_try_again))
+                             )
+                           //  incomp_order_status_subject.onNext(incomp_order_status_list)
+                         }
+                         ui_status_subject.onNext(UIState.ErrorStateFetchingOrders("Server error code: ${it.code()}",orderId.toInt(),incomp_order_status_list))
+
+                     }
+
+                     else -> {
+                         if(incomp_order_status_list.find{it.orderId==orderId.toInt()}!=null){
+                             incomp_order_status_list.set(incomp_order_status_list.
+                                 indexOf(incomp_order_status_list.
+                                     find{it.orderId==orderId.toInt()}), IncompleteOrderStatus(orderId.toInt(),application.getString(R.string.status_try_again))
+                             )
+                             //incomp_order_status_subject.onNext(incomp_order_status_list)
+                         }
+                         ui_status_subject.onNext(UIState.ErrorStateFetchingOrders("Unknown error code: ${it.code()}",orderId.toInt(),incomp_order_status_list))
 
 
-                     in 500..599->
-                         ui_status_subject.onNext(UIState.ErrorState("Server error code: ${it.code()}"))
-
-
-                     else ->
-                         ui_status_subject.onNext(UIState.ErrorState("Unknown error code: ${it.code()}"))
-
+                     }
 
 
                  }
 
                  },{
-                 Log.d("Firestoreff","error$it")
-                 ui_status_subject.onNext(UIState.ErrorState("Unknown error code: ${it}"))
-
+                 Log.d("OrderRepo_Firestore10","error$it")
+                 if(incomp_order_status_list.find{it.orderId==orderId.toInt()}!=null){
+                     incomp_order_status_list.set(incomp_order_status_list.
+                         indexOf(incomp_order_status_list.
+                             find{it.orderId==orderId.toInt()}), IncompleteOrderStatus(orderId.toInt(),application.getString(R.string.status_try_again))
+                     )
+                  //   incomp_order_status_subject.onNext(incomp_order_status_list)
+                 }
+                 ui_status_subject.onNext(UIState.ErrorStateFetchingOrders("Unknown error code: ${it}",orderId.toInt(),incomp_order_status_list))
 
              })
 
@@ -153,9 +194,15 @@ initFirestore()
 
 }
 
- private fun onOrderStatusModified(orderId: Int,status: Int){
-     Log.d("Firestore104","upddate order $orderId  s $status")
-        orderDao.updateOrderStatusRoom(orderId,status)
+ @SuppressLint("CheckResult")
+ private fun onOrderStatusModified(orderId: Int, status: Int){
+     Log.d("OrderRepo_Firestore11"," function caledupddate order $orderId  s $status")
+        orderDao.updateOrderStatusRoom(orderId,status).subscribeOn(Schedulers.io()).subscribe({
+            Log.d("OrderRepo_Firestore12"," on sucessupddate order $orderId  s $status")
+        },{
+
+            Log.d("OrderRepo_Firestore13","Error upddate order $orderId  s $status $it")
+        })
 
  }
     fun getUIStateFlowable(): Flowable<UIState>{
@@ -163,27 +210,29 @@ initFirestore()
     }
 
 
-fun updateStatus(orderId: String, status: Int): Completable {
+
+
+fun updateStatus(orderId: Int, status: Int): Completable {
 val body = JsonObject().also {
    it.addProperty("new_status", status)
 
 }
-Log.d("check5", body.toString())
-return orderService.updateStatus("JWT "+jwt_token!!,body, orderId).doOnSuccess {
-   Log.d("check2", "${it.code()} : ${it.message()}, body :${it.body()}")
+Log.d("OrderRepo_API2", body.toString())
+return orderService.updateStatus("JWT "+jwt_token!!,body, orderId.toString()).doOnSuccess {
+   Log.d("OrderRepo_API3", "${it.code()} : ${it.message()}, body :${it.body()}")
 }.doOnError {
-  Log.d("check3","error change staus $it")
+  Log.d("OrderRepo_API4","error change staus $it")
 }.ignoreElement()
 }
 
 //decline  an order
-    fun declineOrder(orderId: String): Completable {
+    fun declineOrder(orderId: Int): Completable {
 
 
         return orderService.declineOrder("JWT "+jwt_token!!, orderId).doOnSuccess {
-            Log.d("check2", "${it.code()} : ${it.message()}, body :${it.body()}")
+            Log.d("OrderRepo_API5", "${it.code()} : ${it.message()}, body :${it.body()}")
         }.doOnError {
-            Log.d("check3","error decline $it")
+            Log.d("OrderRepo_API6","error decline $it")
         }.ignoreElement()
     }
 
@@ -220,15 +269,15 @@ return orderDao.getAllAcceptedOrders().subscribeOn(Schedulers.io())
        }
        return@flatMap Flowable.just(orderItemList)
    }.doOnError {
-       Log.e("Testing Repo", "Error in reading database = ${it.message.toString()}")
+       Log.e("OrderRepo_API7", "Error in reading database = ${it.message.toString()}")
    }
 }
 
-fun getAllNewOrders(): Flowable<List<ModifiedOrdersDataClass>> {
-Log.d("Testing Repo", "Entered to get orders")
-return orderDao.getAllNewOrders().subscribeOn(Schedulers.io())
+fun getAllNewOrdersRoom(): Flowable<List<ModifiedOrdersDataClass>> {
+Log.d("OrderRepo_API8", "Entered to get orders")
+return orderDao.getAllNewOrders()
    .flatMap {
-       Log.d("Testing Repo", "Accepted Orders Recived = ${it.toString()}")
+       Log.d("OrderRepo_API9", "Accepted Orders Recived = ${it.toString()}")
        var list = it.sortedBy { it.orderId }
        var orderItemList = emptyList<ModifiedOrdersDataClass>()
        var itemList = emptyList<ChildDataClass>()
@@ -255,18 +304,18 @@ return orderDao.getAllNewOrders().subscribeOn(Schedulers.io())
                itemList = emptyList<ChildDataClass>()
            }
        }
-       Log.d("Testing Repo", "Returned From Repo = ${orderItemList.toString()}")
+       Log.d("OrderRepo_API10", "Returned From Repo = ${orderItemList.toString()}")
        return@flatMap Flowable.just(orderItemList)
    }.doOnError {
-       Log.e("Testing Repo", "Error in reading database = ${it.message.toString()}")
+       Log.e("OrderRepo_API11", "Error in reading database = ${it.message.toString()}")
    }
 }
 
 
 // returns orders with status "finish"
 /*fun getFinishedOrdersFromRoom(): Flowable<List<OrderItemsData>> {
-return orderDao.getFinishOrders().subscribeOn(Schedulers.io())
-   .flatMap {*//*
+return orderDao.getAllFinishedOrdersRoom().subscribeOn(Schedulers.io())
+   .flatMap {
        var orderList = emptyList<OrderItemsData>()
        it.forEach { ordersData ->
            orderDao.getItemsForOrder(ordersData.orderId)
@@ -280,7 +329,7 @@ return orderDao.getFinishOrders().subscribeOn(Schedulers.io())
                }.subscribe()
        }
        Log.d("CheckAcceptedList", orderList.size.toString())
-       return@flatMap Flowable.just(orderList)*//*
+       return@flatMap Flowable.just(orderList)
    }.doOnError {
      //  Log.e("Finish1", "Error getting room data${it}")
    }
@@ -298,10 +347,10 @@ return earningsApiCall.subscribeOn(Schedulers.io())
 
            daywiseEarnings = daywiseEarnings.plus(dayPojo.toEarningData())
        }
-       Log.d("check", daywiseEarnings.toString())
+       Log.d("OrderRepo_API12", daywiseEarnings.toString())
        earningDao.insertEarningData(daywiseEarnings)
    }.doOnError {
-       Log.e("Finish2", "error getting data from backend$it")
+       Log.e("OrderRepo_API13", "error getting data from backend$it")
    }
    .ignoreElement()
 }
@@ -313,7 +362,7 @@ return EarningData(day = day, earnings = earnings)
 // get earnings data From ROOM
 fun getdaywiseEarningRoom(): Flowable<List<EarningData>> {
 return earningDao.getDayWiseEarnings().subscribeOn(Schedulers.io()).doOnError {
-   Log.e("Finish3", "error getting data from room daywise$it")
+   Log.e("OrderRepo_API14", "error getting data from room daywise$it")
 }
 }
 

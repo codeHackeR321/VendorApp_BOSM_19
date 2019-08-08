@@ -4,22 +4,22 @@ import java.sql.Timestamp
 
 data class OrderItremCombinedDataClass(
 
-    var orderId : String,
+    var orderId : Int,
 
-    var itemId: String,
+    var itemId: Int,
 
-    var price : String,
+    var price : Int,
 
-    var quantity : String,
+    var quantity : Int,
 
     var name : String,
 
-    var status : String,
+    var status : Int,
 
     var timestamp : Long,
 
-    var otp : String,
+    var otp : Int,
 
-    var totalAmount : String
+    var totalAmount : Int
 
 )

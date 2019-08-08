@@ -31,7 +31,7 @@ class NewOrderViewModel(val context : Context) : ViewModel(){
     @SuppressLint("CheckResult")
     fun getNewOrders() {
 
-      orderRepo.getAllNewOrders().subscribeOn(Schedulers.io()).doOnNext {
+      orderRepo.getAllNewOrdersRoom().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).doOnNext {
           Log.d("Firestore51", " Orders from room fetch ${it}")
           (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(it)
       }.doOnError {
@@ -39,8 +39,10 @@ class NewOrderViewModel(val context : Context) : ViewModel(){
       }.subscribe()
     }
 
+
+
     @SuppressLint("CheckResult")
-    fun changeStatus(orderId:String, status:Int) {
+    fun changeStatus(orderId:Int, status:Int) {
         orderRepo.updateStatus(orderId,status).subscribeOn(Schedulers.io()).subscribe({
             Log.d("Status3","staus chenged ")
         },{
@@ -49,7 +51,7 @@ class NewOrderViewModel(val context : Context) : ViewModel(){
     }
 
     @SuppressLint("CheckResult")
-    fun declineOrder(orderId:String) {
+    fun declineOrder(orderId:Int) {
         orderRepo.declineOrder(orderId).subscribeOn(Schedulers.io()).subscribe({
             Log.d("Status4","declines ")
         },{
@@ -57,15 +59,19 @@ class NewOrderViewModel(val context : Context) : ViewModel(){
         })
     }
 
+    fun fetchOrderAgain(orderId: Int){
+orderRepo.onNewOrderAdded(orderId = orderId.toString())
+    }
+
     fun doInitialFetch(){
         if (NetworkConnectivityCheck().checkIntenetConnection(context))
         {
 
                 menuRepo.updateMenu().doOnComplete {
-                    Log.d("Testing NO ViewModel" , "Fetching Menu Items Complete. Fetching orders")
-                    getNewOrders()
+                    Log.d("NewOrderVM1" , "Fetching Menu Items Complete. Fetching orders")
+                    //getNewOrders()
                 }.doOnError {
-                    Log.e("Testing NO ViewModel" , "Error in updating menu items = ${it.message.toString()}")
+                    Log.d("NewOrderVM2" , "Error in updating menu items = ${it.message.toString()}")
                     (error as MutableLiveData<String>).postValue("Error in database. Please try after some time")
                 }.subscribe()
 

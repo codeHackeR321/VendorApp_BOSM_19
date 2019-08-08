@@ -17,6 +17,8 @@
     <string name="new_order_order_number">Order No. %1$s</string>
     <string name="new_order_total_amount">\u20B9 %1$s</string>
     <string name="new_order_item_wise_price">\u20B9%1$sX</string>
+    <string name="new_order_incomp_order_status_try_again">Unable to download.Try Again</string>
+    <string name="new_order_incomp_order_status_loading">Loading</string>
 
     <string name="test_item_name">Veg Cheese Grilled Sandwich</string>
     <string name="test_item_quantity">3</string>
@@ -36,6 +38,7 @@
     <string name="status_ready">ready</string>
     <string name="status_finish">finish</string>
     <string name="status_pending">pending</string>
+    <string name="status_try_again">try again</string>
 
 
 

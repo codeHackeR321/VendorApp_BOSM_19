@@ -4,15 +4,15 @@ import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
 
 data class ModifiedOrdersDataClass (
 
-    var orderId: String,
+    var orderId: Int,
 
-    var status: String,
+    var status: Int,
 
     var timestamp: String,
 
-    var otp: String,
+    var otp: Int,
 
-    var totalAmount: String,
+    var totalAmount: Int,
 
     var items: List<ChildDataClass>
 

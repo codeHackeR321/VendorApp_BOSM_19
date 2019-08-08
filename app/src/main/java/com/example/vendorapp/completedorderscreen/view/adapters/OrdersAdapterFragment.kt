@@ -29,10 +29,10 @@ class OrdersAdapterFragment:RecyclerView.Adapter<OrdersAdapterFragment.OrderView
     }
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
-        Log.d("checkr",orders.get(position).orderId+orders.get(position).totalAmount)
+        Log.d("checkr","data ${orders.get(position).orderId}+${orders.get(position).totalAmount}")
 
         val inflater = holder.itemView.context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        var list = ArrayList<GroupDataClass>()
+        val list = ArrayList<GroupDataClass>()
         list.add(GroupDataClass("Menu", orders[position].items))
 
         holder.recyclerOrderDetails.adapter = ExpandableRVAdapter(orders[position].otp,orders[position].orderId,orders[position].totalAmount,inflater , list)

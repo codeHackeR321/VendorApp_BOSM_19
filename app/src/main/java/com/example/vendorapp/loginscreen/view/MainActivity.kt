@@ -6,7 +6,10 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.vendorapp.MainScreenActivity
@@ -18,6 +21,7 @@ import com.example.vendorapp.loginscreen.viewModel.LoginViewModelFactory
 import com.example.vendorapp.notification.MyFirebaseMessagingService
 
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,6 +30,7 @@ private lateinit var  viewModel: LoginViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        showLoadingStateFragment()
         viewModel= ViewModelProviders.of(this, LoginViewModelFactory(this)).get(LoginViewModel::class.java)
 
         initializeApp()
@@ -34,30 +39,34 @@ private lateinit var  viewModel: LoginViewModel
             when(it!!)
             {
                 UIState.GoToMainScreen -> {
+                   removeLoadingStateFragment()
                     Toast.makeText(this@MainActivity, "Login Successfull",Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this@MainActivity,MainScreenActivity::class.java))
                     finish()
 
                 }
 
-              is UIState.ErrorState ->  Toast.makeText(this@MainActivity,(it as UIState.ErrorState).message,Toast.LENGTH_SHORT).show()
+              is UIState.ErrorState -> {
+             removeLoadingStateFragment()
+              Toast.makeText(this@MainActivity,(it as UIState.ErrorState).message,Toast.LENGTH_SHORT).show()
+            }
             }
         })
 
         buttonSignIn.setOnClickListener {
+            showLoadingStateFragment()
             var username=editTextUsername.text.toString()
             var password = editTextPassword.text.toString()
             if (username.isBlank()&&password.isBlank())
             {
                 Toast.makeText(this@MainActivity,"Enter valid username/password",Toast.LENGTH_SHORT).show()
+                removeLoadingStateFragment()
             }
             else
             {
-               /* val intent=Intent(this , MainScreenActivity::class.java)
-             //   intent.putExtra(getString(R.string.saved_jwt),jwt_token)
-                startActivity(intent)*/
+
                 viewModel.login(username,password)
-                //loader start
+
             }
         }
     }
@@ -85,16 +94,19 @@ private lateinit var  viewModel: LoginViewModel
      * It sets up notification Channel
      * */
     fun initializeApp(){
+
         val jwt_token=viewModel.getJWT()
         if(jwt_token.equals(getString(R.string.default_jwt_value)))
         {
             //Loader hata
             //snack bar dikhana h
+            removeLoadingStateFragment()
            Toast.makeText(this@MainActivity,"Please Login to Continue",Toast.LENGTH_LONG).show()        }
         else
         {
             // login karwa
             Toast.makeText(this,"Already Logged in",Toast.LENGTH_LONG).show()
+            removeLoadingStateFragment()
             val intent=Intent(this , MainScreenActivity::class.java)
             startActivity(intent)
             finish()
@@ -103,4 +115,22 @@ private lateinit var  viewModel: LoginViewModel
         startService(Intent(this,MyFirebaseMessagingService::class.java))
 
     }
+
+    private fun showLoadingStateFragment(){
+        if (!prog_bar_main_activity.isVisible) {
+            prog_bar_main_activity.visibility = View.VISIBLE
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
+        }}
+
+    private fun removeLoadingStateFragment(){
+        if (prog_bar_main_activity.isVisible) {
+            prog_bar_main_activity.visibility = View.INVISIBLE
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        }
+    }
+
+
 }

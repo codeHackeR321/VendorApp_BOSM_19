@@ -3,20 +3,20 @@ package com.example.vendorapp.shared.expandableRecyclerView
 import android.os.Parcel
 import android.os.Parcelable
 
-class ChildDataClass(var itemName : String? , var price : String? , var quantity : String? , var itemId : String?) : Parcelable
+class ChildDataClass(var itemName : String? , var price : Int? , var quantity : Int? , var itemId : Int?) : Parcelable
 {
-    constructor(parcel: Parcel) : this(parcel.readString() , parcel.readString() , parcel.readString() , parcel.readString()) {
+    constructor(parcel: Parcel) : this(parcel.readString() , parcel.readInt() , parcel.readInt() , parcel.readInt()) {
         itemName = parcel.readString()
-        price = parcel.readString()
-        quantity = parcel.readString()
-        itemId = parcel.readString()
+        price = parcel.readInt()
+        quantity = parcel.readInt()
+        itemId = parcel.readInt()
     }
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         dest!!.writeString(itemName)
-        dest!!.writeString(price)
-        dest!!.writeString(quantity)
-        dest!!.writeString(itemId)
+        dest!!.writeInt(price!!)
+        dest!!.writeInt(quantity!!)
+        dest!!.writeInt(itemId!!)
     }
 
     override fun describeContents(): Int {

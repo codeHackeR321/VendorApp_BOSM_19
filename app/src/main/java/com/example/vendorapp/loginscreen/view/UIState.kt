@@ -1,5 +1,7 @@
 package com.example.vendorapp.loginscreen.view
 
+import com.example.vendorapp.neworderscreen.model.IncompleteOrderStatus
+
 sealed class UIState {
 
     object ShowLoadingState : UIState()
@@ -9,8 +11,9 @@ sealed class UIState {
     object ShowWorkingState : UIState()
 
     object GoToMainScreen : UIState()
+    data class ErrorState(val message:String):UIState()
 
-    data class SuccessState(val message:String): UIState()
+    data class SuccessStateFetchingOrders(val message:String,val orderId :Int,val incompleteOrderList: MutableList<IncompleteOrderStatus>): UIState()
 
-    data class ErrorState(val message:String): UIState()
+    data class ErrorStateFetchingOrders(val message:String,val orderId :Int,val incompleteOrderList: MutableList<IncompleteOrderStatus>): UIState()
 }

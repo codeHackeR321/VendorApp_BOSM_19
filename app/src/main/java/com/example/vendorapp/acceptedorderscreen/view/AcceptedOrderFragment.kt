@@ -30,10 +30,10 @@ import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 class AcceptedOrderFragment : Fragment() , ListenerRecyViewButtonClick{
 
 
-    override fun buttonClicked(orderId: String, status: String) {
+    override fun buttonClicked(orderId: Int, status: Int) {
        Toast.makeText(context,"id$orderId stautuss$status",Toast.LENGTH_LONG).show()
         Log.d("Status","id; $orderId status: $status")
-        viewModel.changeStatus(orderId,StatusKeyValue().getStatusInt(status))
+        viewModel.changeStatus(orderId,status)
     }
 
      private val viewModel by lazy {
@@ -60,15 +60,7 @@ class AcceptedOrderFragment : Fragment() , ListenerRecyViewButtonClick{
             }
         })
         super.onViewCreated(view, savedInstanceState)
-/*
-        var ordersfake=ArrayList<ModifiedOrdersDataClass>()
-        var itemsfake:List<ChildDataClass> = listOf(ChildDataClass("Sandwicvh","200","2","2323"),ChildDataClass("Sandwicvh","200","2","2323"))
 
-
-        ordersfake.add(ModifiedOrdersDataClass("692","Accepted","1234567890","6776","50000",itemsfake))
-       recycler_accepted_order_screen.adapter = AdapterForFragment(this)
-        (recycler_accepted_order_screen.adapter as AdapterForFragment).orders=ordersfake
-        (recycler_accepted_order_screen.adapter as AdapterForFragment).notifyDataSetChanged()*/
     }
 
      fun initializeView()

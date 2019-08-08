@@ -11,7 +11,7 @@ import com.example.vendorapp.shared.expandableRecyclerView.GroupViewHolderNewOrd
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 
-class ExpandableRVAdapter( private val otp:String,private val orderId: String,private val orderAmount: String
+class ExpandableRVAdapter( private val otp:Int,private val orderId: Int,private val orderAmount: Int
                            ,var inflater : LayoutInflater, var list: List<ExpandableGroup<*>>) :
 
     ExpandableRecyclerViewAdapter<GroupViewHolderCompletedOrderScreen, ChildViewHolderNewOrderOrderDetails>(list){

@@ -8,10 +8,11 @@ import android.widget.Button
 import android.widget.TextView
 import com.example.vendorapp.R
 import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
+import com.example.vendorapp.shared.utils.StatusKeyValue
 import com.thoughtbot.expandablerecyclerview.listeners.OnGroupClickListener
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder
 
-class GroupViewHolderAcceptedOrderScreen(private var status : String,private val otp: String,private val orderId: String , private val orderAmount : String,val listener3 :ListenerRecyViewButtonClick ,itemView : View?) :GroupViewHolder(itemView){
+class GroupViewHolderAcceptedOrderScreen(private var status : Int,private val otp:Int,private val orderId: Int , private val orderAmount : Int,val listener3 :ListenerRecyViewButtonClick ,itemView : View?) :GroupViewHolder(itemView){
 
     lateinit var textViewOrderId : TextView
     lateinit var textViewOrderAmount:TextView
@@ -19,11 +20,7 @@ class GroupViewHolderAcceptedOrderScreen(private var status : String,private val
     lateinit var buttonOtp:Button
     lateinit var buttonReady:Button
     lateinit var buttonFinish : Button
-/*
-    interface RecyclerButtonClickListener3{
 
-        fun buttonClicked3(orderId : String , accepted : Boolean)
-    }*/
 
     init {
         textArrowButton = itemView!!.findViewById(R.id.text_group_view_holder_new_order_heading)
@@ -39,36 +36,39 @@ class GroupViewHolderAcceptedOrderScreen(private var status : String,private val
         textViewOrderAmount.setOnClickListener{}
         textViewOrderId.setOnClickListener {  }
 
-        buttonReady.setOnClickListener{
-
-            onClickButtons("ready")
-            buttonFinish.visibility=View.VISIBLE
-            buttonOtp.visibility=View.VISIBLE
-            buttonReady.visibility=View.GONE
-        }
-
-        buttonOtp.setOnClickListener{
-            buttonOtp.text=otp
-        }
-
-        buttonFinish.setOnClickListener{
-            onClickButtons("finish")
-            //display toast and remove the order
-        }
-
-        if (status.equals("accepted"))
+        if (status.equals(StatusKeyValue().getStatusInt("accepted")))
         {
             buttonOtp.visibility=View.INVISIBLE
             buttonFinish.visibility=View.INVISIBLE
             buttonReady.visibility=View.VISIBLE
         }
-        else if(status.equals("ready"))
+        else if(status.equals(StatusKeyValue().getStatusInt("ready")))
         {
             buttonOtp.visibility=View.VISIBLE
             buttonFinish.visibility=View.VISIBLE
             buttonReady.visibility=View.INVISIBLE
 
         }
+
+        buttonReady.setOnClickListener{
+
+            onClickButtons(StatusKeyValue().getStatusInt("ready"))
+            //api call ke bad visible karna h
+            buttonFinish.visibility=View.VISIBLE
+            buttonOtp.visibility=View.VISIBLE
+            buttonReady.visibility=View.GONE
+        }
+
+        buttonOtp.setOnClickListener{
+            buttonOtp.text=otp.toString()
+        }
+
+        buttonFinish.setOnClickListener{
+            onClickButtons(StatusKeyValue().getStatusInt("finish"))
+            //display toast and remove the order
+        }
+
+
     }
 
     override fun expand() {
@@ -98,13 +98,8 @@ class GroupViewHolderAcceptedOrderScreen(private var status : String,private val
 
     }
 
-    fun setHeading(){
-        // textHeading.text = "Menu"
-        // super.onClick(textHeading)
-        // super.expand()
-    }
 
-    private fun onClickButtons(status : String)
+    private fun onClickButtons(status : Int)
     {
 
         listener3.buttonClicked(orderId,status)

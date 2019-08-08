@@ -7,10 +7,11 @@ import android.widget.TextView
 import androidx.core.content.res.TypedArrayUtils
 import com.example.vendorapp.R
 import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
+import com.example.vendorapp.shared.utils.StatusKeyValue
 import com.thoughtbot.expandablerecyclerview.listeners.OnGroupClickListener
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder
 
-class GroupViewHolderNewOrderCompactMenu(private val orderId: String , private val orderAmount : String,val listener3 :ListenerRecyViewButtonClick ,itemView : View?) :GroupViewHolder(itemView){
+class GroupViewHolderNewOrderCompactMenu(private val orderId: Int , private val orderAmount : Int,val listener3 :ListenerRecyViewButtonClick ,itemView : View?) :GroupViewHolder(itemView){
 
     lateinit var textViewOrderId : TextView
     lateinit var textViewOrderAmount:TextView
@@ -33,11 +34,11 @@ class GroupViewHolderNewOrderCompactMenu(private val orderId: String , private v
 
         buttonAccept.setOnClickListener{
 
-            onClickButtons("accepted")
+            onClickButtons(StatusKeyValue().getStatusInt("accepted"))
         }
 
         buttonDecline.setOnClickListener{
-            onClickButtons("declined")
+            onClickButtons(StatusKeyValue().getStatusInt("declined"))
         }
     }
 
@@ -74,7 +75,7 @@ class GroupViewHolderNewOrderCompactMenu(private val orderId: String , private v
        // super.expand()
     }
 
-    private fun onClickButtons(status : String)
+    private fun onClickButtons(status : Int)
     {
 
         listener3.buttonClicked(orderId,status)
