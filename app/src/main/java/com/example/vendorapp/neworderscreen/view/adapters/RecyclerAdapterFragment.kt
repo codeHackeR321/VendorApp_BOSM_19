@@ -2,6 +2,7 @@ package com.example.vendorapp.neworderscreen.view.adapters
 
 import android.app.Activity
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -103,6 +104,7 @@ class RecyclerAdapterFragment(val context: Context,val listener : ListenerRecyVi
 
             holderIncompleteOrder.buttonTryAgain.setOnClickListener(object :View.OnClickListener{
                 override fun onClick(v: View?) {
+                    Log.d("CheckCheck","Button clicked OrderId: ${emptyOrderIds[position].orderId}")
                     emptyOrderIds[position].status=context.getString(R.string.new_order_incomp_order_status_loading)
                     notifyDataSetChanged()
                     listener.buttonClicked(emptyOrderIds[position].orderId.toInt(),StatusKeyValue().getStatusInt("try again"))
@@ -117,7 +119,11 @@ class RecyclerAdapterFragment(val context: Context,val listener : ListenerRecyVi
             val holderOrderViewHolder:OrderViewHolder=holder as OrderViewHolder
             val inflater = holder.itemView.context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             var list = ArrayList<GroupDataClass>()
-            list.add(GroupDataClass("Menu", orders[position].items))
+            list.add(GroupDataClass("Menu", orders[position].items))// 122 error
+            // Process: com.example.vendorapp, PID: 9779
+            //    java.lang.IndexOutOfBoundsException: Index: 14, Size: 1
+            //        at java.util.ArrayList.get(ArrayList.java:437)
+            //        at com.example.vendorapp.neworderscreen.view.adapters.RecyclerAdapterFragment.onBindViewHolder(RecyclerAdapterFragment.kt:122)
             holderOrderViewHolder.recyclerOrderDetails.adapter = RecyclerAdapterExpandabeRecyclerView(orders[position].orderId
                 ,orders[position].totalAmount,listener,inflater , list)
         }

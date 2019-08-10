@@ -39,6 +39,7 @@ class OrderRepository(val application: Context) {
     var ui_status_repo : Flowable<UIState> = Flowable.just(UIState.ShowInitialState)
     var ui_status_subject = BehaviorSubject.create<UIState>()
     var incomp_order_status_list= emptyList<IncompleteOrderStatus>()
+    var arrayList=ArrayList<IncompleteOrderStatus>()
 
     private val db = FirebaseFirestore.getInstance()
 
@@ -112,7 +113,7 @@ initFirestore()
     @SuppressLint("CheckResult")
      fun onNewOrderAdded(orderId: String){
         Log.d("OrderRepo_Firestore7","entered on new order jwt = ${jwt_token!!}\norderid = $orderId")//"Basic YXBwZDpmaXJlYmFzZXN1Y2tz"
-         orderService.getOrderFromOrderId(jwt = "JWT"+jwt_token!!,orderId = orderId)
+         orderService.getOrderFromOrderId(jwt = "JWT "+jwt_token!!,orderId = orderId)
             .subscribeOn(Schedulers.io()).subscribe({Log.d("Firestore14","data saved in room $it ")
                  Log.d("OrderRepo_Firestore8","code ${it.code()}")
                  when(it.code())
@@ -129,6 +130,8 @@ initFirestore()
                            incomp_order_status_list=  incomp_order_status_list.minus(incomp_order_status_list.find{it.orderId==orderId.toInt()}!!)
                            //  incomp_order_status_subject.onNext(incomp_order_status_list)
                          }
+
+
                          ui_status_subject.onNext(UIState.SuccessStateFetchingOrders("Order$orderId recieved ",orderId = orderId.toInt(),incompleteOrderList = incomp_order_status_list))
 
 

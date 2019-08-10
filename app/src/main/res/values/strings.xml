@@ -39,6 +39,7 @@
     <string name="status_finish">finish</string>
     <string name="status_pending">pending</string>
     <string name="status_try_again">try again</string>
+    <string name="status_loading">loading</string>
 
 
 
