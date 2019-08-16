@@ -5,6 +5,7 @@ package com.example.vendorapp.acceptedorderscreen.view.ExpandableRV
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.example.vendorapp.R
 import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
@@ -12,7 +13,7 @@ import com.example.vendorapp.shared.utils.StatusKeyValue
 import com.thoughtbot.expandablerecyclerview.listeners.OnGroupClickListener
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder
 
-class GroupViewHolderAcceptedOrderScreen(private var status : Int,private val otp:Int,private val orderId: Int , private val orderAmount : Int,val listener3 :ListenerRecyViewButtonClick ,itemView : View?) :GroupViewHolder(itemView){
+class GroupViewHolderAcceptedOrderScreen(private var isLoading:Boolean,private var status : Int,private val otp:Int,private val orderId: Int , private val orderAmount : Int,val listener3 :ListenerRecyViewButtonClick ,itemView : View?) :GroupViewHolder(itemView){
 
     lateinit var textViewOrderId : TextView
     lateinit var textViewOrderAmount:TextView
@@ -20,6 +21,7 @@ class GroupViewHolderAcceptedOrderScreen(private var status : Int,private val ot
     lateinit var buttonOtp:Button
     lateinit var buttonReady:Button
     lateinit var buttonFinish : Button
+    lateinit var progressBar: ProgressBar
 
 
     init {
@@ -29,6 +31,7 @@ class GroupViewHolderAcceptedOrderScreen(private var status : Int,private val ot
         buttonOtp=itemView.findViewById(R.id.button_OTP)
         buttonReady=itemView.findViewById(R.id.button_ready)
         buttonFinish=itemView.findViewById(R.id.button_finish)
+        progressBar=itemView.findViewById(R.id.group_view_holder_accepted_order_screen_progressBar)
 
         textViewOrderId.text="Id#"+orderId
         textViewOrderAmount.text="\u20B9"+"20"+orderAmount
@@ -36,19 +39,29 @@ class GroupViewHolderAcceptedOrderScreen(private var status : Int,private val ot
         textViewOrderAmount.setOnClickListener{}
         textViewOrderId.setOnClickListener {  }
 
-        if (status.equals(StatusKeyValue().getStatusInt("accepted")))
-        {
+        if (isLoading){
+
             buttonOtp.visibility=View.INVISIBLE
             buttonFinish.visibility=View.INVISIBLE
-            buttonReady.visibility=View.VISIBLE
-        }
-        else if(status.equals(StatusKeyValue().getStatusInt("ready")))
-        {
-            buttonOtp.visibility=View.VISIBLE
-            buttonFinish.visibility=View.VISIBLE
             buttonReady.visibility=View.INVISIBLE
-
+            progressBar.visibility=View.VISIBLE
         }
+        else{
+            if (status.equals(StatusKeyValue().getStatusInt("accepted")))
+            {
+                buttonOtp.visibility=View.INVISIBLE
+                buttonFinish.visibility=View.INVISIBLE
+                buttonReady.visibility=View.VISIBLE
+            }
+            else if(status.equals(StatusKeyValue().getStatusInt("ready")))
+            {
+                buttonOtp.visibility=View.VISIBLE
+                buttonFinish.visibility=View.VISIBLE
+                buttonReady.visibility=View.INVISIBLE
+
+            }
+        }
+
 
 
         buttonReady.setOnClickListener{

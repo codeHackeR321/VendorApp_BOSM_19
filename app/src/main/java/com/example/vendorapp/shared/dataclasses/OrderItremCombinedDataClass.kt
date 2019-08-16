@@ -14,7 +14,9 @@ data class OrderItremCombinedDataClass(
 
     var name : String,
 
-    var status : Int,
+    var status_order : Int,
+
+    var is_loading: Boolean,
 
     var timestamp : Long,
 

@@ -41,7 +41,7 @@ class AdapterForFragment(val listener : ListenerRecyViewButtonClick  ) : Recycle
         val inflater = holder.itemView.context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         var list = ArrayList<GroupDataClass>()
         list.add(GroupDataClass("Menu", orders[position].items))
-        holder.recyclerOrderDetails.adapter = ExpandableRVAdapter(orders[position].status,orders[position].otp,orders[position].orderId,orders[position].totalAmount,listener,inflater , list)
+        holder.recyclerOrderDetails.adapter = ExpandableRVAdapter(orders[position].isLoading,orders[position].status,orders[position].otp,orders[position].orderId,orders[position].totalAmount,listener,inflater , list)
 
 
     }

@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.vendorapp.loginscreen.view.UIState
 import com.example.vendorapp.shared.singletonobjects.repositories.LoginRepositoryInstance
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 
 class LoginViewModel(val context : Context) : ViewModel(){
@@ -25,13 +26,15 @@ return loginRepo.getJWTfromSharedPref()
     }
     @SuppressLint("CheckResult")
     fun login(username:String,password:String){
-       // (loginStatus as MutableLiveData<String>).postValue(loginRepo.loginStatusRepo)
-loginRepo.loginWithAuth(username, password).subscribe({
-    (loginStatus as MutableLiveData).postValue(it)
 
-},{
-    Log.d("LoginViewodel6","error$it")
-})
+        loginRepo.loginWithAuth(username, password).subscribe({
+            (loginStatus as MutableLiveData).postValue(it)
+
+        },{
+            (loginStatus as MutableLiveData).postValue(UIState.ErrorState(it.toString()))
+            Log.d("LoginViewodel6","error$it")
+        })
     }
+
 
 }

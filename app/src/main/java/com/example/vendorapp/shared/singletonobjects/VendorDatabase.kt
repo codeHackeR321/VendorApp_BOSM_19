@@ -34,7 +34,7 @@ abstract class VendorDatabase: RoomDatabase() {
         @Synchronized fun getDatabaseInstance(context: Context): VendorDatabase {
 
             if (roomInstance == null){
-                roomInstance = Room.databaseBuilder(context.applicationContext, VendorDatabase::class.java, "vendor_database").build()
+                roomInstance = Room.databaseBuilder(context.applicationContext, VendorDatabase::class.java, "vendor_database").fallbackToDestructiveMigration().build()
                 roomInstance!!.openHelper.setWriteAheadLoggingEnabled(false)
             }
 

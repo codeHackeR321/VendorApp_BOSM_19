@@ -12,7 +12,10 @@ data class OrdersPojo(
     var status: Int,
 
     @SerializedName("total_price")
-    var totalPrice:Int
+    var totalPrice:Int,
+
+   @SerializedName("order_id")
+    var orderId:Int
 
     //otp_seen:Boolean
 

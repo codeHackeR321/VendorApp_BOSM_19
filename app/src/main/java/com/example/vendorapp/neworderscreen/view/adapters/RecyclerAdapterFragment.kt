@@ -119,12 +119,13 @@ class RecyclerAdapterFragment(val context: Context,val listener : ListenerRecyVi
             val holderOrderViewHolder:OrderViewHolder=holder as OrderViewHolder
             val inflater = holder.itemView.context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             var list = ArrayList<GroupDataClass>()
-            list.add(GroupDataClass("Menu", orders[position].items))// 122 error
+            list.add(GroupDataClass("Menu", orders[position].items))
+            // 122 error
             // Process: com.example.vendorapp, PID: 9779
             //    java.lang.IndexOutOfBoundsException: Index: 14, Size: 1
             //        at java.util.ArrayList.get(ArrayList.java:437)
             //        at com.example.vendorapp.neworderscreen.view.adapters.RecyclerAdapterFragment.onBindViewHolder(RecyclerAdapterFragment.kt:122)
-            holderOrderViewHolder.recyclerOrderDetails.adapter = RecyclerAdapterExpandabeRecyclerView(orders[position].orderId
+            holderOrderViewHolder.recyclerOrderDetails.adapter = RecyclerAdapterExpandabeRecyclerView(orders[position].isLoading,orders[position].orderId
                 ,orders[position].totalAmount,listener,inflater , list)
         }
     }

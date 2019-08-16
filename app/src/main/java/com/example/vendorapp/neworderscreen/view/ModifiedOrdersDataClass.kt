@@ -14,6 +14,8 @@ data class ModifiedOrdersDataClass (
 
     var totalAmount: Int,
 
-    var items: List<ChildDataClass>
+    var items: List<ChildDataClass>,
+
+    var isLoading: Boolean
 
 )

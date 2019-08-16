@@ -11,8 +11,11 @@ data class OrdersData (
     @ColumnInfo(name = "order_id")
     var orderId: Int,
 
-    @ColumnInfo(name = "status")
-    var status: Int,
+    @ColumnInfo(name = "status_order")
+    var status_order: Int,
+
+    @ColumnInfo(name = "is_loading")
+    var isLoading:Boolean,
 
     @ColumnInfo(name = "timestamp")
     var timestamp: Long,

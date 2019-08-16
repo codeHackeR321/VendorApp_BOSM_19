@@ -11,14 +11,14 @@ import com.example.vendorapp.shared.expandableRecyclerView.GroupViewHolderNewOrd
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 
-class ExpandableRVAdapter(private val status:Int ,  private val otp:Int,private val orderId: Int,private val orderAmount: Int
+class ExpandableRVAdapter(private var isLoading:Boolean,private val status:Int ,  private val otp:Int,private val orderId: Int,private val orderAmount: Int
                                             , val listener2 : ListenerRecyViewButtonClick ,var inflater : LayoutInflater, var list: List<ExpandableGroup<*>>) :
 
     ExpandableRecyclerViewAdapter<GroupViewHolderAcceptedOrderScreen, ChildViewHolderNewOrderOrderDetails>(list){
 
 
     override fun onCreateGroupViewHolder(parent: ViewGroup?, viewType: Int): GroupViewHolderAcceptedOrderScreen {
-        return(GroupViewHolderAcceptedOrderScreen(status!!,otp,orderId , orderAmount,listener2,
+        return(GroupViewHolderAcceptedOrderScreen(isLoading,status,otp,orderId , orderAmount,listener2,
             inflater.inflate(
                 R.layout.group_view_holder_accepted_order_screen,
                 parent,

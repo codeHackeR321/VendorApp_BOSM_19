@@ -36,45 +36,47 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         observeUIState()
         initializeView()
-        // menu cached ordwr chaed dosplay
-        viewModel.getNewOrders()
+
+        super.onViewCreated(view, savedInstanceState)
+
+    }
+
+    fun initializeView() {
+        Log.d("NewOrderFrag1", "Entered Initialize View")
+        showLoadingStateFragment()
+        recycler_new_order_screen.adapter = RecyclerAdapterFragment(context!!,this)
 
         viewModel.orders.observe(this, Observer {
             Log.d("NewOrderFrag4", "Entered observer for orders with data = ${it.toString()}")
             (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders = it
             (recycler_new_order_screen.adapter as RecyclerAdapterFragment).notifyDataSetChanged()
-           removeLoadingStateFragment()
+            removeLoadingStateFragment()
         })
 
-        viewModel.error.observe(this, Observer {
+        viewModel.errors.observe(this, Observer {
             Log.d("NewOrderFrag3","error$it")
             Toast.makeText(activity,"Error: $it",Toast.LENGTH_LONG).show()
             removeLoadingStateFragment()
         })
-        super.onViewCreated(view, savedInstanceState)
-    }
-
-    fun initializeView() {
-        Log.d("NewOrderFrag1", "Entered Initialize View")
-        recycler_new_order_screen.adapter = RecyclerAdapterFragment(context!!,this)
-        showLoadingStateFragment()
         Log.d("NewOrderFrag2", "Refresh Data Called")
-        viewModel.doInitialFetch()
 
+        viewModel.doInitialFetch()
+        viewModel.getNewOrders()
     }
 
     override fun buttonClicked(orderId: Int, status: Int) {
         //set ui state for group view holder
         if (status==StatusKeyValue().getStatusInt(getString(R.string.status_accepted))) {
 
-            viewModel.changeStatus(orderId, status)
+            viewModel.changeStatus(orderId, status,isLoading = true)
 
         } else if (status==StatusKeyValue().getStatusInt(getString(R.string.status_declined))) {
-            viewModel.declineOrder(orderId)
+            viewModel.declineOrder(orderId,isLoading = true)
 
         }
         else if (status==StatusKeyValue().getStatusInt(getString(R.string.status_try_again)))
         {
+            // handle by isLOading
             viewModel.fetchOrderAgain(orderId)
         }
     }

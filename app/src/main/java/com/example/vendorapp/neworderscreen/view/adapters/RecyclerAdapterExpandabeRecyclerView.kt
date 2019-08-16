@@ -10,7 +10,7 @@ import com.example.vendorapp.shared.expandableRecyclerView.GroupViewHolderNewOrd
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup
 
-class RecyclerAdapterExpandabeRecyclerView( private val orderId: Int,private val orderAmount: Int
+class RecyclerAdapterExpandabeRecyclerView(private val isLoading:Boolean, private val orderId: Int,private val orderAmount: Int
                                             , val listener2 : ListenerRecyViewButtonClick ,var inflater : LayoutInflater, var list: List<ExpandableGroup<*>>) :
 
     ExpandableRecyclerViewAdapter<GroupViewHolderNewOrderCompactMenu, ChildViewHolderNewOrderOrderDetails>(list){
@@ -23,7 +23,7 @@ class RecyclerAdapterExpandabeRecyclerView( private val orderId: Int,private val
         fun buttonClicked2(orderId : String , accepted : Boolean)
     }*/
     override fun onCreateGroupViewHolder(parent: ViewGroup?, viewType: Int): GroupViewHolderNewOrderCompactMenu {
-        return(GroupViewHolderNewOrderCompactMenu(orderId , orderAmount,listener2,
+        return(GroupViewHolderNewOrderCompactMenu(isLoading,orderId , orderAmount,listener2,
             inflater.inflate(
                 R.layout.group_view_holder_new_order_screen,
                 parent,

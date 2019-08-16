@@ -10,6 +10,7 @@ import com.example.vendorapp.shared.singletonobjects.RetrofitInstance
 import com.google.gson.JsonObject
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeoutException
 
 class LoginRepository(val activity: Context) {
 
@@ -59,28 +60,12 @@ var x = activity.getString(R.string.login_failed)
 
 
        }
-     }
-         /*doOnSuccess{
+     }.doOnError {}.flatMap {
+       Single.just(UIState.ErrorState("Unknown  error"))
 
-            Log.d("LoginViewModel5","hd${it.body()} code ${it.code()} boo ${it.isSuccessful()}" +
-                    "mess  ${it.message()} errorBody${it.errorBody()}" )
-          if (it.isSuccessful())
-          {
-              x=activity.getString(R.string.login_sucess)
-          }
-          else if (it.code()>= 400 &&it.code() < 500)
-          {
-              x=it.message()
-          }
-          else if (it.code()>=500)
-          {
-              x=activity.getString(R.string.login_server_error)
-          }
+   }
 
-        }.doOnError {
-          x= "Try Again $it"
-            Log.d("checkLogin Repo","ijfdeg${it.message}")
-        }*///.ignoreElement()
+
 
 
 

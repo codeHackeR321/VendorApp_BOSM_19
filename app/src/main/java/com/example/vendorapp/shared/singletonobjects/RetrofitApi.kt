@@ -7,6 +7,7 @@ import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
 import com.google.gson.JsonObject
 import io.reactivex.Completable
 import io.reactivex.Single
+import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -40,4 +41,7 @@ interface RetrofitApi {
 
      @GET("wallet/vendor/order/{id}")
      fun getOrderFromOrderId(@Header("Authorization") jwt: String,@Path("id")orderId:String):Single<Response<OrdersPojo>>
+
+    @GET("wallet/vendor/orders/idlist")
+    fun getOrdersFromOrderIds(@Header("Authorization") jwt: String,@Body body: JSONObject):Single<Response<List<OrdersPojo>>>
 }

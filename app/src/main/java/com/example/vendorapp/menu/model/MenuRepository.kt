@@ -46,7 +46,8 @@ if (it.isSuccessful) {
                 menuDao.insertMenu(menu)
             }.doOnError {
                 Log.e("Testing Menu Repo" , "Error in adding menu data to room = ${it.toString()}")
-            }
+            }.doOnSuccess {                 Log.e("Testing Menu Repo" , "Error in adding menu data to room = ${it.toString()}")
+        }
             .ignoreElement()
 
     }
