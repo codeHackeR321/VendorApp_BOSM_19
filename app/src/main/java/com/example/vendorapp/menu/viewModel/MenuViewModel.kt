@@ -1,16 +1,15 @@
 package com.example.vendorapp.menu.viewModel
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.vendorapp.menu.model.MenuRepository
-import com.example.vendorapp.shared.dataclasses.retroClasses.MenuPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import com.example.vendorapp.shared.singletonobjects.repositories.MenuRepositoryInstance
 import com.example.vendorapp.shared.utils.NetworkConnectivityCheck
+import com.google.firebase.database.core.Repo
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -37,7 +36,12 @@ class MenuViewModel(context: Context) :ViewModel() {
         }
     }
 
-    fun updateStatus(id:String,status:String){
-
+    fun updateStatus(id:Int,status:Boolean) {
+        Log.d("MenuVM", "Entered update status")
+        menuRepository.updateItemStatus(id, status).subscribeOn(Schedulers.io()).doOnSuccess {
+            Log.d("MenuRepository", "Status Code ${it.code()}")
+        }.doOnError {
+            Log.e("Menu Repo", "Error $it")
+        }.subscribe()
     }
 }

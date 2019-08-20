@@ -15,11 +15,11 @@ data class OrdersPojo(
     var totalPrice:Int,
 
    @SerializedName("order_id")
-    var orderId:Int
+    var orderId:Int,
 
     //otp_seen:Boolean
 
-    //var timestamp: String
+    var timestamp: String
 
 
 

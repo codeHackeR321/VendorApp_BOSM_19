@@ -1,5 +1,6 @@
 package com.example.vendorapp.shared.dataclasses
 
+import java.sql.Date
 import java.sql.Timestamp
 
 data class OrderItremCombinedDataClass(
@@ -18,7 +19,9 @@ data class OrderItremCombinedDataClass(
 
     var is_loading: Boolean,
 
-    var timestamp : Long,
+    var date: String,
+
+    var time: String,
 
     var otp : Int,
 

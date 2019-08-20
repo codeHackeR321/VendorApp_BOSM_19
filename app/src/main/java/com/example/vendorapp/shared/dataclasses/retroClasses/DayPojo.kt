@@ -2,9 +2,9 @@ package com.example.vendorapp.shared.dataclasses.retroClasses
 
 data class DayPojo(
 
-    var day: String,
+    var day_earnings: Int,
 
-    var earnings: String//,
+    var date_string: String//,
 
   /* var orders: List<OrdersPojo>*/
 )

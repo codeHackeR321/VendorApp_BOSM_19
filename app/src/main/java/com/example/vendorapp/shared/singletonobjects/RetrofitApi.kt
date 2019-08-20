@@ -1,9 +1,11 @@
 package com.example.vendorapp.shared.singletonobjects
 
 import com.example.vendorapp.loginscreen.model.LoginResponse
+import com.example.vendorapp.shared.dataclasses.retroClasses.DayPojo
 import com.example.vendorapp.shared.dataclasses.retroClasses.EarningsPojo
 import com.example.vendorapp.shared.dataclasses.retroClasses.MenuPojo
 import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -19,11 +21,20 @@ interface RetrofitApi {
   /*  @get:GET("menu")
     val menu: Single<List<MenuPojo>>*/
 
+
+
+    @POST("wallet/vendor/items/toggle_availability")
+    fun toogleItemAvailiblity(@Header("Authorization") jwt: String, @Body body: JsonObject) : Single<Response<Unit>>
+
+
+    // Get the menu of the vendor
     @GET("wallet/vendor/{vendor_id}/items")
     fun getMenu(@Header("Authorization") jwt: String,@Path("vendor_id")vendor_id:String): Single<Response<List<MenuPojo>>>
 
-    @get:GET("earnings")
-    val earnings: Single<EarningsPojo>
+
+    //get Earning Data
+    @POST("wallet/vendor/earnings-list")
+    fun getEarningData(@Header("Authorization") jwt: String,@Body body: JsonObject):Single<Response<List<DayPojo>>>
 
     @POST("wallet/vendor/orders/{id}/change_status")
     fun updateStatus(@Header("Authorization") jwt: String,@Body body: JsonObject,@Path("id")order_id:String):Single<Response<Unit>>
@@ -42,6 +53,6 @@ interface RetrofitApi {
      @GET("wallet/vendor/order/{id}")
      fun getOrderFromOrderId(@Header("Authorization") jwt: String,@Path("id")orderId:String):Single<Response<OrdersPojo>>
 
-    @GET("wallet/vendor/orders/idlist")
-    fun getOrdersFromOrderIds(@Header("Authorization") jwt: String,@Body body: JSONObject):Single<Response<List<OrdersPojo>>>
+    @POST("wallet/vendor/orders/idlist")
+    fun getOrdersFromOrderIds(@Header("Authorization") jwt: String,@Body body: JsonObject):Single<Response<List<OrdersPojo>>>
 }

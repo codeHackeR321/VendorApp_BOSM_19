@@ -13,11 +13,13 @@ import androidx.lifecycle.ViewModelProviders
 import com.example.vendorapp.R
 import com.example.vendorapp.menu.viewModel.MenuViewModel
 import com.example.vendorapp.menu.viewModel.MenuViewModelFactory
+import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import kotlinx.android.synthetic.main.activity_menu.*
 import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 
 class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
     private lateinit var nMenuViewModel:MenuViewModel
+    var newStatusItemList= emptyList<MenuItemData>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,14 +31,15 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
         window.setFlags(
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-       nMenuViewModel.menuList.observe(this, Observer {menu->
-           (menu_recycler.adapter as MenuAdapter).itemList=menu
-           (menu_recycler.adapter as MenuAdapter).notifyDataSetChanged()
-           if (progBar_menu_screen.isVisible && menu.isNotEmpty()) {
-               progBar_menu_screen.visibility = View.INVISIBLE
-               window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-           }
-       })
+        nMenuViewModel.menuList.observe(this, Observer {menu->
+            (menu_recycler.adapter as MenuAdapter).itemList=menu
+            newStatusItemList=menu
+            (menu_recycler.adapter as MenuAdapter).notifyDataSetChanged()
+            if (progBar_menu_screen.isVisible && menu.isNotEmpty()) {
+                progBar_menu_screen.visibility = View.INVISIBLE
+                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            }
+        })
 
         nMenuViewModel.error.observe(this , Observer {
             Toast.makeText(this , it , Toast.LENGTH_LONG).show()
@@ -47,7 +50,13 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
         })
 
     }
-    override fun onStatusChanged(itemId: String, status: String) {
+    override fun onStatusChanged(itemId: Int, status: Boolean) {
+        Log.d("Listener", "Entered Listener")
+     /*  var position= newStatusItemList.indexOfFirst { it.itemId==itemId }
+       if(position!=-1)
+       {
+
+       }*/
         nMenuViewModel.updateStatus(itemId,status)
     }
 

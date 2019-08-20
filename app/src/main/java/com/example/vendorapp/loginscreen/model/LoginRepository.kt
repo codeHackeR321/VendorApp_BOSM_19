@@ -47,7 +47,7 @@ var x = activity.getString(R.string.login_failed)
 
              200 -> {
                  sharedPref.edit().putString(activity.getString(R.string.saved_jwt), it.body()!!.jwt).apply()
-                 Log.d("FirestoreLogin", "Jwt = ${it.body()!!.jwt}")
+                 Log.d("FirestoreLogin", "Jwt and id = ${it.body()!!}, ")
                  sharedPref.edit().putString(activity.getString(R.string.saved_vendor_id), it.body()!!.id).apply()
                  Single.just(UIState.GoToMainScreen)
              }
@@ -56,13 +56,13 @@ var x = activity.getString(R.string.login_failed)
 
            in 500..599 -> Single.just(UIState.ErrorState("Server error"))
 
-           else -> Single.just(UIState.ErrorState("Unknown  error"))
+           else -> Single.just(UIState.ErrorState("Unknown  error api call"))
 
 
        }
-     }.doOnError {}.flatMap {
-       Single.just(UIState.ErrorState("Unknown  error"))
-
+     }.doOnError {
+       Log.d("Login","error in apicall ${it.printStackTrace()}")
+   }
    }
 
 
@@ -80,4 +80,3 @@ var x = activity.getString(R.string.login_failed)
 
 
 
-}

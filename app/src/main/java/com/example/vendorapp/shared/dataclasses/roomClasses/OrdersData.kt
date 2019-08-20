@@ -17,8 +17,11 @@ data class OrdersData (
     @ColumnInfo(name = "is_loading")
     var isLoading:Boolean,
 
-    @ColumnInfo(name = "timestamp")
-    var timestamp: Long,
+    @ColumnInfo(name = "time")
+    var time:String,
+
+    @ColumnInfo(name = "date")
+    var date:String,
 
     @ColumnInfo(name = "otp")
     var otp: Int,

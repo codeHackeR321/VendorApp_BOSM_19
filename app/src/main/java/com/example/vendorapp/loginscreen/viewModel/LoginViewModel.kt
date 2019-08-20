@@ -27,7 +27,8 @@ return loginRepo.getJWTfromSharedPref()
     @SuppressLint("CheckResult")
     fun login(username:String,password:String){
 
-        loginRepo.loginWithAuth(username, password).subscribe({
+        loginRepo.loginWithAuth(username, password).observeOn(AndroidSchedulers.mainThread()).subscribe({
+            Log.d("LoginViewodel7","UiState $it")
             (loginStatus as MutableLiveData).postValue(it)
 
         },{

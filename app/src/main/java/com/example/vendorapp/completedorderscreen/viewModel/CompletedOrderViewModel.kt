@@ -28,14 +28,16 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
     var totalEarning:LiveData<String> =MutableLiveData()
     var error : LiveData<String> = MutableLiveData()
     var earningData:LiveData<List<EarningData>> = MutableLiveData()
-
+    var dayWiseOrdersMap:LiveData<Map<String,List<ModifiedOrdersDataClass>>> =MutableLiveData()
     init{
 
         if (NetworkConnectivityCheck().checkIntenetConnection(context)) {
             orderRepository.updateEarningsData().observeOn(AndroidSchedulers.mainThread()).doOnComplete {
                // getCompletedOrders()
+                Log.d("Earnings1" , "Sucess API }")
+
             }.doOnError {
-                Log.e("Testing Earnings VM" , "Error in updating data from room \nError = ${it.message.toString()}")
+                Log.e("Earning2" , "Error in updating data from room \nError = ${it.message.toString()}")
             }.subscribe()
         } else {
             (error as MutableLiveData<String>).postValue("Please check your internet connection and restart the app")
@@ -64,7 +66,7 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
     }
 
 
-/*   @SuppressLint("CheckResult")
+   @SuppressLint("CheckResult")
 
    fun updateData(){
 
@@ -72,44 +74,35 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
            Log.d("check1","called")
            var totalEarning:Long = 0
            it.forEach {
-
-               Log.d("check1",it.earnings)
+               Log.d("check1","earnings"+it.earnings)
                totalEarning = totalEarning + it.earnings.toLong()
            }
            (earnings as MutableLiveData<String>).postValue(totalEarning.toString())
        }.doOnError {
            Log.e("Error in COVM" , "Error in updating data = ${it.toString()}")
        }.subscribe()
-   }*/
+   }
 
-  /*  fun getCompletedOrders(){
+    @SuppressLint("CheckResult")
+    fun getCompletedOrders(){
 
      //   var ordersList = emptyList<ModifiedOrdersDataClass>()
         var daywiseOrdersList=  emptyList<DayWiseOrdersDataClass>()
-        orderRepository.getFinishedOrdersFromRoom().observeOn(AndroidSchedulers.mainThread()).doOnNext { orderList ->
-            orderList.forEach {order ->
-                var itemList = emptyList<ChildDataClass>()
-                for (item in order.items) {
-                    itemList = itemList.plus(
-                        ChildDataClass(
-                            itemName = item.name,
-                            itemId = item.itemId,
-                            price = item.price,
-                            quantity = item.quantity
-                        )
-                    )
-                }
-                *//*ordersList = ordersList.plus(ModifiedOrdersDataClass(
-                    orderId = order.order.orderId,
-                    otp = order.order.otp,
-                    status = order.order.status,
-                    totalAmount = order.order.totalAmount,
-                    timestamp = order.order.timestamp.toString(),
-                    items = itemList
-                ))*//*
+        orderRepository.getFinishedOrdersFromRoom().observeOn(AndroidSchedulers.mainThread()).subscribe({modifiedordersdtaclasslist->
 
-                var tempdate=SimpleDateFormat("dd").format(Date(order.order.timestamp.toString().toLong()*1000L))
-                if (daywiseOrdersList.any{ it.date ==tempdate})
+
+           /* var date =SimpleDateFormat("dd'_'MM'_'yyyy").parse("05_06_2019")
+            var sdf=SimpleDateFormat("dd-MM-yyyy")*/
+var datewiseordersMap:Map<String,List<ModifiedOrdersDataClass>>
+
+datewiseordersMap=modifiedordersdtaclasslist.groupBy { it.date }
+
+/*
+                var tempdate=SimpleDateFormat("dd-MM-yyyy").format(Date(order.order.timestamp.toString().toLong()*1000L))
+*/
+/*
+
+            if (daywiseOrdersList.any{ it.date ==tempdate})
                     daywiseOrdersList.find { it.date==tempdate }!!.dayWiseorders.plus(ModifiedOrdersDataClass(
                         orderId = order.order.orderId.toString(),
                         otp = order.order.otp,
@@ -131,13 +124,15 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
                    daywiseOrdersList= daywiseOrdersList.plus(DayWiseOrdersDataClass(tempdate,tempList))
                     Log.e("Completed3","daywiseLost${daywiseOrdersList.size} temp ${tempList.size}")
                 }
+*/
 
-                (dayWiseOrders as MutableLiveData<List<DayWiseOrdersDataClass>>).postValue(daywiseOrdersList)
-            }
-        }.doOnError {
+                //(dayWiseOrders as MutableLiveData<List<DayWiseOrdersDataClass>>).postValue(daywiseOrdersList)
+            (dayWiseOrdersMap as MutableLiveData<Map<String,List<ModifiedOrdersDataClass>>>).postValue(datewiseordersMap)
+        }
+        , {
             Log.e(" check" , it.stackTrace.toString())
-        }.subscribe()
-    }*/
+        })
+    }
 
 
 

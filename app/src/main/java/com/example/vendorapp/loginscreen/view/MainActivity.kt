@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
@@ -40,6 +41,7 @@ private lateinit var  viewModel: LoginViewModel
             {
                 UIState.GoToMainScreen -> {
                    removeLoadingStateFragment()
+                    Log.d("Login","go to msin screen ")
                     Toast.makeText(this@MainActivity, "Login Successfull",Toast.LENGTH_SHORT).show()
                     startActivity(Intent(this@MainActivity,MainScreenActivity::class.java))
                     finish()
@@ -48,6 +50,7 @@ private lateinit var  viewModel: LoginViewModel
 
               is UIState.ErrorState -> {
              removeLoadingStateFragment()
+                  Log.d("Login","error state  ")
               Toast.makeText(this@MainActivity,(it as UIState.ErrorState).message,Toast.LENGTH_SHORT).show()
             }
             }

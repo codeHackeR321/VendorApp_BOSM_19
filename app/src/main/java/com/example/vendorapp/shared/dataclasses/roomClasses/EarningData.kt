@@ -8,10 +8,10 @@ import androidx.room.PrimaryKey
 data class EarningData (
 
     @PrimaryKey
-    @ColumnInfo(name = "day")
-    var day: String,
+    @ColumnInfo(name = "date")
+    var date: String,
 
     @ColumnInfo(name = "earnings")
-    var earnings: String
+    var earnings:Int
 
 )

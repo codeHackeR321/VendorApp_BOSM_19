@@ -30,7 +30,7 @@ class DatesAdapter(private var lastSelectedDate:String, private val listener: Da
     }
 
     override fun onBindViewHolder(holder: DatesViewHolder, position: Int) {
-        holder.date.text=earningData.get(position).day
+        holder.date.text=earningData.get(position).date
         holder.earning.text="\u20B9 "  +earningData.get(position).earnings
         Log.d("DateCheck2","last$lastSelectedDate c $currentSelectedDate")
         if (holder.date.text.equals(lastSelectedDate))
@@ -43,9 +43,9 @@ class DatesAdapter(private var lastSelectedDate:String, private val listener: Da
 
         holder.parent.setOnClickListener {
             lastSelectedDate=currentSelectedDate
-            currentSelectedDate=earningData.get(position).day
+            currentSelectedDate=earningData.get(position).date
             Log.d("Date Check","last$lastSelectedDate cuurr $currentSelectedDate")
-            listener.OnDateSelected(earningData.get(position).day)
+            listener.OnDateSelected(earningData.get(position).date)
         }
     }
 

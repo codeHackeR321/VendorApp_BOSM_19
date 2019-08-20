@@ -1,6 +1,7 @@
 package com.example.vendorapp.menu.view
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.OrientationEventListener
 import android.view.View
@@ -12,18 +13,21 @@ import com.example.vendorapp.R
 import com.example.vendorapp.shared.dataclasses.retroClasses.MenuPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import kotlinx.android.synthetic.main.menu_item.view.*
+import java.lang.Exception
 
 class MenuAdapter(private val listener: UpdateMenuListener) : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
 
-    interface UpdateMenuListener{
-        fun onStatusChanged(itemId:String,status:String)
+    interface UpdateMenuListener {
+        fun onStatusChanged(itemId: Int, status: Boolean)
     }
 
-    var itemList:List<MenuItemData> = emptyList()
+    var itemList: List<MenuItemData> = emptyList()
+    var newStatusItemList= emptyList<MenuItemData>()
+
     inner class MenuViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-          internal var itemName=view.item_name
-          internal var itemPrice=view.item_price
-          internal var switch=view.on_off
+        internal var itemName = view.item_name
+        internal var itemPrice = view.item_price
+        internal var switch = view.on_off
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuAdapter.MenuViewHolder {
@@ -36,24 +40,23 @@ class MenuAdapter(private val listener: UpdateMenuListener) : RecyclerView.Adapt
     }
 
     override fun onBindViewHolder(holder: MenuAdapter.MenuViewHolder, position: Int) {
-        holder.itemName.text=itemList.get(position).name
-        holder.itemPrice.text= String.format(holder.itemView.resources.getString(R.string.new_order_total_amount),itemList.get(position).price)
-        if(itemList.get(position).status.equals("on"))
-            holder.switch.isChecked=true
-        else
-            holder.switch.isChecked=false
-        holder.switch.setOnClickListener {item ->
-            when(item.on_off.isActivated){
-                true->{ listener.onStatusChanged(itemList.get(position).itemId.toString(),"on")
-                    holder.switch.isChecked=true
+        holder.itemName.text = itemList.get(position).name
+        holder.itemPrice.text = String.format(
+            holder.itemView.resources.getString(R.string.new_order_total_amount),
+            itemList.get(position).price
+        )
+        holder.switch.isChecked = itemList.get(position).status
+        holder.switch.setOnCheckedChangeListener { buttonView, isChecked ->
+            when(isChecked) {
+                true -> {
+                    Log.d("Menu Activity1", "Entered True")
+                    listener.onStatusChanged(itemList.get(position).itemId, false)
                 }
-                false -> {listener.onStatusChanged(itemList.get(position).itemId.toString(),"off")
-                           holder.switch.isChecked=false
-                         }
+                false -> {
+                    Log.d("Menu Activity1", "Entered False")
+                    listener.onStatusChanged(itemList.get(position).itemId, false)
+                }
             }
         }
-
     }
-
-
 }

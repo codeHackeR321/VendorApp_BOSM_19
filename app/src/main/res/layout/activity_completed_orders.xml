@@ -58,31 +58,10 @@
             app:layout_constraintTop_toBottomOf="@+id/dates_recycler"
             app:layout_constraintBottom_toBottomOf="parent"
             android:orientation="vertical"/>
-<!--    <TextView
-            android:text="Today's earnings :"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView4"
-            android:fontFamily="@font/cabin"
-            android:textSize="20sp"
-            android:textColor="@color/colorBlack"
-            app:layout_constraintStart_toStartOf="parent" android:layout_marginLeft="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
-            app:layout_constraintEnd_toStartOf="@+id/t_earn_val"
-            android:layout_marginEnd="277dp" android:layout_marginRight="277dp"
-            app:layout_constraintHorizontal_bias="0.0"/>-->
-   <!-- <TextView
-            android:text=""
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textColor="@color/colorBlack"
-            android:fontFamily="@font/cabin"
-            android:layout_margin="8dp"
-            android:id="@+id/t_earn_val" android:layout_marginEnd="8dp" android:layout_marginRight="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView4" app:layout_constraintBottom_toBottomOf="@+id/textView4"/>
--->
+<ProgressBar android:layout_width="wrap_content" android:layout_height="wrap_content"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintTop_toTopOf="parent"
+app:layout_constraintBottom_toBottomOf="parent"
+android:id="@+id/prog_bar_completed_order_screen"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

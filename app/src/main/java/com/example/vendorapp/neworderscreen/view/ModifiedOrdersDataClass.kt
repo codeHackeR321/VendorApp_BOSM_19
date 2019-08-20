@@ -8,7 +8,9 @@ data class ModifiedOrdersDataClass (
 
     var status: Int,
 
-    var timestamp: String,
+    var date: String,
+
+    var time:String,
 
     var otp: Int,
 

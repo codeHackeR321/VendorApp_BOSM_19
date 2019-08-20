@@ -35,7 +35,7 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
     @SuppressLint("CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         observeUIState()
-        initializeView()
+initializeView()
 
         super.onViewCreated(view, savedInstanceState)
 
@@ -119,14 +119,14 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
         })
     }
 
-    private fun showLoadingStateFragment(){
-        if (!progBar_new_order_screen.isVisible) {
-            progBar_new_order_screen.visibility = View.VISIBLE
-            activity!!.window.setFlags(
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-        )
-    }}
+private fun showLoadingStateFragment(){
+    if (!progBar_new_order_screen.isVisible) {
+        progBar_new_order_screen.visibility = View.VISIBLE
+        activity!!.window.setFlags(
+        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+    )
+}}
 
     private fun removeLoadingStateFragment(){
         if (progBar_new_order_screen.isVisible) {
