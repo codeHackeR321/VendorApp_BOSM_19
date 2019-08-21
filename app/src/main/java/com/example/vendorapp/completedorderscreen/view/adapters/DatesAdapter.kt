@@ -12,7 +12,7 @@ import com.example.vendorapp.shared.dataclasses.roomClasses.EarningData
 
 class DatesAdapter(private var lastSelectedDate:String, private val listener: DateSelectedListener):RecyclerView.Adapter<DatesAdapter.DatesViewHolder>() {
 
-    private var currentSelectedDate=lastSelectedDate
+    var currentSelectedDate=lastSelectedDate
     interface DateSelectedListener{
 
        fun OnDateSelected(date:String)
@@ -32,13 +32,13 @@ class DatesAdapter(private var lastSelectedDate:String, private val listener: Da
     override fun onBindViewHolder(holder: DatesViewHolder, position: Int) {
         holder.date.text=earningData.get(position).date
         holder.earning.text="\u20B9 "  +earningData.get(position).earnings
-        Log.d("DateCheck2","last$lastSelectedDate c $currentSelectedDate")
-        if (holder.date.text.equals(lastSelectedDate))
-        {
-            holder.parent.setBackgroundResource(R.drawable.shape_rectangle_white_bg)
-        }
+        Log.d("DateCheck2","/*last$lastSelectedDate*/ c $currentSelectedDate")
+
         if (holder.date.text.equals(currentSelectedDate))
             holder.parent.setBackgroundResource(R.drawable.shape_rectangle_grey_bg)
+
+         else
+                holder.parent.setBackgroundResource(R.drawable.shape_rectangle_white_bg)
 
 
         holder.parent.setOnClickListener {

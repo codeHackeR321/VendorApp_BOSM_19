@@ -33,7 +33,7 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
 
         if (NetworkConnectivityCheck().checkIntenetConnection(context)) {
             orderRepository.updateEarningsData().observeOn(AndroidSchedulers.mainThread()).doOnComplete {
-               // getCompletedOrders()
+                getCompletedOrders()
                 Log.d("Earnings1" , "Sucess API }")
 
             }.doOnError {
