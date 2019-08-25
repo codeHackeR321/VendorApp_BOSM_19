@@ -18,5 +18,5 @@ data class MenuItemData (
     var price: Int,
 
     @ColumnInfo(name = "item_status")
-    var status: Boolean
+    var status: Int
 )

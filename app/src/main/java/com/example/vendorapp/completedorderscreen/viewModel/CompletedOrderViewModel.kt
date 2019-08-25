@@ -31,14 +31,13 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
     var dayWiseOrdersMap:LiveData<Map<String,List<ModifiedOrdersDataClass>>> =MutableLiveData()
     init{
 
+        @SuppressLint("CheckResult")
         if (NetworkConnectivityCheck().checkIntenetConnection(context)) {
-            orderRepository.updateEarningsData().observeOn(AndroidSchedulers.mainThread()).doOnComplete {
+            orderRepository.updateEarningsData().observeOn(AndroidSchedulers.mainThread()).subscribe({
                 getCompletedOrders()
                 Log.d("Earnings1" , "Sucess API }")
 
-            }.doOnError {
-                Log.e("Earning2" , "Error in updating data from room \nError = ${it.message.toString()}")
-            }.subscribe()
+            },{Log.e("Earning2" , "Error in updating data from room \nError = ${it.message.toString()}")})
         } else {
             (error as MutableLiveData<String>).postValue("Please check your internet connection and restart the app")
         }

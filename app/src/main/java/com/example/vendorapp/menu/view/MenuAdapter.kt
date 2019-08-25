@@ -18,7 +18,7 @@ import java.lang.Exception
 class MenuAdapter(private val listener: UpdateMenuListener) : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
 
     interface UpdateMenuListener {
-        fun onStatusChanged(itemId: Int, status: Boolean)
+        fun onStatusChanged(itemId: Int, newStatus: Int)
     }
 
     var itemList: List<MenuItemData> = emptyList()
@@ -45,16 +45,20 @@ class MenuAdapter(private val listener: UpdateMenuListener) : RecyclerView.Adapt
             holder.itemView.resources.getString(R.string.new_order_total_amount),
             itemList.get(position).price
         )
-        holder.switch.isChecked = itemList.get(position).status
+       if(itemList.get(position).status==0)
+           holder.switch.isChecked =false
+        else if(itemList.get(position).status==1)
+           holder.switch.isChecked=true
+
         holder.switch.setOnCheckedChangeListener { buttonView, isChecked ->
             when(isChecked) {
                 true -> {
                     Log.d("Menu Activity1", "Entered True")
-                    listener.onStatusChanged(itemList.get(position).itemId, false)
+                    listener.onStatusChanged(itemList.get(position).itemId, 1)
                 }
                 false -> {
                     Log.d("Menu Activity1", "Entered False")
-                    listener.onStatusChanged(itemList.get(position).itemId, false)
+                    listener.onStatusChanged(itemList.get(position).itemId, 0)
                 }
             }
         }

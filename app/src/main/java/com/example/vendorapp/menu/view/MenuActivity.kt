@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 
 class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
     private lateinit var nMenuViewModel:MenuViewModel
-    var newStatusItemList= emptyList<MenuItemData>()
+    var newStatusItemList= mutableMapOf<Int,Int>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +33,7 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         nMenuViewModel.menuList.observe(this, Observer {menu->
             (menu_recycler.adapter as MenuAdapter).itemList=menu
-            newStatusItemList=menu
+
             (menu_recycler.adapter as MenuAdapter).notifyDataSetChanged()
             if (progBar_menu_screen.isVisible && menu.isNotEmpty()) {
                 progBar_menu_screen.visibility = View.INVISIBLE
@@ -49,15 +49,35 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
             }
         })
 
-    }
-    override fun onStatusChanged(itemId: Int, status: Boolean) {
-        Log.d("Listener", "Entered Listener")
-     /*  var position= newStatusItemList.indexOfFirst { it.itemId==itemId }
-       if(position!=-1)
-       {
+        saveChanges.setOnClickListener{
+            View.OnClickListener {
+                if(newStatusItemList.isEmpty())
+                Toast.makeText(this,"No changes made to be saved",Toast.LENGTH_SHORT).show()
 
-       }*/
-        nMenuViewModel.updateStatus(itemId,status)
+                 else
+                    nMenuViewModel.updateStatus(newStatusItemList)
+            }
+
+
+        }
+
+    }
+    override fun onStatusChanged(itemId: Int, newStatus: Int) {
+        Log.d("Listener", "Entered Listener")
+        if (newStatusItemList[itemId]!= null)
+        {
+            newStatusItemList.remove(itemId)
+        }
+        else
+        {
+            newStatusItemList.put(itemId,newStatus)
+        }
+
+        if (newStatusItemList.isEmpty())
+             saveChanges.setTextColor(resources.getColor(R.color.colorGreySelectedBg))
+        else
+            saveChanges.setTextColor(resources.getColor(R.color.colorBlack))
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

@@ -6,7 +6,7 @@ data class MenuPojo (
 
     var id: Int,
 
-    var is_available: Boolean,
+    var is_available: Int,
 
     var name: String
 

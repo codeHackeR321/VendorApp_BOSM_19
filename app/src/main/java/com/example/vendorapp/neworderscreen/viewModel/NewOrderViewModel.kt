@@ -6,7 +6,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.vendorapp.loginscreen.view.UIState
+import com.example.vendorapp.shared.UIState
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
 import com.example.vendorapp.shared.singletonobjects.repositories.OrderRepositoryInstance
 import com.example.vendorapp.shared.singletonobjects.repositories.MenuRepositoryInstance
@@ -55,17 +55,18 @@ class NewOrderViewModel(val context : Context) : ViewModel(){
 orderRepo.onNewOrderAdded(listOf(orderId))
     }
 
+    @SuppressLint("CheckResult")
     fun doInitialFetch(){
         if (NetworkConnectivityCheck().checkIntenetConnection(context))
         {
 
-                menuRepo.updateMenu().doOnComplete {
+                menuRepo.updateMenu().subscribe({
                     Log.d("NewOrderVM1" , "Fetching Menu Items Complete. Fetching orders")
                     //getNewOrders()
-                }.doOnError {
+                },{
                     Log.d("NewOrderVM2" , "Error in updating menu items = ${it.message.toString()}")
                     (errors as MutableLiveData<String>).postValue("Error in database. Please try after some time")
-                }.subscribe()
+                })
 
         }
         else{

@@ -6,8 +6,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.vendorapp.loginscreen.view.UIState
+import com.example.vendorapp.shared.UIState
 import com.example.vendorapp.shared.singletonobjects.repositories.LoginRepositoryInstance
+import com.example.vendorapp.shared.utils.NetworkConnectivityCheck
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 
@@ -18,23 +19,35 @@ class LoginViewModel(val context : Context) : ViewModel(){
     var loginStatus  : LiveData<UIState> = MutableLiveData()
 
 
-init {
-
-}
     fun getJWT():String{
-return loginRepo.getJWTfromSharedPref()
+        return loginRepo.getJWTfromSharedPref()
+    }
+
+    fun getVendorId():String{
+        return loginRepo.getVendorIdfromSharedPref()
     }
     @SuppressLint("CheckResult")
     fun login(username:String,password:String){
 
-        loginRepo.loginWithAuth(username, password).observeOn(AndroidSchedulers.mainThread()).subscribe({
-            Log.d("LoginViewodel7","UiState $it")
-            (loginStatus as MutableLiveData).postValue(it)
+        if (NetworkConnectivityCheck().checkIntenetConnection(context))
+        {
 
-        },{
-            (loginStatus as MutableLiveData).postValue(UIState.ErrorState(it.toString()))
-            Log.d("LoginViewodel6","error$it")
-        })
+            loginRepo.loginWithAuth(username, password).observeOn(AndroidSchedulers.mainThread()).subscribe({
+                Log.d("LoginViewodel1","UiState $it")
+                (loginStatus as MutableLiveData).postValue(it)
+
+            },{
+                (loginStatus as MutableLiveData).postValue(UIState.ErrorState("OnError: ${it.message}"))
+                Log.d("LoginViewodel2","error$it")
+            })
+
+        }
+        else{
+            Log.d("LoginViewodel3", "No internet connection while Login")
+            (loginStatus as MutableLiveData).postValue(UIState.NoInternetConnection)
+        }
+
+
     }
 
 

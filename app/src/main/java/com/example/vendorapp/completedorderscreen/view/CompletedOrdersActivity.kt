@@ -11,16 +11,12 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.vendorapp.R
-import com.example.vendorapp.acceptedorderscreen.view.adapters.AdapterForFragment
 import com.example.vendorapp.completedorderscreen.view.adapters.DatesAdapter
 import com.example.vendorapp.completedorderscreen.view.adapters.OrdersAdapterFragment
 import com.example.vendorapp.completedorderscreen.viewModel.CompletedOrderViewModel
 import com.example.vendorapp.completedorderscreen.viewModel.CompletedOrderViewModelFactory
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
-import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
 import kotlinx.android.synthetic.main.activity_completed_orders.*
-import kotlinx.android.synthetic.main.fragment_fra_accepted_order.*
-import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 import java.lang.Exception
 
 class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedListener {
@@ -29,6 +25,7 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
    // private var defaultDate = ""
     private var datewisedataMap= mapOf<String,List<ModifiedOrdersDataClass>>()
     private var selectedDate=""
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,15 +42,15 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
 
     }
 
-    fun initialize() {
+   private fun initialize() {
         //initialise recycler vies and adapter
         orders_recycler.adapter = OrdersAdapterFragment()
         dates_recycler.adapter=DatesAdapter(selectedDate,this)
 
         nCompletedViewModel.earningData.observe(this , Observer {
-            Log.d("Testing Accepted View" , "Entered observer for Accepted orders with list = ${it.toString()}")
+            Log.d("Testing Accepted View" , "Entered observer for Accepted orders with list = $it")
             (dates_recycler.adapter as DatesAdapter).earningData = it
-            if (selectedDate.isNullOrEmpty()&&it.isNotEmpty())
+            if (selectedDate.isEmpty()&&it.isNotEmpty())
             {
                 selectedDate=it[0].date
                 setDayWiseData()
@@ -104,7 +101,7 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
             if (datewisedataMap[selectedDate].isNullOrEmpty())
             {
                 Toast.makeText(this@CompletedOrdersActivity, "No data for $selectedDate", Toast.LENGTH_LONG).show()
-                (orders_recycler.adapter as OrdersAdapterFragment).orders = emptyList<ModifiedOrdersDataClass>()
+                (orders_recycler.adapter as OrdersAdapterFragment).orders = emptyList()
             }
             else
             (orders_recycler.adapter as OrdersAdapterFragment).orders = datewisedataMap[selectedDate] ?: error("No data Found $selectedDate")
@@ -118,7 +115,7 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
 
         } catch (e: Exception) {
             Log.d("CompletedError", e.toString())
-            Toast.makeText(this@CompletedOrdersActivity,"My mesage" +e.toString(), Toast.LENGTH_LONG).show()
+            Toast.makeText(this@CompletedOrdersActivity,"My message$e" , Toast.LENGTH_LONG).show()
         }
 
     }
@@ -149,29 +146,3 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
     }
 }
 
-
-
-// private fun setDayWiseDataObserver(date: String) {
-//
-//        nCompletedViewModel.dayWiseOrdersMap.observe(this, Observer {
-//            try {
-//                //date wise data supplied
-//                // null agar hua tio dikkat nhi hobni chhiye shayd
-//                (orders_recycler.adapter as OrdersAdapterFragment).orders = it[date]!!
-//
-//                //Check daywise data
-//                Log.d("CompletedDataCheck", "data Check${it[date]}!!.dayWiseorders.toString()}")
-//                (orders_recycler.adapter as OrdersAdapterFragment).notifyDataSetChanged()
-//                //to change selected value of date
-//                (dates_recycler.adapter as DatesAdapter).notifyDataSetChanged()
-//
-//            } catch (e: Exception) {
-//                Log.d("CompletedError", e.toString())
-//                Toast.makeText(this@CompletedOrdersActivity, e.toString(), Toast.LENGTH_LONG).show()
-//            }
-//
-//
-//            Toast.makeText(this@CompletedOrdersActivity, "Date selected$date", Toast.LENGTH_LONG).show()
-//
-//        })
-//    }

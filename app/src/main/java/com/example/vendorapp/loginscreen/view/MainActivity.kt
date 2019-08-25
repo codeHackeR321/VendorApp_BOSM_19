@@ -1,7 +1,9 @@
 package com.example.vendorapp.loginscreen.view
 
+import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -20,56 +22,61 @@ import com.example.vendorapp.loginscreen.viewModel.LoginViewModel
 import com.example.vendorapp.loginscreen.viewModel.LoginViewModelFactory
 
 import com.example.vendorapp.notification.MyFirebaseMessagingService
+import com.example.vendorapp.shared.UIState
+import com.google.android.material.snackbar.Snackbar
 
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 
 class MainActivity : AppCompatActivity() {
 
-private lateinit var  viewModel: LoginViewModel
+
+    private lateinit var viewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         showLoadingStateFragment()
-        viewModel= ViewModelProviders.of(this, LoginViewModelFactory(this)).get(LoginViewModel::class.java)
+        viewModel =
+            ViewModelProviders.of(this, LoginViewModelFactory(this)).get(LoginViewModel::class.java)
 
         initializeApp()
 
-        viewModel.loginStatus.observe(this , Observer {
-            when(it!!)
-            {
+        viewModel.loginStatus.observe(this, Observer {
+            when (it!!) {
                 UIState.GoToMainScreen -> {
-                   removeLoadingStateFragment()
-                    Log.d("Login","go to msin screen ")
-                    Toast.makeText(this@MainActivity, "Login Successfull",Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this@MainActivity,MainScreenActivity::class.java))
+                    removeLoadingStateFragment()
+                    Log.d("LoginActivity", "go to msin screen ")
+                    Toast.makeText(this@MainActivity, "Login Successfull", Toast.LENGTH_SHORT)
+                        .show()
+                    startActivity(Intent(this@MainActivity, MainScreenActivity::class.java))
                     finish()
 
                 }
 
-              is UIState.ErrorState -> {
-             removeLoadingStateFragment()
-                  Log.d("Login","error state  ")
-              Toast.makeText(this@MainActivity,(it as UIState.ErrorState).message,Toast.LENGTH_SHORT).show()
-            }
+                is UIState.ErrorState -> {
+                    removeLoadingStateFragment()
+                    Log.d("LoginActivity2", "error state${(it as UIState.ErrorState).message} ")
+                    Snackbar.make(coordinatorLayout,"ERROR:${(it as UIState.ErrorState).message} ",Snackbar.LENGTH_LONG).show()
+
+                }
+
+                is UIState.NoInternetConnection->{
+                    removeLoadingStateFragment()
+                    showAlertDialogBox()
+                  //  Toast.makeText(this,"Alert: Internet Connection Not found.Please connect and Restart the App",Toast.LENGTH_LONG).show()
+                }
             }
         })
 
         buttonSignIn.setOnClickListener {
             showLoadingStateFragment()
-            var username=editTextUsername.text.toString()
-            var password = editTextPassword.text.toString()
-            if (username.isBlank()&&password.isBlank())
-            {
-                Toast.makeText(this@MainActivity,"Enter valid username/password",Toast.LENGTH_SHORT).show()
+            if (editTextUsername.text.toString().isBlank() && editTextPassword.text.toString().isBlank()) {
+                Snackbar.make(coordinatorLayout,"Enter valid username/password",Snackbar.LENGTH_LONG).show()
                 removeLoadingStateFragment()
             }
-            else
-            {
-
-                viewModel.login(username,password)
-
+            else{
+                Log.d("LoginActivity1", "viewModel.login called")
+                viewModel.login(editTextUsername.text.toString(),editTextPassword.text.toString())
             }
         }
     }
@@ -78,12 +85,15 @@ private lateinit var  viewModel: LoginViewModel
      * This method is used for the initial setup of the notification channels
      * If the notification chanel already exists, no action is taken, and hence it is safe to call this method every time the app starts
      * */
-    fun setupNotificationChannel(){
+    fun setupNotificationChannel() {
         // Notification Channels are only available for Oreo(Api Level 26) and onwards
         // Since support libraries don't have a library for setting up notification channels, this check is necessary
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-        {
-            val newOrderChanel = NotificationChannel(getString(R.string.chanel_id_newOrder) , getString(R.string.chanel_name_newOrder) , NotificationManager.IMPORTANCE_HIGH)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val newOrderChanel = NotificationChannel(
+                getString(R.string.chanel_id_newOrder),
+                getString(R.string.chanel_name_newOrder),
+                NotificationManager.IMPORTANCE_HIGH
+            )
             newOrderChanel.description = getString(R.string.chanel_desc_newOrder)
             newOrderChanel.canBypassDnd()
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -98,44 +108,65 @@ private lateinit var  viewModel: LoginViewModel
      * */
     fun initializeApp(){
 
-        val jwt_token=viewModel.getJWT()
-        if(jwt_token.equals(getString(R.string.default_jwt_value)))
-        {
-            //Loader hata
-            //snack bar dikhana h
+        if (viewModel.getJWT().equals(getString(R.string.default_jwt_value)) || viewModel.getVendorId().equals(getString(R.string.default_vendor_id))){
             removeLoadingStateFragment()
-           Toast.makeText(this@MainActivity,"Please Login to Continue",Toast.LENGTH_LONG).show()        }
-        else
-        {
+            Snackbar.make(coordinatorLayout,"Please login to continue",Snackbar.LENGTH_LONG).show()
+        } else {
             // login karwa
-            Toast.makeText(this,"Already Logged in",Toast.LENGTH_LONG).show()
+            Snackbar.make(coordinatorLayout,"Welcome",Snackbar.LENGTH_LONG).show()
             removeLoadingStateFragment()
-            val intent=Intent(this , MainScreenActivity::class.java)
+            val intent = Intent(this, MainScreenActivity::class.java)
             startActivity(intent)
             finish()
         }
         setupNotificationChannel()
-        startService(Intent(this,MyFirebaseMessagingService::class.java))
+        startService(Intent(this, MyFirebaseMessagingService::class.java))
 
     }
 
-    private fun showLoadingStateFragment(){
-        buttonSignIn.isClickable=false
+    /**
+     * This method enables the Progress Bar and makes disables the screen
+     * */
+    private fun showLoadingStateFragment() {
+        buttonSignIn.isClickable = false
         if (!prog_bar_main_activity.isVisible) {
             prog_bar_main_activity.visibility = View.VISIBLE
             window.setFlags(
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
             )
-        }}
+        }
+    }
 
-    private fun removeLoadingStateFragment(){
-        buttonSignIn.isClickable=true
+    /**
+     * This method removes the Progress Bar and re-enables the screen
+    **/
+    private fun removeLoadingStateFragment() {
+        buttonSignIn.isClickable = true
         if (prog_bar_main_activity.isVisible) {
             prog_bar_main_activity.visibility = View.INVISIBLE
             window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
     }
 
+    private fun showAlertDialogBox(){
+        val alertDialog: AlertDialog? = this.let {
+            val builder = AlertDialog.Builder(it)
+            builder.apply{
 
-}
+                setNeutralButton("ok") { dialog, id ->
+                    dialog.dismiss()
+                }
+            }
+
+            builder.setMessage("Please connect and Restart the App")
+            builder.setTitle("No Internet Connection Found")
+            builder.create()
+        }
+        alertDialog?.setCanceledOnTouchOutside(false)
+        alertDialog?.show()
+    }
+    }
+
+
+

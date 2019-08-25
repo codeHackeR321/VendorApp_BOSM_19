@@ -7,7 +7,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
+import com.example.vendorapp.shared.UIState
 import com.example.vendorapp.shared.singletonobjects.repositories.OrderRepositoryInstance
+import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
 
 class AcceptedOrderViewModel(context : Context) : ViewModel(){
@@ -35,6 +37,10 @@ class AcceptedOrderViewModel(context : Context) : ViewModel(){
         orderRepo.updateStatus(orderId,status)
     }
 
+    @SuppressLint("CheckResult")
+    fun observeUIState(): Flowable<UIState> {
+        return  orderRepo.getUIStateFlowable().doOnError { Log.e("TAG", "UI State observer error hu") }
+    }
 
 }
 

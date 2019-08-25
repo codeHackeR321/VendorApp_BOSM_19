@@ -1,5 +1,6 @@
 package com.example.vendorapp.acceptedorderscreen.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +17,10 @@ import com.example.vendorapp.R
 import com.example.vendorapp.acceptedorderscreen.view.adapters.AdapterForFragment
 import com.example.vendorapp.acceptedorderscreen.viewModel.AcceptedOrderViewModel
 import com.example.vendorapp.acceptedorderscreen.viewModel.AcceptedOrderViewModelFactory
+import com.example.vendorapp.neworderscreen.view.adapters.RecyclerAdapterFragment
 import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
+import com.example.vendorapp.shared.UIState
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_fra_accepted_order.*
 import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 
@@ -41,6 +45,7 @@ class AcceptedOrderFragment : Fragment(), ListenerRecyViewButtonClick {
     }
 
     fun initializeView() {
+
 showLoadingStateFragment()
         recycler_accepted_order_screen.adapter = AdapterForFragment(this)
         viewModel.acceptedOrders.observe(this, Observer {
@@ -54,7 +59,7 @@ showLoadingStateFragment()
             Toast.makeText(context, it, Toast.LENGTH_LONG).show()
             removeLoadingStateFragment()
         })
-
+        observeUIState()
         viewModel.getAcceptedOrders()
 
     }
@@ -82,5 +87,37 @@ showLoadingStateFragment()
         }
     }
 
+    @SuppressLint("CheckResult")
+    private fun observeUIState() {
 
+        viewModel.observeUIState().observeOn(AndroidSchedulers.mainThread()).subscribe({
+            Log.d("Firestore78", "in Neworderfrag ui state$it")
+            when (it!!) {
+                UIState.ShowLoadingState -> {
+                    //to be enabled in group view holder
+                    // progBar_new_order_screen.visibility = View.VISIBLE
+                    // not yet decided for group view holder
+                    Log.d("Firestore76", "in Neworderfrag ui loading state")
+
+                }
+
+
+                is UIState.ErrorStateChangeStatus->{
+                    Log.d("NewOrderFrag1","Error Change Status:${(it as UIState.ErrorStateChangeStatus).message}")
+                    Toast.makeText(activity,"Error change status${(it as UIState.ErrorStateChangeStatus).message}",Toast.LENGTH_LONG).show()
+
+                }
+
+                is UIState.SuccessStateChangeStatus->{
+                    Log.d("NewOrderFrag1","Success Change Status:${(it as UIState.SuccessStateChangeStatus).message}")
+                    Toast.makeText(activity,"Success change status${(it as UIState.SuccessStateChangeStatus).message}",Toast.LENGTH_LONG).show()
+
+                }
+            }
+
+        }, {
+            Log.d("Firestore89", "observe observe ui state  Acceptederror$it")
+            Toast.makeText(activity,"Error observing UI State Accepted Order frag$it",Toast.LENGTH_LONG).show()
+        })
+    }
 }

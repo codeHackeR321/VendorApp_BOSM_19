@@ -26,6 +26,8 @@ class MenuRepository(val application: Context) {
     )
     private val defaultJWTValue = application.getString(R.string.default_jwt_value)
     val jwt_token = sharedPref.getString(application.getString(R.string.saved_jwt), defaultJWTValue)
+   val  vendor_id = sharedPref.getString(application.getString(com.example.vendorapp.R.string.saved_vendor_id), application.getString(com.example.vendorapp.R.string.default_vendor_id))
+
 
     init {
         val database = VendorDatabase.getDatabaseInstance(application)
@@ -40,11 +42,12 @@ class MenuRepository(val application: Context) {
         }
     }
 
+
     fun updateMenu(): Completable {
 
-        return menuApiCall.getMenu("Basic VmVuZG9yMTpmaXJlYmFzZXN1Y2tz", "1").subscribeOn(Schedulers.io())
+        return menuApiCall.getMenu("JWT " + jwt_token!!, vendor_id = vendor_id).subscribeOn(Schedulers.io())
             .doOnSuccess {
-                Log.d("Menu", "Menu api call code ${it.code()}")
+                Log.d("Menu", "Menu api call code ${it.code()} ${it.message()}")
                 var menu = emptyList<MenuItemData>()
                 if (it.isSuccessful) {
                     it.body()!!.forEach { menuPojo ->
@@ -58,16 +61,27 @@ class MenuRepository(val application: Context) {
 
     }
 
-    fun updateItemStatus(id: Int, status: Boolean) : Single<Response<Unit>> {
+    fun updateItemStatus(id: Int, availability_state: Int ) : Single<Response<Unit>> {
         Log.d("MenuRepo", "Entered update status with jwt = $jwt_token\nid = $id")
         val body = JsonObject().also {
             it.addProperty("item_id", id)
+            it.addProperty("new_availability_state",availability_state)
+
         }
         Log.d("Menu Repo", "Sent body = ${body.toString()}")
-        return menuApiCall.toogleItemAvailiblity("JWT " + jwt_token!!, body)
+        return menuApiCall.toogleItemAvailiblity("JWT " + jwt_token!!, body).doOnError{  Log.d("crash","gg")}
+
+
     }
 
     private fun MenuPojo.toMenuItemData(): MenuItemData {
+      /*  var is_avai_state=1
+        if (is_available==false)
+            is_avai_state=0
+        else if (is_available==true)
+            is_avai_state=1*/
+
+
         return MenuItemData(id, name, price, is_available)
 
     }

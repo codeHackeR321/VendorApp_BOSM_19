@@ -2,15 +2,12 @@ package com.example.vendorapp.loginscreen.model
 
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.vendorapp.R
-import com.example.vendorapp.loginscreen.view.UIState
+import com.example.vendorapp.shared.UIState
 import com.example.vendorapp.shared.singletonobjects.RetrofitInstance
 import com.google.gson.JsonObject
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.TimeoutException
 
 class LoginRepository(val activity: Context) {
 
@@ -20,15 +17,22 @@ class LoginRepository(val activity: Context) {
         activity.getString(R.string.preference_file_login), Context.MODE_PRIVATE
     )
    private val defaultJWTValue = activity.getString(R.string.default_jwt_value)
+    private val defaultVendorId=activity.getString(R.string.default_vendor_id)
     fun getJWTfromSharedPref():String {
         val jwt_token = sharedPref.getString(activity.getString(R.string.saved_jwt), defaultJWTValue)
-   return jwt_token!!
+        return jwt_token!!
+    }
+
+    fun getVendorIdfromSharedPref():String {
+        val vendorId=sharedPref.getString(activity.getString(R.string.saved_jwt), defaultJWTValue)
+        return vendorId!!
     }
 
 fun loginWithAuth(username: String, password: String): Single<UIState>{
         val body = JsonObject().also {
             it.addProperty("username", username)
             it.addProperty("password",  password)
+
         }
     Log.d("checkLogin Repo","bodysent : $body")
 var x = activity.getString(R.string.login_failed)
@@ -42,7 +46,9 @@ var x = activity.getString(R.string.login_failed)
                  sharedPref.edit().putString(activity.getString(R.string.saved_vendor_id), it.body()!!.id).apply()
                  Single.just(UIState.GoToMainScreen)
              }
-           in 400..499-> Single.just(UIState.ErrorState("login error if 401 code: ${it.code()}"))
+
+             401-> Single.just(UIState.ErrorState("Code: ${it.code()} Invalid Login Credentials"))
+           in 402..499-> Single.just(UIState.ErrorState("Code: ${it.code()} "))
            in 500..599 -> Single.just(UIState.ErrorState("Server error"))
            else -> Single.just(UIState.ErrorState("Unknown  error api call"))
        }

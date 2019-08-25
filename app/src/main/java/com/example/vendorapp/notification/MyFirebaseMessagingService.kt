@@ -13,12 +13,14 @@ import androidx.core.app.NotificationCompat
 import com.example.vendorapp.MainScreenActivity
 import com.example.vendorapp.R
 import com.example.vendorapp.loginscreen.view.MainActivity
+import com.example.vendorapp.menu.view.MenuAdapter
 import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import com.example.vendorapp.shared.singletonobjects.VendorDatabase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
-class MyFirebaseMessagingService : FirebaseMessagingService() {
+class MyFirebaseMessagingService() : FirebaseMessagingService() {
+
     override fun onMessageReceived(p0: RemoteMessage?) {
         Log.d("Notification" , "Message recived is ${p0!!.data}")
       /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -79,6 +81,5 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun sendRegistrationToServer(token: String?) {
-        // TODO: Implement this method to send token to your app server.
     }
 }

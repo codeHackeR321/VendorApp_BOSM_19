@@ -6,7 +6,7 @@
         xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-    <TextView
+     <TextView
             android:layout_width="wrap_content"
             android:id="@+id/text_group_view_holder_new_order_heading"
             app:layout_constraintTop_toTopOf="parent"

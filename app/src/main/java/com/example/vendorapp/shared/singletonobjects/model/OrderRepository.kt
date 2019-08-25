@@ -7,15 +7,13 @@ import android.util.Log
 
 import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
 import com.example.vendorapp.completedorderscreen.model.room.EarningDao
-import com.example.vendorapp.loginscreen.view.UIState
+import com.example.vendorapp.shared.UIState
 import com.example.vendorapp.neworderscreen.model.IncompleteOrderStatus
-import com.example.vendorapp.shared.dataclasses.OrderItemsData
 
 import com.example.vendorapp.shared.singletonobjects.model.room.OrderDao
 import com.example.vendorapp.shared.dataclasses.retroClasses.OrdersPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.ItemData
 import com.example.vendorapp.shared.dataclasses.retroClasses.DayPojo
-import com.example.vendorapp.shared.dataclasses.retroClasses.EarningsPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.EarningData
 import com.example.vendorapp.shared.dataclasses.roomClasses.OrdersData
 import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
@@ -65,6 +63,8 @@ class OrderRepository(val application: Context) {
     @SuppressLint("CheckResult")
     fun initRoom() {
         orderDao.getAllOrdersRoom().subscribeOn(Schedulers.io()).subscribe({
+            Log.d("OrderRepoRoom", " get all order ids  from room $it andf init firestore")
+
             initFirestore(it)
         }, {
             Log.d("OrderRepoRoom", "unable to get all order ids from room")
@@ -106,6 +106,7 @@ class OrderRepository(val application: Context) {
                         Log.d("OrderRepo_Firestore6", "Removed city: ${dc.document.data}")
                 }
             }
+            Log.d("OrderRepoRoom1","pending firebase $pendingDataOrderIds previos room $previousOrderIds net $pendingDataOrderIds.minus(previousOrderIds)" )
             onNewOrderAdded(pendingDataOrderIds.minus(previousOrderIds))
         }
     }
@@ -120,7 +121,7 @@ class OrderRepository(val application: Context) {
         orderService.getOrdersFromOrderIds("JWT " + jwt_token!!, body = body).subscribeOn(Schedulers.io())
                 .subscribe({
                     Log.d("Firestore14", "data saved in room $it ")
-                    Log.d("OrderRepo_Firestore8", "code ${it.code()} ")
+                    Log.d("OrderRepo_Firestore8", "code ${it.code()} $orderIdList ")
 
                     when (it.code()) {
                         200 -> {
@@ -134,7 +135,8 @@ class OrderRepository(val application: Context) {
                                     incomp_order_status_list.removeAt(position)
                             }
 
-                            ui_status_subject.onNext(UIState.SuccessStateFetchingOrders("Order$orderIdList recieved ",
+                            ui_status_subject.onNext(
+                                UIState.SuccessStateFetchingOrders("Order$orderIdList recieved ",
                                     /* orderId,*/incompleteOrderList = incomp_order_status_list))
                         }
 
@@ -147,7 +149,8 @@ class OrderRepository(val application: Context) {
                                     incomp_order_status_list.add(IncompleteOrderStatus(orderId, application.getString(com.example.vendorapp.R.string.status_try_again)))
                                 }
                             }
-                            ui_status_subject.onNext(UIState.ErrorStateFetchingOrders("Error code: ${it.code()} "
+                            ui_status_subject.onNext(
+                                UIState.ErrorStateFetchingOrders("Error code: ${it.code()} "
                                     /* ,orderId*/, incomp_order_status_list))
                         }
 
@@ -200,6 +203,7 @@ class OrderRepository(val application: Context) {
         Log.d("OrderRepo1", " api ca;l sucees upadte status $orderId  s $status")
         orderDao.updateOrderStatusRoom(orderId, status, isLoading = isLoading).subscribeOn(Schedulers.io()).subscribe({
             Log.d("OrderRepo2", " on sucessupddate order Room $orderId  s $status")
+
         }, {
             //error display karna h
             Log.d("OrderRepo3", "Error upddate orderRoom $orderId  s $status $it")
@@ -229,22 +233,34 @@ class OrderRepository(val application: Context) {
         Log.d("OrderRepo_API2", body.toString())
         orderService.updateStatus("JWT " + jwt_token!!, body, orderId.toString()).subscribeOn(Schedulers.io())
                 .subscribe({
-                    Log.d("OrderRepo_API15", "update status code:${it.code()},id : $orderId, new stats $status")
+                    Log.d("OrderRepo_API15", "update status\"wallet/vendor/orders/{id}/change_status code:${it.code()},id : $orderId, ${it.body()} ${it} new stats $status")
 
                     when (it.code()) {
                         200 -> {
                             //changeLoadingStatusRoom(orderId,isLoading = false)
+                            Log.d("OrderRepo_API2","code : ${it.code()} new s ${body} $")
                             onOrderStatusModified(orderId, status, isLoading = false)
+                            ui_status_subject.onNext(UIState.SuccessStateChangeStatus("${it.code()}: orderid:$orderId body:${body} ${it.message()}"))
                             //display toast message
                         }
-                        else -> {
+                        412 -> {
                             // show error message
                             changeLoadingStatusRoom(orderId, isLoading = false)
                             // please specially handle 412
+                            ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()}: orderid:$orderId User has not seen otp ${it.message()} body:${body}"))
+                        }
+
+                        else->{
+                            changeLoadingStatusRoom(orderId, isLoading = false)
+                            ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()}: orderid:$orderId ${it.message()} body:${body}"))
+
                         }
                     }
                 }, {
                     Log.d("OrderRepo_API15", "error apicall ,id : $orderId, new stats $status error $it")
+                    changeLoadingStatusRoom(orderId, isLoading = false)
+                    ui_status_subject.onNext(UIState.ErrorStateChangeStatus("EXCEPTION: orderid:$orderId $it body:${body}"))
+
                 })
     }
 
@@ -256,15 +272,21 @@ class OrderRepository(val application: Context) {
             when (it.code()) {
                 200 -> {
                     onOrderStatusModified(orderId, 4, isLoading = false)
+                    ui_status_subject.onNext(UIState.SuccessStateChangeStatus("${it.code()}: decline orderid:$orderId ${it.message()}"))
                     //display toast message
                 }
                 else -> {
                     //onOrderStatusNotModified
                     changeLoadingStatusRoom(orderId, isLoading = false)
+                    ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()}: decline orderid:$orderId ${it.message()} "))
+
                 }
             }
         }, {
             Log.d("OrderRepo_API17", "error apicall ,id : $orderId, declineorder error $it")
+            changeLoadingStatusRoom(orderId, isLoading = false)
+            ui_status_subject.onNext(UIState.ErrorStateChangeStatus("EXCEPTION: orderid:$orderId $it"))
+
         })
 
     }
@@ -344,6 +366,7 @@ class OrderRepository(val application: Context) {
                     Log.d("OrderRepo_API10", "Returned From Repo = ${orderItemList.toString()}")
                     return@flatMap Flowable.just(orderItemList)
                 }.doOnError {
+
                     Log.e("OrderRepo_API11", "Error in reading database = ${it.message.toString()}")
                 }
     }

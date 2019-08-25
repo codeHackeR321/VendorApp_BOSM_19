@@ -13,7 +13,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.vendorapp.R
-import com.example.vendorapp.loginscreen.view.UIState
+import com.example.vendorapp.shared.UIState
 import com.example.vendorapp.neworderscreen.view.adapters.RecyclerAdapterFragment
 import com.example.vendorapp.neworderscreen.viewModel.NewOrderViewModel
 import com.example.vendorapp.neworderscreen.viewModel.NewOrderViewModelFacory
@@ -112,10 +112,23 @@ initializeView()
                         .emptyOrderIds = (it as UIState.ErrorStateFetchingOrders).incompleteOrderList
                     (recycler_new_order_screen.adapter as RecyclerAdapterFragment).notifyDataSetChanged()
                 }
+
+                is UIState.ErrorStateChangeStatus->{
+                    Log.d("NewOrderFrag1","Error Change Status:${(it as UIState.ErrorStateChangeStatus).message}")
+                    Toast.makeText(activity,"Error change status${(it as UIState.ErrorStateChangeStatus).message}",Toast.LENGTH_LONG).show()
+
+                }
+
+                is UIState.SuccessStateChangeStatus->{
+                    Log.d("NewOrderFrag1","Success Change Status:${(it as UIState.SuccessStateChangeStatus).message}")
+                    Toast.makeText(activity,"Success change status${(it as UIState.SuccessStateChangeStatus).message}",Toast.LENGTH_LONG).show()
+
+                }
             }
 
         }, {
-            Log.d("Firestore77", "observe observe ui statre eror$it")
+            Log.d("Firestore77", "observe observe ui state New oter error$it")
+            Toast.makeText(activity,"Error observing UI State New Orderfrag$it",Toast.LENGTH_LONG).show()
         })
     }
 
