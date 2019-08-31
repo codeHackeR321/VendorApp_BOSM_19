@@ -5,6 +5,7 @@ package com.example.vendorapp.acceptedorderscreen.view.ExpandableRV
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.example.vendorapp.R
@@ -15,18 +16,18 @@ import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder
 
 class GroupViewHolderAcceptedOrderScreen(private var isLoading:Boolean,private var status : Int,private val otp:Int,private val orderId: Int , private val orderAmount : Int,val listener3 :ListenerRecyViewButtonClick ,itemView : View?) :GroupViewHolder(itemView){
 
-    lateinit var textViewOrderId : TextView
-    lateinit var textViewOrderAmount:TextView
-    lateinit var textArrowButton:TextView
-    lateinit var buttonOtp:Button
-    lateinit var buttonReady:Button
-    lateinit var buttonFinish : Button
-    lateinit var progressBar: ProgressBar
+     var textViewOrderId : TextView
+     var textViewOrderAmount:TextView
+     var imageViewArrow: ImageView
+     var buttonOtp:Button
+     var buttonReady:Button
+     var buttonFinish : Button
+     var progressBar: ProgressBar
 
 
     init {
-        textArrowButton = itemView!!.findViewById(R.id.text_group_view_holder_new_order_heading)
-        textViewOrderId=itemView!!.findViewById(R.id.textView_order_id)
+        imageViewArrow = itemView!!.findViewById(R.id.accepted_image_view_arrow_button)
+        textViewOrderId=itemView.findViewById(R.id.textView_order_id)
         textViewOrderAmount=itemView.findViewById(R.id.textView_order_amount)
         buttonOtp=itemView.findViewById(R.id.button_OTP)
         buttonReady=itemView.findViewById(R.id.button_ready)
@@ -87,13 +88,13 @@ class GroupViewHolderAcceptedOrderScreen(private var isLoading:Boolean,private v
 
     override fun expand() {
         Log.d("Click","expand")
-        textArrowButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.up_arrow, 0)
+        imageViewArrow.setBackgroundResource( R.drawable.ic_expand_less_arrow_24px)
         super.expand()
     }
 
     override fun collapse() {
         Log.d("Click","collapse")
-        textArrowButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.down_arrow, 0)
+        imageViewArrow.setBackgroundResource(R.drawable.ic_expand_more_arrow_24px)
         super.collapse()
     }
 

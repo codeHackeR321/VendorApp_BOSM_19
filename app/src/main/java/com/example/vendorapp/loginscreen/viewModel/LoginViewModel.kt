@@ -26,13 +26,20 @@ class LoginViewModel(val context : Context) : ViewModel(){
     fun getVendorId():String{
         return loginRepo.getVendorIdfromSharedPref()
     }
+
+    fun getFirebaseRegToken():String{
+        return loginRepo.getFirebaseRegTokenFromSharedPref()
+    }
+    fun saveFirebaseRegToken(token: String){
+        loginRepo.saveFirebaseRegTokenToSharedPref(token)
+    }
     @SuppressLint("CheckResult")
-    fun login(username:String,password:String){
+    fun login(username:String,password:String,token:String){
 
         if (NetworkConnectivityCheck().checkIntenetConnection(context))
         {
 
-            loginRepo.loginWithAuth(username, password).observeOn(AndroidSchedulers.mainThread()).subscribe({
+            loginRepo.loginWithAuth(username, password,token).observeOn(AndroidSchedulers.mainThread()).subscribe({
                 Log.d("LoginViewodel1","UiState $it")
                 (loginStatus as MutableLiveData).postValue(it)
 

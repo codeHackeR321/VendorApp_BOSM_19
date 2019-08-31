@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
+    <!--#008577-->
+    <color name="colorPrimary">#2979ff</color>
+   <!-- #00574B-->
+    <color name="colorPrimaryDark">#2979ff</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorBlack">#000</color>
     <color name="colorWhite">#ffffff</color>
+    <color name="frag_background">#ECEFF1</color>
+    <color name="tablayout_back">#2979ff</color>
+    <color name="green">#66CC00</color>
 
     <color name="colorGreySelectedBg">#708090</color>
 </resources>

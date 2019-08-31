@@ -1,26 +1,33 @@
 package com.example.vendorapp.menu.model
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import android.view.Menu
 import com.example.vendorapp.R
 import com.example.vendorapp.shared.dataclasses.retroClasses.MenuPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import com.example.vendorapp.menu.model.room.MenuDao
+import com.example.vendorapp.shared.UIState
 import com.example.vendorapp.shared.singletonobjects.RetrofitApi
 import com.example.vendorapp.shared.singletonobjects.RetrofitInstance
 import com.example.vendorapp.shared.singletonobjects.VendorDatabase
 import com.example.vendorapp.shared.utils.NetworkConnectivityCheck
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
 import retrofit2.Response
 
 class MenuRepository(val application: Context) {
 
     private val menuDao: MenuDao
     private val menuApiCall: RetrofitApi
+    var ui_status_subject = BehaviorSubject.create<UIState>()
     private val sharedPref = application.getSharedPreferences(
         application.getString(R.string.preference_file_login), Context.MODE_PRIVATE
     )
@@ -61,29 +68,61 @@ class MenuRepository(val application: Context) {
 
     }
 
-    fun updateItemStatus(id: Int, availability_state: Int ) : Single<Response<Unit>> {
-        Log.d("MenuRepo", "Entered update status with jwt = $jwt_token\nid = $id")
-        val body = JsonObject().also {
-            it.addProperty("item_id", id)
-            it.addProperty("new_availability_state",availability_state)
+    @SuppressLint("CheckResult")
+    fun updateItemStatus(newStatusList:MutableList<MenuItemData>) {
+        Log.d("MenuRepo", "Entered update status with jwt = $jwt_token\nlist = $newStatusList")
+        val body =getBody(newStatusList)
+        Log.d("MenuRepo", "Sent body = ${body.toString()}")
+        menuApiCall.toogleItemAvailiblity("JWT " + jwt_token!!, body).subscribeOn(Schedulers.io()).subscribe({
+            Log.d("MenuRepo_API1", "update status of menu  code:${it.code()},body : $body,\n it.body:  ${it.body()} ")
 
-        }
-        Log.d("Menu Repo", "Sent body = ${body.toString()}")
-        return menuApiCall.toogleItemAvailiblity("JWT " + jwt_token!!, body).doOnError{  Log.d("crash","gg")}
+            when (it.code()) {
+                200 -> {
+                    //changeLoadingStatusRoom(orderId,isLoading = false)
+                    Log.d("MenuRepo_API2","code : ${it.code()} new s ${body} it.body: ${it.body()} $")
+
+                    ui_status_subject.onNext(UIState.SuccessStateChangeStatus("${it.code()}: body:${body} ${it.message()}"))
+                    //display toast message
+                }
+                400 -> {
+                    // show error message
+                    ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()}:Wrong Response Sent.contact AppD ${it.message()} itbody:${it.body()}"))
+                }
+
+                else->{
+                    ui_status_subject.onNext(UIState.ErrorStateChangeStatus(" Error ${it.code()}: ${it.message()} "))
+
+                }
+            }
+        }, {
+            Log.d("MenuRepo_API15", "error apicall ,body:${body}, ERROR: $it")
+            ui_status_subject.onNext(UIState.ErrorStateChangeStatus("EXCEPTION:  $it  body:${body}"))
+        })
 
 
     }
 
     private fun MenuPojo.toMenuItemData(): MenuItemData {
-      /*  var is_avai_state=1
-        if (is_available==false)
-            is_avai_state=0
-        else if (is_available==true)
-            is_avai_state=1*/
+         return MenuItemData(id, name, price, is_available)
+    }
+    fun getUIStateFlowable(): Flowable<UIState> {
+        return ui_status_subject.toFlowable(BackpressureStrategy.LATEST).doOnError { Log.e("OrderRepo", "Failed to convert into uiState") }
+    }
 
+    private fun getBody(newStatusList: MutableList<MenuItemData>):JsonObject{
+       val body=JsonObject()
+        val array=JsonArray()
 
-        return MenuItemData(id, name, price, is_available)
+        newStatusList.forEach {item->
+            val element=JsonObject().also {
+                it.addProperty("item_id", item.itemId)
+                it.addProperty("new_availability_state", item.status)
+            }
+            array.add(element)
+        }
 
+        body.add("item_obj_list",array)
+        return body
     }
 
 }

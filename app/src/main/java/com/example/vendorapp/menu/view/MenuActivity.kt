@@ -1,5 +1,6 @@
 package com.example.vendorapp.menu.view
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -11,15 +12,19 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.vendorapp.R
+import com.example.vendorapp.menu.model.MenuStatus
 import com.example.vendorapp.menu.viewModel.MenuViewModel
 import com.example.vendorapp.menu.viewModel.MenuViewModelFactory
+import com.example.vendorapp.shared.UIState
 import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
+import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_menu.*
 import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 
 class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
     private lateinit var nMenuViewModel:MenuViewModel
-    var newStatusItemList= mutableMapOf<Int,Int>()
+    var newStatusItemList= mutableListOf<MenuItemData>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,49 +33,47 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
         setContentView(R.layout.activity_menu)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         menu_recycler.adapter=MenuAdapter(this)
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        showLoadingStateActivity()
+        observeUIState()
+
         nMenuViewModel.menuList.observe(this, Observer {menu->
             (menu_recycler.adapter as MenuAdapter).itemList=menu
 
             (menu_recycler.adapter as MenuAdapter).notifyDataSetChanged()
-            if (progBar_menu_screen.isVisible && menu.isNotEmpty()) {
-                progBar_menu_screen.visibility = View.INVISIBLE
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            }
+           removeLoadingStateActivity()
         })
 
         nMenuViewModel.error.observe(this , Observer {
             Toast.makeText(this , it , Toast.LENGTH_LONG).show()
-            if (progBar_new_order_screen.isVisible && it.isNotEmpty()) {
-                progBar_new_order_screen.visibility = View.INVISIBLE
-                window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            }
+           removeLoadingStateActivity()
         })
 
         saveChanges.setOnClickListener{
-            View.OnClickListener {
-                if(newStatusItemList.isEmpty())
-                Toast.makeText(this,"No changes made to be saved",Toast.LENGTH_SHORT).show()
 
-                 else
+                showLoadingStateActivity()
+
+                if(newStatusItemList.isEmpty())
+                {
+                    Toast.makeText(this,"No changes made to be saved",Toast.LENGTH_SHORT).show()
+                    removeLoadingStateActivity()
+                }
+
+                else
                     nMenuViewModel.updateStatus(newStatusItemList)
             }
-
-
-        }
-
     }
-    override fun onStatusChanged(itemId: Int, newStatus: Int) {
+
+    override fun onStatusChanged(item: MenuItemData, newStatus: Int) {
         Log.d("Listener", "Entered Listener")
-        if (newStatusItemList[itemId]!= null)
+        item.status=newStatus
+        val position=newStatusItemList.indexOfFirst { it.itemId==item.itemId }
+        if (position!=-1)
         {
-            newStatusItemList.remove(itemId)
+            newStatusItemList.removeAt(position)
         }
         else
         {
-            newStatusItemList.put(itemId,newStatus)
+            newStatusItemList.add(item)
         }
 
         if (newStatusItemList.isEmpty())
@@ -87,5 +90,69 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
                 finish()
         }
         return true
+    }
+
+    @SuppressLint("CheckResult")
+    private fun observeUIState() {
+
+        nMenuViewModel.observeUIState().observeOn(AndroidSchedulers.mainThread()).subscribe({
+            Log.d("Firestore78", "in Neworderfrag ui state$it")
+            when (it!!) {
+                UIState.ShowLoadingState -> {
+                    //to be enabled in group view holder
+                    // progBar_new_order_screen.visibility = View.VISIBLE
+                    // not yet decided for group view holder
+                    Log.d("Firestore76", "in MenuActivity ui loading state")
+
+                }
+
+
+                is UIState.ErrorStateChangeStatus->{
+                    removeLoadingStateActivity()
+                    Log.d("MenuActivity1","Error Change Status:${(it as UIState.ErrorStateChangeStatus).message}")
+                    Toast.makeText(this,"Error: Try Again After SomeTime${(it as UIState.ErrorStateChangeStatus).message}",Toast.LENGTH_LONG).show()
+
+                }
+
+                is UIState.SuccessStateChangeStatus->{
+                    removeLoadingStateActivity()
+
+                    newStatusItemList.clear()
+                        saveChanges.setTextColor(resources.getColor(R.color.colorGreySelectedBg))
+                    Log.d("MenuActivity2","Success Change Status:${(it as UIState.SuccessStateChangeStatus).message}")
+                    Toast.makeText(this,"Success change status${(it as UIState.SuccessStateChangeStatus).message}",Toast.LENGTH_LONG).show()
+
+                }
+            }
+
+        }, {
+            Log.d("MenuActivity9", "observe observe ui state  MenUAcrtivity$it")
+            Toast.makeText(this,"Error observing UI State menuActivity$it",Toast.LENGTH_LONG).show()
+        })
+    }
+
+    /**
+     * This method enables the Progress Bar and makes disables the screen
+     * */
+    private fun showLoadingStateActivity() {
+        saveChanges.isClickable = false
+        if (!prog_bar_menu_activity.isVisible) {
+            prog_bar_menu_activity.visibility = View.VISIBLE
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            )
+        }
+    }
+
+    /**
+     * This method removes the Progress Bar and re-enables the screen
+     **/
+    private fun removeLoadingStateActivity() {
+        saveChanges.isClickable = true
+        if (prog_bar_menu_activity.isVisible) {
+            prog_bar_menu_activity.visibility = View.INVISIBLE
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        }
     }
 }

@@ -2,11 +2,15 @@ package com.example.vendorapp
 
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
@@ -16,13 +20,33 @@ import com.example.vendorapp.completedorderscreen.view.CompletedOrdersActivity
 import com.example.vendorapp.loginscreen.view.MainActivity
 import com.example.vendorapp.menu.view.MenuActivity
 import com.example.vendorapp.neworderscreen.view.NewOrderFragment
+import com.example.vendorapp.shared.Listeners.NetConnectionChanged
+import com.example.vendorapp.shared.utils.NetworkReceiver
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main_screen.*
 
-class MainScreenActivity : AppCompatActivity() {
+class MainScreenActivity : AppCompatActivity(),NetConnectionChanged {
 
     private lateinit var viewPager : ViewPager
     private lateinit var viewPagerAdapter : FragmentPagerAdapter
    private lateinit  var sharedPref:SharedPreferences
+    override fun buttonClicked(status: String) {
+        if(status=="wifi"||status=="data")
+        {
+            val snackbar= Snackbar.make(coordinator,"Back Online",Snackbar.LENGTH_LONG)
+            snackbar.getView().setBackgroundColor(resources.getColor(R.color.green))
+
+            snackbar.show()
+
+        }
+        else
+            Snackbar.make(coordinator,status,Snackbar.LENGTH_INDEFINITE).setBehavior(NOSwipe()).show()
+
+    }
+
+    // The BroadcastReceiver that tracks network connectivity changes.
+    private lateinit var receiver: NetworkReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,9 +55,16 @@ class MainScreenActivity : AppCompatActivity() {
         sharedPref = this.getSharedPreferences(
             this.getString(R.string.preference_file_login), Context.MODE_PRIVATE
         )
+        /*#5B7DF3*/
         viewPager = viewPager_activity_mainScreen
         viewPager.adapter = MyPagerAdapter()
+        tabLayout_activity_mainScreen.setBackgroundColor(resources.getColor(R.color.tablayout_back))
+        tabLayout_activity_mainScreen.setTabTextColors(Color.parseColor("#BDBDBD"), Color.parseColor("#FFFFFF"));
+        tabLayout_activity_mainScreen.setSelectedTabIndicatorColor(Color.parseColor("#FFFFFF"))
 
+        val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
+        receiver = NetworkReceiver(this)
+        this.registerReceiver(receiver, filter)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -86,5 +117,18 @@ class MainScreenActivity : AppCompatActivity() {
             }
             return super.getPageTitle(position)
         }
+    }
+
+    public override fun onDestroy() {
+        super.onDestroy()
+        // Unregisters BroadcastReceiver when app is destroyed.
+        this.unregisterReceiver(receiver)
+    }
+
+    class NOSwipe : BaseTransientBottomBar.Behavior(){
+        override fun canSwipeDismissView(child: View): Boolean {
+            return false
+        }
+
     }
 }

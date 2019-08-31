@@ -10,6 +10,7 @@ import android.widget.Switch
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.vendorapp.R
+import com.example.vendorapp.menu.model.MenuStatus
 import com.example.vendorapp.shared.dataclasses.retroClasses.MenuPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import kotlinx.android.synthetic.main.menu_item.view.*
@@ -18,11 +19,11 @@ import java.lang.Exception
 class MenuAdapter(private val listener: UpdateMenuListener) : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
 
     interface UpdateMenuListener {
-        fun onStatusChanged(itemId: Int, newStatus: Int)
+        fun onStatusChanged(itemData: MenuItemData, newStatus: Int)
     }
 
     var itemList: List<MenuItemData> = emptyList()
-    var newStatusItemList= emptyList<MenuItemData>()
+    var newStatusItemList= emptyList<MenuStatus>()
 
     inner class MenuViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         internal var itemName = view.item_name
@@ -54,11 +55,11 @@ class MenuAdapter(private val listener: UpdateMenuListener) : RecyclerView.Adapt
             when(isChecked) {
                 true -> {
                     Log.d("Menu Activity1", "Entered True")
-                    listener.onStatusChanged(itemList.get(position).itemId, 1)
+                    listener.onStatusChanged(itemList[position], 1)
                 }
                 false -> {
                     Log.d("Menu Activity1", "Entered False")
-                    listener.onStatusChanged(itemList.get(position).itemId, 0)
+                    listener.onStatusChanged(itemList[position], 0)
                 }
             }
         }

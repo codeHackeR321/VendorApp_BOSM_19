@@ -10,6 +10,7 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.example.vendorapp.MainScreenActivity
 import com.example.vendorapp.R
 import com.example.vendorapp.loginscreen.view.MainActivity
@@ -19,11 +20,12 @@ import com.example.vendorapp.shared.singletonobjects.VendorDatabase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
-class MyFirebaseMessagingService() : FirebaseMessagingService() {
 
-    override fun onMessageReceived(p0: RemoteMessage?) {
+class MyFirebaseMessagingService : FirebaseMessagingService() {
+
+    /*override fun onMessageReceived(p0: RemoteMessage?) {
         Log.d("Notification" , "Message recived is ${p0!!.data}")
-      /*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      *//*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "New Orders"
             val descriptionText = "Notification Channel"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
@@ -34,11 +36,11 @@ class MyFirebaseMessagingService() : FirebaseMessagingService() {
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
-        }*/
+        }*//*
        // super.onMessageReceived(p0)
        sendNotification(p0.data.toString())
 
-    }
+    }*/
 
 
     private fun sendNotification(messageBody: String) {
@@ -56,6 +58,12 @@ class MyFirebaseMessagingService() : FirebaseMessagingService() {
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
+            .build()
+
+        with(NotificationManagerCompat.from(this)) {
+            // notificationId is a unique int for each notification that you must define
+            notify(java.lang.Integer.parseInt("0") , notificationBuilder)
+        }
 
 
       //  val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -71,14 +79,20 @@ class MyFirebaseMessagingService() : FirebaseMessagingService() {
        // notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
     }
 
-    override fun onNewToken(token: String?) {
+    override fun onMessageReceived(p0: RemoteMessage) {
+       Toast.makeText(this, "Hello", Toast.LENGTH_LONG).show()
+        sendNotification(p0.data.toString())
+        super.onMessageReceived(p0)
+    }
+
+    /*override fun onNewToken(token: String?) {
         Log.d("FirebaseMgingService", "Refreshed token: $token")
 
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
         sendRegistrationToServer(token)
-    }
+    }*/
 
     private fun sendRegistrationToServer(token: String?) {
     }

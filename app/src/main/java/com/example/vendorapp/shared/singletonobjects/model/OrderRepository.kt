@@ -30,7 +30,7 @@ import com.google.gson.JsonArray
 import java.text.SimpleDateFormat
 import java.util.*
 
-class OrderRepository(val application: Context) {
+class OrderRepository(private val application: Context) {
 
     private val orderDao: OrderDao
     private val orderApiCall: Single<List<OrdersPojo>>

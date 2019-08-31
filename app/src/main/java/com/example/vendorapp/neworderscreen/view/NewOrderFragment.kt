@@ -35,7 +35,7 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
     @SuppressLint("CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         observeUIState()
-initializeView()
+        initializeView()
 
         super.onViewCreated(view, savedInstanceState)
 
@@ -101,7 +101,7 @@ initializeView()
 
                     Toast.makeText(activity, (it as UIState.SuccessStateFetchingOrders).message, Toast.LENGTH_SHORT).show()
                     (recycler_new_order_screen.adapter as RecyclerAdapterFragment)
-                        .emptyOrderIds = (it as UIState.ErrorStateFetchingOrders).incompleteOrderList
+                        .emptyOrderIds = (it as UIState.SuccessStateFetchingOrders).incompleteOrderList
                     (recycler_new_order_screen.adapter as RecyclerAdapterFragment).notifyDataSetChanged()
                 }
                 is UIState.ErrorStateFetchingOrders -> {

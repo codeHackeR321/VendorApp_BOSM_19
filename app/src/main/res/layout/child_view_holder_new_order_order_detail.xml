@@ -21,12 +21,17 @@
             android:fontFamily="@font/cabin"
             android:id="@+id/text_child_view_holder_new_order_item_name"
             android:layout_gravity="start"
+            android:layout_marginStart="16dp"
+            android:textSize="18sp"
+            android:textColor="#212121"
             android:text="@string/test_item_name"
             android:layout_height="wrap_content" />
 
         <TextView
             android:layout_width="wrap_content"
             android:text="@string/test_item_wise_price"
+            android:textSize="18sp"
+            android:textColor="#212121"
             android:id="@+id/text_child_view_holder_new_order_itemwise_price"
             android:paddingLeft="@dimen/default_padding"
             android:paddingTop="@dimen/default_padding"
@@ -40,6 +45,8 @@
             android:paddingTop="@dimen/default_padding"
             android:paddingBottom="@dimen/default_padding"
             android:text="@string/test_item_quantity"
+            android:textSize="18sp"
+            android:textColor="#212121"
             android:id="@+id/text_child_view_holder_new_order_item_quantity"
             android:layout_height="wrap_content" />
 
@@ -49,6 +56,8 @@
             android:fontFamily="@font/cabin"
             android:id="@+id/text_child_view_holder_new_order_item_cost"
             android:padding="@dimen/default_padding"
+            android:textSize="18sp"
+            android:textColor="#212121"
             android:text="@string/new_order_total_amount"
             android:layout_height="match_parent" />
 

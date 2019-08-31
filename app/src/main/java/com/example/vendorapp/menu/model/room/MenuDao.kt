@@ -1,9 +1,7 @@
 package com.example.vendorapp.menu.model.room
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
+import com.example.vendorapp.menu.model.MenuStatus
 import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import io.reactivex.Flowable
 
@@ -21,5 +19,6 @@ interface MenuDao {
 
     @Query("SELECT * FROM menu_table WHERE item_Id = :itemId")
     fun getItemName(itemId : String) : Flowable<MenuItemData>
+
 
 }

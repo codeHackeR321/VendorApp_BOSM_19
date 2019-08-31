@@ -3,6 +3,7 @@ package com.example.vendorapp.shared.expandableRecyclerView
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.res.TypedArrayUtils
@@ -22,7 +23,7 @@ class GroupViewHolderNewOrderCompactMenu(
 
     var textViewOrderId: TextView
     var textViewOrderAmount: TextView
-    var textArrowButton: TextView
+    var imageViewArrow:ImageView
     var buttonAccept: Button
     var buttonDecline: Button
     var progressBar: ProgressBar
@@ -30,7 +31,7 @@ class GroupViewHolderNewOrderCompactMenu(
 
     init {
         //initialising views
-        textArrowButton = itemView!!.findViewById(R.id.text_group_view_holder_new_order_heading)
+        imageViewArrow = itemView!!.findViewById(R.id.image_view_arrow_button)
         textViewOrderId = itemView!!.findViewById(R.id.textView_order_id)
         textViewOrderAmount = itemView.findViewById(R.id.textView_order_amount)
         buttonAccept = itemView.findViewById(R.id.button_accept)
@@ -38,8 +39,8 @@ class GroupViewHolderNewOrderCompactMenu(
         progressBar = itemView.findViewById(R.id.text_group_view_holder_new_order_progress_bar)
 
         //setting initial states of views
-        textViewOrderId.text = "Id#5666" + orderId
-        textViewOrderAmount.text = "\u20B9" + "20" + orderAmount
+        textViewOrderId.text = "#$orderId"
+        textViewOrderAmount.text = "\u20B9" + orderAmount
 
         textViewOrderAmount.setOnClickListener {}
         textViewOrderId.setOnClickListener { }
@@ -67,35 +68,14 @@ class GroupViewHolderNewOrderCompactMenu(
 
     override fun expand() {
         Log.d("Click", "expand")
-        textArrowButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.up_arrow, 0)
+        imageViewArrow.setBackgroundResource(R.drawable.ic_expand_less_arrow_24px)
         super.expand()
     }
 
     override fun collapse() {
         Log.d("Click", "collapse")
-        textArrowButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.down_arrow, 0)
+        imageViewArrow.setBackgroundResource(R.drawable.ic_expand_more_arrow_24px)
         super.collapse()
-    }
-
-
-    override fun setOnGroupClickListener(listener: OnGroupClickListener?) {
-        Log.d("Click", "onGroup")
-
-        super.setOnGroupClickListener(listener)
-
-    }
-
-    override fun onClick(v: View?) {
-        Log.d("Click", "onClick")
-
-        super.onClick(v)
-
-    }
-
-    fun setHeading() {
-        // textHeading.text = "Menu"
-        // super.onClick(textHeading)
-        // super.expand()
     }
 
     private fun onClickButtons(status: Int) {

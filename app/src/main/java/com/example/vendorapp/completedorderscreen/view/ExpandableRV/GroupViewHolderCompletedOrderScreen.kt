@@ -3,6 +3,7 @@ package com.example.vendorapp.completedorderscreen.view.ExpandableRV
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import com.example.vendorapp.R
 import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
@@ -12,15 +13,15 @@ import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder
 class GroupViewHolderCompletedOrderScreen ( private val otp: Int, private val orderId: Int, private val orderAmount : Int, itemView : View?) :
     GroupViewHolder(itemView){
 
-    lateinit var textViewOrderId : TextView
-    lateinit var textViewOrderAmount:TextView
-    lateinit var textArrowButton:TextView
-    lateinit var textViewOtp: TextView
-    lateinit var textViewDelivered : TextView
+     private var textViewOrderId : TextView
+     private var textViewOrderAmount:TextView
+     private var imageViewArrow:ImageView
+     private var textViewOtp: TextView
+     private var textViewDelivered : TextView
 
 
     init {
-        textArrowButton = itemView!!.findViewById(R.id.text_group_view_holder_new_order_heading)
+        imageViewArrow = itemView!!.findViewById(R.id.completed_image_view_arrow_button)
         textViewOrderId=itemView.findViewById(R.id.textView_order_id)
         textViewOrderAmount=itemView.findViewById(R.id.textView_order_amount)
         textViewOtp=itemView.findViewById(R.id.textView_otp)
@@ -48,13 +49,13 @@ class GroupViewHolderCompletedOrderScreen ( private val otp: Int, private val or
 
     override fun expand() {
         Log.d("Click","expand")
-        textArrowButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.up_arrow, 0)
+        imageViewArrow.setBackgroundResource(R.drawable.ic_expand_less_arrow_24px)
         super.expand()
     }
 
     override fun collapse() {
         Log.d("Click","collapse")
-        textArrowButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.down_arrow, 0)
+        imageViewArrow.setBackgroundResource(R.drawable.ic_expand_more_arrow_24px)
         super.collapse()
     }
 

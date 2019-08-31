@@ -27,8 +27,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:indeterminate="true"
-            android:visibility="visible"
-            android:id="@+id/progBar_menu_screen"
+            android:visibility="invisible"
+            android:id="@+id/prog_bar_menu_activity"
             android:layout_height="wrap_content"/>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -50,6 +50,7 @@
             android:textAlignment="center"
             android:id="@+id/saveChanges"
             android:padding="8dp"
+            android:clickable="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/menu_recycler"
         />

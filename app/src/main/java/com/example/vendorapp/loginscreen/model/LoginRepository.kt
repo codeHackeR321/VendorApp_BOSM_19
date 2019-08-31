@@ -28,12 +28,24 @@ class LoginRepository(val activity: Context) {
         return vendorId!!
     }
 
-fun loginWithAuth(username: String, password: String): Single<UIState>{
+    fun getFirebaseRegTokenFromSharedPref():String{
+        val regToken=sharedPref.getString("token","")
+        return regToken
+    }
+
+    fun  saveFirebaseRegTokenToSharedPref(token:String){
+        sharedPref.edit().putString("token", token).apply()
+
+    }
+    fun loginWithAuth(username: String, password: String,token:String): Single<UIState>{
         val body = JsonObject().also {
             it.addProperty("username", username)
             it.addProperty("password",  password)
+            it.addProperty( "reg_token",token)
 
-        }
+    }
+
+
     Log.d("checkLogin Repo","bodysent : $body")
 var x = activity.getString(R.string.login_failed)
    return loginApiCall.getJWTfromAuth(body).subscribeOn(Schedulers.io()).flatMap{

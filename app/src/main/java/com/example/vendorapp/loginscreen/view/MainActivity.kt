@@ -24,6 +24,7 @@ import com.example.vendorapp.loginscreen.viewModel.LoginViewModelFactory
 import com.example.vendorapp.notification.MyFirebaseMessagingService
 import com.example.vendorapp.shared.UIState
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.iid.FirebaseInstanceId
 
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        showLoadingStateFragment()
+        showLoadingStateActivity()
         viewModel =
             ViewModelProviders.of(this, LoginViewModelFactory(this)).get(LoginViewModel::class.java)
 
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.loginStatus.observe(this, Observer {
             when (it!!) {
                 UIState.GoToMainScreen -> {
-                    removeLoadingStateFragment()
+                    removeLoadingStateActivity()
                     Log.d("LoginActivity", "go to msin screen ")
                     Toast.makeText(this@MainActivity, "Login Successfull", Toast.LENGTH_SHORT)
                         .show()
@@ -54,14 +55,14 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 is UIState.ErrorState -> {
-                    removeLoadingStateFragment()
+                    removeLoadingStateActivity()
                     Log.d("LoginActivity2", "error state${(it as UIState.ErrorState).message} ")
                     Snackbar.make(coordinatorLayout,"ERROR:${(it as UIState.ErrorState).message} ",Snackbar.LENGTH_LONG).show()
 
                 }
 
                 is UIState.NoInternetConnection->{
-                    removeLoadingStateFragment()
+                    removeLoadingStateActivity()
                     showAlertDialogBox()
                   //  Toast.makeText(this,"Alert: Internet Connection Not found.Please connect and Restart the App",Toast.LENGTH_LONG).show()
                 }
@@ -69,14 +70,17 @@ class MainActivity : AppCompatActivity() {
         })
 
         buttonSignIn.setOnClickListener {
-            showLoadingStateFragment()
+            showLoadingStateActivity()
             if (editTextUsername.text.toString().isBlank() && editTextPassword.text.toString().isBlank()) {
                 Snackbar.make(coordinatorLayout,"Enter valid username/password",Snackbar.LENGTH_LONG).show()
-                removeLoadingStateFragment()
+                removeLoadingStateActivity()
+            }
+            else if(viewModel.getFirebaseRegToken().isEmpty()){
+                Snackbar.make(coordinatorLayout,"Something Went Wrong! Try Again.",Snackbar.LENGTH_LONG).show()
             }
             else{
                 Log.d("LoginActivity1", "viewModel.login called")
-                viewModel.login(editTextUsername.text.toString(),editTextPassword.text.toString())
+                viewModel.login(editTextUsername.text.toString(),editTextPassword.text.toString(),viewModel.getFirebaseRegToken())
             }
         }
     }
@@ -98,6 +102,14 @@ class MainActivity : AppCompatActivity() {
             newOrderChanel.canBypassDnd()
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(newOrderChanel)
+
+            FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
+                Log.d("Main Activity", "Recived New Token = ${it.token}}")
+                viewModel.saveFirebaseRegToken(it.token)
+            }.addOnFailureListener {
+                Log.e("Main Activity", "Failed to recive token$it")
+                setupNotificationChannel()
+            }
         }
     }
 
@@ -109,12 +121,12 @@ class MainActivity : AppCompatActivity() {
     fun initializeApp(){
 
         if (viewModel.getJWT().equals(getString(R.string.default_jwt_value)) || viewModel.getVendorId().equals(getString(R.string.default_vendor_id))){
-            removeLoadingStateFragment()
+            removeLoadingStateActivity()
             Snackbar.make(coordinatorLayout,"Please login to continue",Snackbar.LENGTH_LONG).show()
         } else {
             // login karwa
             Snackbar.make(coordinatorLayout,"Welcome",Snackbar.LENGTH_LONG).show()
-            removeLoadingStateFragment()
+            removeLoadingStateActivity()
             val intent = Intent(this, MainScreenActivity::class.java)
             startActivity(intent)
             finish()
@@ -127,7 +139,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * This method enables the Progress Bar and makes disables the screen
      * */
-    private fun showLoadingStateFragment() {
+    private fun showLoadingStateActivity() {
         buttonSignIn.isClickable = false
         if (!prog_bar_main_activity.isVisible) {
             prog_bar_main_activity.visibility = View.VISIBLE
@@ -141,7 +153,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * This method removes the Progress Bar and re-enables the screen
     **/
-    private fun removeLoadingStateFragment() {
+    private fun removeLoadingStateActivity() {
         buttonSignIn.isClickable = true
         if (prog_bar_main_activity.isVisible) {
             prog_bar_main_activity.visibility = View.INVISIBLE
