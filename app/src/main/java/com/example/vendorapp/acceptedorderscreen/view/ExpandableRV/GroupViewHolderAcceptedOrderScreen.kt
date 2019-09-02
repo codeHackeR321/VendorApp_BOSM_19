@@ -34,8 +34,8 @@ class GroupViewHolderAcceptedOrderScreen(private var isLoading:Boolean,private v
         buttonFinish=itemView.findViewById(R.id.button_finish)
         progressBar=itemView.findViewById(R.id.group_view_holder_accepted_order_screen_progressBar)
 
-        textViewOrderId.text="Id#"+orderId
-        textViewOrderAmount.text="\u20B9"+"20"+orderAmount
+        textViewOrderId.text="#"+orderId
+        textViewOrderAmount.text="\u20B9"+orderAmount
 
         textViewOrderAmount.setOnClickListener{}
         textViewOrderId.setOnClickListener {  }

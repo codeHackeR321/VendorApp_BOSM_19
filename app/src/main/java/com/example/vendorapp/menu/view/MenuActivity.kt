@@ -77,9 +77,9 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
         }
 
         if (newStatusItemList.isEmpty())
-             saveChanges.setTextColor(resources.getColor(R.color.colorGreySelectedBg))
+             saveChanges.setTextColor(resources.getColor(R.color.tab_layout_unselected))
         else
-            saveChanges.setTextColor(resources.getColor(R.color.colorBlack))
+            saveChanges.setTextColor(resources.getColor(R.color.tab_layout_selected))
 
     }
 
@@ -109,6 +109,8 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
 
                 is UIState.ErrorStateChangeStatus->{
                     removeLoadingStateActivity()
+                    saveChanges.setTextColor(resources.getColor(R.color.tab_layout_selected))
+
                     Log.d("MenuActivity1","Error Change Status:${(it as UIState.ErrorStateChangeStatus).message}")
                     Toast.makeText(this,"Error: Try Again After SomeTime${(it as UIState.ErrorStateChangeStatus).message}",Toast.LENGTH_LONG).show()
 
@@ -118,7 +120,7 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
                     removeLoadingStateActivity()
 
                     newStatusItemList.clear()
-                        saveChanges.setTextColor(resources.getColor(R.color.colorGreySelectedBg))
+                    saveChanges.setTextColor(resources.getColor(R.color.tab_layout_unselected))
                     Log.d("MenuActivity2","Success Change Status:${(it as UIState.SuccessStateChangeStatus).message}")
                     Toast.makeText(this,"Success change status${(it as UIState.SuccessStateChangeStatus).message}",Toast.LENGTH_LONG).show()
 

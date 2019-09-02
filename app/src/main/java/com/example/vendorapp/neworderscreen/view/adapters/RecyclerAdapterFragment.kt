@@ -87,7 +87,7 @@ class RecyclerAdapterFragment(val context: Context,val listener : ListenerRecyVi
 */
         if(holder.itemViewType==0) {
             val holderIncompleteOrder: IncompleteOrderViewHolder = holder as IncompleteOrderViewHolder
-            holderIncompleteOrder.textViewOrderId.text=emptyOrderIds[position].orderId.toString()
+            holderIncompleteOrder.textViewOrderId.text="#${emptyOrderIds[position].orderId.toString()}"
             if (emptyOrderIds[position].status.equals(context.getString(R.string.new_order_incomp_order_status_loading)))
             {
                 holderIncompleteOrder.buttonTryAgain.visibility=View.INVISIBLE

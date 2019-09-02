@@ -21,17 +21,21 @@
     <TextView android:layout_width="0dp"
               android:layout_height="wrap_content"
               android:text="id#56687"
+              android:textSize="22sp"
+              android:textColor="#000000"
               android:layout_marginTop="8dp"
               android:id="@+id/textView_order_id"
               app:layout_constraintTop_toTopOf="parent"
               app:layout_constraintStart_toStartOf="parent"
               android:layout_marginLeft="8dp" android:layout_marginStart="8dp"
-              android:textSize="16sp"
+
               app:layout_constraintEnd_toStartOf="@+id/button_OTP" android:layout_marginEnd="8dp"
               android:layout_marginRight="8dp"/>
     <TextView
             android:text="50000"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+        android:textSize="22sp"
+        android:textColor="#000000"
             android:layout_height="wrap_content"
             android:id="@+id/textView_order_amount"
             app:layout_constraintStart_toStartOf="parent"
@@ -40,8 +44,9 @@
             app:layout_constraintTop_toBottomOf="@+id/textView_order_id"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/button_OTP"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:textSize="14sp"/>
+           />
     <Button
             android:text="@string/card_accepted_order_otp_bttn"
             android:layout_width="wrap_content"

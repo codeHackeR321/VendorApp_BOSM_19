@@ -1,49 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:tools="http://schemas.android.com/tools" android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cons"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
+    <ImageView
+        android:id="@+id/image_view_arrow_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/ic_expand_more_arrow_24px"
+        android:fontFamily="@font/cabin"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView android:layout_width="wrap_content" android:layout_height="0dp"
+    <TextView
+        android:id="@+id/textViewOrderId"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="id#56687"
+        android:textColor="#000000"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toStartOf="@id/buttonTryAgain"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-              app:layout_constraintStart_toStartOf="parent"
-              app:layout_constraintTop_toTopOf="parent"
-              app:layout_constraintEnd_toStartOf="@+id/buttonTryAgain"
-              android:textAlignment="center"
-              android:gravity="center"
-              android:id="@+id/textViewOrderId"
-              app:layout_constraintBottom_toBottomOf="parent"
-              android:layout_margin="16dp" android:layout_marginLeft="16dp"
-              android:layout_marginStart="16dp"
-              android:textSize="18sp" android:text="Id#5661" app:layout_constraintHorizontal_bias="0.073"
-              app:layout_constraintVertical_bias="1.0"/>
+    <TextView
+        android:id="@+id/textViewTryAgainMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Unable to download!"
+        android:textAlignment="viewStart"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@id/buttonTryAgain"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewOrderId" />
 
-    <TextView android:layout_width="0dp" android:layout_height="wrap_content"
-              app:layout_constraintEnd_toStartOf="@+id/buttonTryAgain"
-              app:layout_constraintStart_toEndOf="@+id/textViewOrderId"
-              app:layout_constraintTop_toTopOf="parent"
-              android:id="@+id/textViewTryAgainMessage"
-              app:layout_constraintBottom_toBottomOf="parent"
-              android:text="@string/new_order_incomp_order_status_try_again" app:layout_constraintHorizontal_bias="0.119"
-              app:layout_constraintVertical_bias="0.508"/>
+    <Button
+        android:id="@+id/buttonTryAgain"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Try Again"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        tools:text="Try Again"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/image_view_arrow_button"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
-    <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    android:layout_marginEnd="32dp"
-    android:layout_marginRight="32dp"
-    android:text="Try Again"
-            android:layout_margin="16dp"
-    android:id="@+id/buttonTryAgain"/>
+    <ProgressBar
+        android:id="@+id/progressBarIncompleteOrder"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_margin="8dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="245dp" />
 
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#BDBDBD"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:id="@+id/separator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/buttonTryAgain"/>
 
-    <ProgressBar android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                  app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    android:id="@+id/progressBarIncompleteOrder"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

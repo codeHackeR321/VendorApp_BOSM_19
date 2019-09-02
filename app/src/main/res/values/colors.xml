@@ -7,8 +7,10 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorBlack">#000</color>
     <color name="colorWhite">#ffffff</color>
-    <color name="frag_background">#ECEFF1</color>
+    <color name="frag_background">#FBFBFB</color>
     <color name="tablayout_back">#2979ff</color>
+    <color name="tab_layout_unselected">#BDBDBD</color>
+    <color name="tab_layout_selected">#FFFFFF</color>
     <color name="green">#66CC00</color>
 
     <color name="colorGreySelectedBg">#708090</color>

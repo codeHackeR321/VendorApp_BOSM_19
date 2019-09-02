@@ -59,7 +59,7 @@ class MainScreenActivity : AppCompatActivity(),NetConnectionChanged {
         viewPager = viewPager_activity_mainScreen
         viewPager.adapter = MyPagerAdapter()
         tabLayout_activity_mainScreen.setBackgroundColor(resources.getColor(R.color.tablayout_back))
-        tabLayout_activity_mainScreen.setTabTextColors(Color.parseColor("#BDBDBD"), Color.parseColor("#FFFFFF"));
+        tabLayout_activity_mainScreen.setTabTextColors(resources.getColor(R.color.tab_layout_unselected), resources.getColor(R.color.tab_layout_selected));
         tabLayout_activity_mainScreen.setSelectedTabIndicatorColor(Color.parseColor("#FFFFFF"))
 
         val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)

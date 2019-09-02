@@ -8,18 +8,21 @@
         tools:context=".menu.view.MenuActivity">
 
     <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/menu_recycler"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:textSize="22sp"
-            android:text="Menu"
-            android:padding="8dp"
-            android:textAlignment="center"
-            android:id="@+id/textViewMenu"
-            />
+        android:id="@+id/textViewMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:padding="16dp"
+        android:text="Menu"
+        android:textAlignment="center"
+        android:textColor="@color/tab_layout_selected"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@id/menu_recycler"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ProgressBar
             android:layout_width="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
@@ -38,7 +41,8 @@
             app:layout_constraintBottom_toTopOf="@id/saveChanges"
             app:layout_constraintTop_toBottomOf="@+id/textViewMenu"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_margin="8dp"
+            android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
@@ -49,8 +53,10 @@
             android:text="Save Changes"
             android:textAlignment="center"
             android:id="@+id/saveChanges"
-            android:padding="8dp"
+            android:padding="16dp"
             android:clickable="true"
+        android:textColor="@color/tab_layout_unselected"
+            android:background="@color/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/menu_recycler"
         />
