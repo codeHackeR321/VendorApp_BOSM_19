@@ -3,7 +3,6 @@ package com.example.vendorapp.menu.model
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import android.view.Menu
 import com.example.vendorapp.R
 import com.example.vendorapp.shared.dataclasses.retroClasses.MenuPojo
 import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
@@ -18,10 +17,9 @@ import com.google.gson.JsonObject
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
-import retrofit2.Response
+
 
 class MenuRepository(val application: Context) {
 
@@ -80,13 +78,15 @@ class MenuRepository(val application: Context) {
                 200 -> {
                     //changeLoadingStatusRoom(orderId,isLoading = false)
                     Log.d("MenuRepo_API2","code : ${it.code()} new s ${body} it.body: ${it.body()} $")
-
+                    menuDao.insertMenu(newStatusList)
                     ui_status_subject.onNext(UIState.SuccessStateChangeStatus("${it.code()}: body:${body} ${it.message()}"))
                     //display toast message
                 }
                 400 -> {
                     // show error message
-                    ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()}:Wrong Response Sent.contact AppD ${it.message()} itbody:${it.body()}"))
+                    //var json =JSONObject(it.errorBody().toString())
+
+                    ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()}:Something went wrong"))
                 }
 
                 else->{

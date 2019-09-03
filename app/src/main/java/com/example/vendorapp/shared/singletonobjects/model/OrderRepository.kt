@@ -64,10 +64,10 @@ class OrderRepository(private val application: Context) {
     fun initRoom() {
         orderDao.getAllOrdersRoom().subscribeOn(Schedulers.io()).subscribe({
             Log.d("OrderRepoRoom", " get all order ids  from room $it andf init firestore")
-
             initFirestore(it)
         }, {
             Log.d("OrderRepoRoom", "unable to get all order ids from room")
+            ui_status_subject.onNext(UIState.ErrorRoom)
         })
     }
 
@@ -122,7 +122,6 @@ class OrderRepository(private val application: Context) {
                 .subscribe({
                     Log.d("Firestore14", "data saved in room $it ")
                     Log.d("OrderRepo_Firestore8", "code ${it.code()} $orderIdList ")
-
                     when (it.code()) {
                         200 -> {
                             it.body()!!.forEach { orderPojo ->
@@ -136,7 +135,7 @@ class OrderRepository(private val application: Context) {
                             }
 
                             ui_status_subject.onNext(
-                                UIState.SuccessStateFetchingOrders("Order$orderIdList recieved ",
+                                UIState.SuccessStateFetchingOrders("New Orders fetched Sucessfully",
                                     /* orderId,*/incompleteOrderList = incomp_order_status_list))
                         }
 
@@ -150,7 +149,7 @@ class OrderRepository(private val application: Context) {
                                 }
                             }
                             ui_status_subject.onNext(
-                                UIState.ErrorStateFetchingOrders("Error code: ${it.code()} "
+                                UIState.ErrorStateFetchingOrders("Error code: ${it.errorBody()} "
                                     /* ,orderId*/, incomp_order_status_list))
                         }
 
@@ -183,6 +182,7 @@ class OrderRepository(private val application: Context) {
 
                 },
                         {
+
                             Log.d("OrderRepo_Firestore10", "error$it")
                             orderIdList.forEach { orderId ->
 
@@ -206,6 +206,8 @@ class OrderRepository(private val application: Context) {
 
         }, {
             //error display karna h
+            ui_status_subject.onNext(UIState.ErrorRoom)
+
             Log.d("OrderRepo3", "Error upddate orderRoom $orderId  s $status $it")
         })
     }
@@ -363,7 +365,7 @@ class OrderRepository(private val application: Context) {
                             itemList = emptyList<ChildDataClass>()
                         }
                     }
-                    Log.d("OrderRepo_API10", "Returned From Repo = ${orderItemList.toString()}")
+                    Log.d("OrderRepo_API10", "Returned From Repo = $orderItemList")
                     return@flatMap Flowable.just(orderItemList)
                 }.doOnError {
 
@@ -403,8 +405,8 @@ class OrderRepository(private val application: Context) {
     }
 
     private fun getBody(orderid: List<Int>): JsonObject {
-        var body = JsonObject()
-        var array = JsonArray()
+        val body = JsonObject()
+        val array = JsonArray()
 
         orderid.forEach { id ->
             array.add(id)
@@ -418,7 +420,7 @@ class OrderRepository(private val application: Context) {
     fun getFinishedOrdersFromRoom(): Flowable<List<ModifiedOrdersDataClass>> {
         return orderDao.getAllFinishedOrdersRoom().subscribeOn(Schedulers.io())
                 .flatMap {
-                    Log.d("OrderRepo_API18", "Finished Orders Recived = ${it.toString()}")
+                    Log.d("OrderRepo_API18", "Finished Orders Recived = $it")
                     val list = it.sortedBy { it.orderId }
                     var orderItemList = emptyList<ModifiedOrdersDataClass>()
                     var itemList = emptyList<ChildDataClass>()
@@ -444,10 +446,10 @@ class OrderRepository(private val application: Context) {
                                             time = item.time
                                     )
                             )
-                            itemList = emptyList<ChildDataClass>()
+                            itemList = emptyList()
                         }
                     }
-                    Log.d("OrderRepo_API19", "Returned Finished From Repo = ${orderItemList.toString()}")
+                    Log.d("OrderRepo_API19", "Returned Finished From Repo = $orderItemList")
                     return@flatMap Flowable.just(orderItemList)
                 }.doOnError {
                     Log.e("OrderRepo_API20", "Error Finished in reading database = ${it.message.toString()}")
@@ -466,13 +468,12 @@ class OrderRepository(private val application: Context) {
     fun updateEarningsData(): Completable {
         val dateArray = arrayOf("5_08_2019", "6_08_2019", "2_08_2019", "7_08_2019")
         val body: JsonObject = getEarningBody(dateArray)
-        return earningsApiCall.getEarningData("JWT " + jwt_token, body = body).subscribeOn(Schedulers.io())
+        return earningsApiCall.getEarningData("JWT $jwt_token", body = body).subscribeOn(Schedulers.io())
                 .doOnSuccess {
 
                     Log.d("OrderRepo_API12a", "RESPONSE ${it.body()}")
-                    var daywiseEarnings = emptyList<EarningData>()
+                    val daywiseEarnings: List<EarningData> = dayPojostoEarningData(it.body()!!)
 
-                    daywiseEarnings = dayPojostoEarningData(it.body()!!)
                     Log.d("OrderRepo_API12", daywiseEarnings.toString())
                     earningDao.insertEarningData(daywiseEarnings)
                 }.doOnError {
@@ -490,15 +491,14 @@ class OrderRepository(private val application: Context) {
 
             earnings = earnings.plus(EarningData(date= SimpleDateFormat("dd MMM yyyy").format(date),
                     earnings = it.day_earnings))
-            Log.d("OrderRepo_API12b", "day pojo ${it} raninngs:$earnings")
+            Log.d("OrderRepo_API12b", "day pojo $it raninngs:$earnings")
         }
         return earnings
     }
 
     private fun getEarningBody(dateArray: Array<String>): JsonObject {
-
-        var body = JsonObject()
-        var array = JsonArray()
+        val body = JsonObject()
+        val array = JsonArray()
         dateArray.forEach { date ->
             array.add(date)
         }

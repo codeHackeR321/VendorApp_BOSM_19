@@ -19,42 +19,27 @@ import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
 import com.example.vendorapp.shared.singletonobjects.VendorDatabase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import org.json.JSONObject
+import java.lang.Exception
 
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
-    /*override fun onMessageReceived(p0: RemoteMessage?) {
-        Log.d("Notification" , "Message recived is ${p0!!.data}")
-      *//*  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "New Orders"
-            val descriptionText = "Notification Channel"
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel("NewOrder", name, importance).apply {
-                description = descriptionText
-            }
-            // Register the channel with the system
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }*//*
-       // super.onMessageReceived(p0)
-       sendNotification(p0.data.toString())
 
-    }*/
-
-
-    private fun sendNotification(messageBody: String) {
+    private fun sendNotification(messageBody: JSONObject) {
         val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-            PendingIntent.FLAG_ONE_SHOT)
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0 /* Request code */, intent,
+            PendingIntent.FLAG_ONE_SHOT
+        )
 
         val channelId = getString(R.string.chanel_id_newOrder)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_launcher_background)
-            .setContentTitle(getString(R.string.notification_content_title))
-            .setContentText(messageBody)
+            .setContentTitle(messageBody.getString("title"))
+            .setContentText(messageBody.getString("body"))
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
             .setContentIntent(pendingIntent)
@@ -62,38 +47,22 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         with(NotificationManagerCompat.from(this)) {
             // notificationId is a unique int for each notification that you must define
-            notify(java.lang.Integer.parseInt("0") , notificationBuilder)
+            notify(java.lang.Integer.parseInt(messageBody.getString("id")), notificationBuilder)
         }
 
 
-      //  val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        // Since android Oreo notification channel is needed.
-       /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId,
-                getString(R.string.chanel_name_newOrder),
-                NotificationManager.IMPORTANCE_DEFAULT)
-            notificationManager.createNotificationChannel(channel)
-        }*/
-
-       // notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
     }
 
     override fun onMessageReceived(p0: RemoteMessage) {
-       Toast.makeText(this, "Hello", Toast.LENGTH_LONG).show()
-        sendNotification(p0.data.toString())
         super.onMessageReceived(p0)
+
+        Log.d("Message", p0.notification.toString())
+        try {
+            var json=JSONObject(p0.data)
+            sendNotification(json)
+        } catch (e: Exception) {
+         Log.d("FCM","Error parsing json$e")
+        }
     }
 
-    /*override fun onNewToken(token: String?) {
-        Log.d("FirebaseMgingService", "Refreshed token: $token")
-
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // Instance ID token to your app server.
-        sendRegistrationToServer(token)
-    }*/
-
-    private fun sendRegistrationToServer(token: String?) {
-    }
 }

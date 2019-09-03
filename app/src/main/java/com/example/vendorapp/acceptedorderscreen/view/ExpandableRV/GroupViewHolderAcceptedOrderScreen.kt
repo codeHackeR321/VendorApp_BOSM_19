@@ -68,10 +68,7 @@ class GroupViewHolderAcceptedOrderScreen(private var isLoading:Boolean,private v
         buttonReady.setOnClickListener{
 
             onClickButtons(StatusKeyValue().getStatusInt("ready"))
-          /*  //api call ke bad visible karna h
-            buttonFinish.visibility=View.VISIBLE
-            buttonOtp.visibility=View.VISIBLE
-            buttonReady.visibility=View.GONE*/
+
         }
 
         buttonOtp.setOnClickListener{

@@ -12,6 +12,8 @@ sealed class UIState {
 
     object NoInternetConnection: UIState()
 
+    object ErrorRoom: UIState()
+
     object GoToMainScreen : UIState()
 
     data class ErrorState(val message:String): UIState()

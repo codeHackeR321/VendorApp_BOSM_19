@@ -1,6 +1,7 @@
 package com.example.vendorapp.neworderscreen.view
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -18,6 +19,7 @@ import com.example.vendorapp.neworderscreen.view.adapters.RecyclerAdapterFragmen
 import com.example.vendorapp.neworderscreen.viewModel.NewOrderViewModel
 import com.example.vendorapp.neworderscreen.viewModel.NewOrderViewModelFacory
 import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
+import com.example.vendorapp.shared.utils.NetworkConnectivityCheck
 import com.example.vendorapp.shared.utils.StatusKeyValue
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_fra_new_order.*
@@ -66,18 +68,24 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
 
     override fun buttonClicked(orderId: Int, status: Int) {
         //set ui state for group view holder
-        if (status==StatusKeyValue().getStatusInt(getString(R.string.status_accepted))) {
-
-            viewModel.changeStatus(orderId, status,isLoading = true)
-
-        } else if (status==StatusKeyValue().getStatusInt(getString(R.string.status_declined))) {
-            viewModel.declineOrder(orderId,isLoading = true)
-
-        }
-        else if (status==StatusKeyValue().getStatusInt(getString(R.string.status_try_again)))
+        if (NetworkConnectivityCheck().checkIntenetConnection(this.context!!))
         {
-            // handle by isLOading
-            viewModel.fetchOrderAgain(orderId)
+            if (status==StatusKeyValue().getStatusInt(getString(R.string.status_accepted))) {
+
+                viewModel.changeStatus(orderId, status,isLoading = true)
+
+            } else if (status==StatusKeyValue().getStatusInt(getString(R.string.status_declined))) {
+                viewModel.declineOrder(orderId,isLoading = true)
+
+            }
+            else if (status==StatusKeyValue().getStatusInt(getString(R.string.status_try_again)))
+            {
+                // handle by isLOading
+                viewModel.fetchOrderAgain(orderId)
+            }
+        }
+        else{
+              showAlertDialogBox("Please connect to Internet or Restart the App","No Internet Connection Found",false)
         }
     }
 
@@ -93,6 +101,11 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
                    // progBar_new_order_screen.visibility = View.VISIBLE
                     // not yet decided for group view holder
                     Log.d("Firestore76", "in Neworderfrag ui loading state")
+
+                }
+
+                is UIState.ErrorRoom->{
+                    showAlertDialogBox("Please restart the app.","Local Database Error",true)
 
                 }
 
@@ -146,5 +159,26 @@ private fun showLoadingStateFragment(){
             progBar_new_order_screen.visibility = View.INVISIBLE
             activity!!.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
+    }
+
+    private fun showAlertDialogBox(message:String,title:String,isRoom:Boolean){
+        val alertDialog: AlertDialog? = this.let {
+            val builder = AlertDialog.Builder(context)
+            builder.apply{
+
+                setNegativeButton("ok") { dialog, id ->
+                    dialog.dismiss()
+                    if (isRoom){
+                        activity!!.finishAffinity()
+                    }
+                }
+            }
+
+            builder.setMessage(message)
+            builder.setTitle(title)
+            builder.create()
+        }
+        alertDialog?.setCanceledOnTouchOutside(false)
+        alertDialog?.show()
     }
 }

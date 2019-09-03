@@ -61,6 +61,8 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
                 else
                     nMenuViewModel.updateStatus(newStatusItemList)
             }
+
+        nMenuViewModel.getMenuFromRoom()
     }
 
     override fun onStatusChanged(item: MenuItemData, newStatus: Int) {

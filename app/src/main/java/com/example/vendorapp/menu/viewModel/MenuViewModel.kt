@@ -28,12 +28,20 @@ class MenuViewModel(context: Context) :ViewModel() {
     init {
         @SuppressLint("CheckResult")
         if (NetworkConnectivityCheck().checkIntenetConnection(context)) {
-            menuRepository.updateMenu().subscribeOn(Schedulers.io()).subscribe({menuRepository.getMenuRoom().observeOn(AndroidSchedulers.mainThread())
+            menuRepository.updateMenu().subscribeOn(Schedulers.io()).subscribe({
+
+                menuRepository.getMenuRoom().observeOn(AndroidSchedulers.mainThread())
                 .subscribe({menu->
                     (menuList as MutableLiveData<List<MenuItemData>>).postValue(menu)
-                },{
+                },
+                {
                     Log.d("Error",it.stackTrace.toString())
-                })},{ Log.e("Error in Menu VM" , "Error in updating menu = ${it.toString()}")})
+                })
+            },
+             {
+                 Log.e("Error in Menu VM" , "Error in updating menu = ${it.toString()}")
+                 (error as MutableLiveData<String>).postValue("Please check your internet connection and restart the app")
+             })
         } else {
             (error as MutableLiveData<String>).postValue("Please check your internet connection and restart the app")
         }
@@ -45,6 +53,16 @@ class MenuViewModel(context: Context) :ViewModel() {
         menuRepository.updateItemStatus(newStatusList)
     }
 
+    @SuppressLint("CheckResult")
+    fun getMenuFromRoom(){
+        menuRepository.getMenuRoom().subscribeOn(Schedulers.io())
+            .subscribe({menu->
+                (menuList as MutableLiveData<List<MenuItemData>>).postValue(menu)
+            },{
+                Log.d("Error",it.stackTrace.toString())
+            })
+
+    }
     @SuppressLint("CheckResult")
     fun observeUIState(): Flowable<UIState> {
         return  menuRepository.getUIStateFlowable().doOnError { Log.e("MenuViewModel", "UI State observer error hu") }

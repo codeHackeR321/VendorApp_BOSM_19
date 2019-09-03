@@ -1,6 +1,7 @@
 package com.example.vendorapp.acceptedorderscreen.view
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,6 +21,7 @@ import com.example.vendorapp.acceptedorderscreen.viewModel.AcceptedOrderViewMode
 import com.example.vendorapp.neworderscreen.view.adapters.RecyclerAdapterFragment
 import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
 import com.example.vendorapp.shared.UIState
+import com.example.vendorapp.shared.utils.NetworkConnectivityCheck
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_fra_accepted_order.*
 import kotlinx.android.synthetic.main.fragment_fra_new_order.*
@@ -68,7 +70,13 @@ showLoadingStateFragment()
     override fun buttonClicked(orderId: Int, status: Int) {
         Toast.makeText(context, "id$orderId stautuss$status", Toast.LENGTH_SHORT).show()
         Log.d("Status", "id; $orderId status: $status")
-        viewModel.changeStatus(orderId, status, isLoading = true)
+       if (NetworkConnectivityCheck().checkIntenetConnection(this.context!!)){
+           viewModel.changeStatus(orderId, status, isLoading = true)
+       }
+        else
+       {
+           showAlertDialogBox("Please connect to Internet or Restart the App","No Internet Connection Found",false)
+       }
     }
 
     private fun showLoadingStateFragment(){
@@ -100,7 +108,10 @@ showLoadingStateFragment()
                     Log.d("Firestore76", "in Neworderfrag ui loading state")
 
                 }
+                is UIState.ErrorRoom->{
+                    showAlertDialogBox("Please restart the app.","Local Database Error",true)
 
+                }
 
                 is UIState.ErrorStateChangeStatus->{
                     Log.d("NewOrderFrag1","Error Change Status:${(it as UIState.ErrorStateChangeStatus).message}")
@@ -119,5 +130,26 @@ showLoadingStateFragment()
             Log.d("Firestore89", "observe observe ui state  Acceptederror$it")
             Toast.makeText(activity,"Error observing UI State Accepted Order frag$it",Toast.LENGTH_LONG).show()
         })
+    }
+
+    private fun showAlertDialogBox(message:String,title:String,isRoom:Boolean){
+        val alertDialog: AlertDialog? = this.let {
+            val builder = AlertDialog.Builder(context)
+            builder.apply{
+
+                setNegativeButton("ok") { dialog, id ->
+                    dialog.dismiss()
+                    if (isRoom){
+                        activity!!.finishAffinity()
+                    }
+                }
+            }
+
+            builder.setMessage(message)
+            builder.setTitle(title)
+            builder.create()
+        }
+        alertDialog?.setCanceledOnTouchOutside(false)
+        alertDialog?.show()
     }
 }
