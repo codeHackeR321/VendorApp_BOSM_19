@@ -47,7 +47,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         with(NotificationManagerCompat.from(this)) {
             // notificationId is a unique int for each notification that you must define
-            notify(java.lang.Integer.parseInt(messageBody.getString("id")), notificationBuilder)
+            notify(java.lang.Integer.parseInt(messageBody.getString("order_id")), notificationBuilder)
         }
 
 

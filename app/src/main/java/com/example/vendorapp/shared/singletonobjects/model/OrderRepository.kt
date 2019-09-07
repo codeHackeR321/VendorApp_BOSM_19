@@ -149,7 +149,7 @@ class OrderRepository(private val application: Context) {
                                 }
                             }
                             ui_status_subject.onNext(
-                                UIState.ErrorStateFetchingOrders("Error code: ${it.errorBody()} "
+                                UIState.ErrorStateFetchingOrders(" Error code: ${it.code()} "
                                     /* ,orderId*/, incomp_order_status_list))
                         }
 
@@ -193,7 +193,7 @@ class OrderRepository(private val application: Context) {
                                     incomp_order_status_list.add(IncompleteOrderStatus(orderId, application.getString(com.example.vendorapp.R.string.status_try_again)))
                                 }
                             }
-                            ui_status_subject.onNext(UIState.ErrorStateFetchingOrders("Unknown error code: ${it}",/* orderId,*/incomp_order_status_list))
+                            ui_status_subject.onNext(UIState.ErrorStateFetchingOrders("Unknown error code: ${it.message}",/* orderId,*/incomp_order_status_list))
                         }
                 )
     }
