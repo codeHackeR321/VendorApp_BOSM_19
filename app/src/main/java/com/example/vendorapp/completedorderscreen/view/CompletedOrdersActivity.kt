@@ -115,7 +115,7 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
 
         } catch (e: Exception) {
             Log.d("CompletedError", e.toString())
-            Toast.makeText(this@CompletedOrdersActivity,"My message$e" , Toast.LENGTH_LONG).show()
+            Toast.makeText(this@CompletedOrdersActivity,"Internal App Error. Please Restart the app" , Toast.LENGTH_LONG).show()
         }
 
     }

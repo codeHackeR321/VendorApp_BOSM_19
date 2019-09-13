@@ -50,7 +50,7 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
 
         viewModel.orders.observe(this, Observer {
             Log.d("NewOrderFrag4", "Entered observer for orders with data = ${it.toString()}")
-            (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders = it
+            (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders = it.sortedByDescending { it.orderId }
             (recycler_new_order_screen.adapter as RecyclerAdapterFragment).notifyDataSetChanged()
             removeLoadingStateFragment()
         })
@@ -128,20 +128,24 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
 
                 is UIState.ErrorStateChangeStatus->{
                     Log.d("NewOrderFrag1","Error Change Status:${(it as UIState.ErrorStateChangeStatus).message}")
-                    Toast.makeText(activity,"Error change status${(it as UIState.ErrorStateChangeStatus).message}",Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity,"Error in change status",Toast.LENGTH_LONG).show()
 
                 }
 
                 is UIState.SuccessStateChangeStatus->{
                     Log.d("NewOrderFrag1","Success Change Status:${(it as UIState.SuccessStateChangeStatus).message}")
-                    Toast.makeText(activity,"Success change status${(it as UIState.SuccessStateChangeStatus).message}",Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity,"Sccessfuly changed status",Toast.LENGTH_LONG).show()
 
                 }
             }
 
         }, {
             Log.d("Firestore77", "observe observe ui state New oter error$it")
-            Toast.makeText(activity,"Error observing UI State New Orderfrag$it",Toast.LENGTH_LONG).show()
+            try {
+                Toast.makeText(activity,"Internal App Error. Please Restart the app",Toast.LENGTH_LONG).show()
+            } catch (e: Exception) {
+
+            }
         })
     }
 

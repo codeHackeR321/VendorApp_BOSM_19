@@ -466,7 +466,7 @@ class OrderRepository(private val application: Context) {
 
     //update room with earnings data
     fun updateEarningsData(): Completable {
-        val dateArray = arrayOf("5_08_2019", "6_08_2019", "2_08_2019", "7_08_2019")
+        val dateArray = arrayOf("13_09_2019", "14_09_2019", "15_09_2019", "16_09_2019", "17_09_2019")
         val body: JsonObject = getEarningBody(dateArray)
         return earningsApiCall.getEarningData("JWT $jwt_token", body = body).subscribeOn(Schedulers.io())
                 .doOnSuccess {

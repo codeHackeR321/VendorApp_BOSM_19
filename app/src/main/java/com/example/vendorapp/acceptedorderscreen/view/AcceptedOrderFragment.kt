@@ -53,7 +53,7 @@ showLoadingStateFragment()
         viewModel.acceptedOrders.observe(this, Observer {
             Log.d("Testing Accepted View", "Entered observer for Accepted orders with list = ${it.toString()}")
             removeLoadingStateFragment()
-            (recycler_accepted_order_screen.adapter as AdapterForFragment).orders = it
+            (recycler_accepted_order_screen.adapter as AdapterForFragment).orders = it.sortedByDescending { it.orderId }
             (recycler_accepted_order_screen.adapter as AdapterForFragment).notifyDataSetChanged()
         })
 
@@ -110,18 +110,17 @@ showLoadingStateFragment()
                 }
                 is UIState.ErrorRoom->{
                     showAlertDialogBox("Please restart the app.","Local Database Error",true)
-
                 }
 
                 is UIState.ErrorStateChangeStatus->{
                     Log.d("NewOrderFrag1","Error Change Status:${(it as UIState.ErrorStateChangeStatus).message}")
-                    Toast.makeText(activity,"Error change status${(it as UIState.ErrorStateChangeStatus).message}",Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity,"Error changing status ", Toast.LENGTH_LONG).show()
 
                 }
 
                 is UIState.SuccessStateChangeStatus->{
                     Log.d("NewOrderFrag1","Success Change Status:${(it as UIState.SuccessStateChangeStatus).message}")
-                    Toast.makeText(activity,"Success change status${(it as UIState.SuccessStateChangeStatus).message}",Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity,"Status change successful",Toast.LENGTH_LONG).show()
 
                 }
             }
