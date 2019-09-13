@@ -3,6 +3,7 @@ package com.example.vendorapp.loginscreen.view
 import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context.NOTIFICATION_SERVICE
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
@@ -12,6 +13,8 @@ import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -32,6 +35,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private lateinit var viewModel: LoginViewModel
+    private var isLoggingIn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,18 +74,26 @@ class MainActivity : AppCompatActivity() {
         })
 
         buttonSignIn.setOnClickListener {
+            onSignInButtonPressed()
+        }
+    }
+
+    private fun onSignInButtonPressed() {
+        Log.d("Testing", "Entered onClick listener for sign in button")
+        showLoadingStateActivity()
+        if (editTextUsername.text.toString().isBlank() && editTextPassword.text.toString().isBlank()) {
+            Snackbar.make(coordinatorLayout,"Enter valid username/password",Snackbar.LENGTH_LONG).show()
+            removeLoadingStateActivity()
+        }
+        else if(viewModel.getFirebaseRegToken().isEmpty()){
+            Log.d("Testing", "Entered empty reg token condition")
             showLoadingStateActivity()
-            if (editTextUsername.text.toString().isBlank() && editTextPassword.text.toString().isBlank()) {
-                Snackbar.make(coordinatorLayout,"Enter valid username/password",Snackbar.LENGTH_LONG).show()
-                removeLoadingStateActivity()
-            }
-            else if(viewModel.getFirebaseRegToken().isEmpty()){
-                Snackbar.make(coordinatorLayout,"Something Went Wrong! Try Again.",Snackbar.LENGTH_LONG).show()
-            }
-            else{
-                Log.d("LoginActivity1", "viewModel.login called")
-                viewModel.login(editTextUsername.text.toString(),editTextPassword.text.toString(),viewModel.getFirebaseRegToken())
-            }
+            isLoggingIn = true
+        }
+        else{
+            Log.d("LoginActivity1", "viewModel.login called")
+            Log.d("Testing", "Starting to log in user")
+            viewModel.login(editTextUsername.text.toString(),editTextPassword.text.toString(),viewModel.getFirebaseRegToken())
         }
     }
 
@@ -103,14 +115,20 @@ class MainActivity : AppCompatActivity() {
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(newOrderChanel)
 
-            FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
-                Log.d("Main Activity", "Recived New Token = ${it.token}}")
-                viewModel.saveFirebaseRegToken(it.token)
-            }.addOnFailureListener {
-                Log.e("Main Activity", "Failed to recive token$it")
-                setupNotificationChannel()
-            }
         }
+
+        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
+            Log.d("Testing", "Recived New Token = ${it.token}}")
+            viewModel.saveFirebaseRegToken(it.token)
+            if (isLoggingIn) {
+                Log.d("Testing", "Entered isLogging in condition")
+                onSignInButtonPressed()
+            }
+        }.addOnFailureListener {
+            Log.e("Main Activity", "Failed to recive token$it")
+            setupNotificationChannel()
+        }
+
     }
 
     /**
