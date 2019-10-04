@@ -27,7 +27,10 @@ class AcceptedOrderViewModel(context : Context) : ViewModel(){
         }.doOnError {
             Log.e("Testing AO VM" , "Error in reading new orders from database")
             (error as MutableLiveData<String>).postValue("Error in database. Please try after some time")
-        }.subscribe()
+        }.subscribe({},{
+            Log.e("Testing AO VM" , "Error in reading new orders from database")
+            (error as MutableLiveData<String>).postValue("Error in database. Please try after some time")
+        })
     }
 
 

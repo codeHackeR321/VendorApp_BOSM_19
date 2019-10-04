@@ -128,7 +128,7 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
 
                 is UIState.ErrorStateChangeStatus->{
                     Log.d("NewOrderFrag1","Error Change Status:${(it as UIState.ErrorStateChangeStatus).message}")
-                    Toast.makeText(activity,"Error in change status",Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity,"Error in change status ${(it as UIState.ErrorStateChangeStatus).message}}",Toast.LENGTH_LONG).show()
 
                 }
 

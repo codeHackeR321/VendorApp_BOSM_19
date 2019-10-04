@@ -249,12 +249,12 @@ class OrderRepository(private val application: Context) {
                             // show error message
                             changeLoadingStatusRoom(orderId, isLoading = false)
                             // please specially handle 412
-                            ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()}: orderid:$orderId User has not seen otp ${it.message()} body:${body}"))
+                            ui_status_subject.onNext(UIState.ErrorStateChangeStatus("User has not seen otp body:${body}"))
                         }
 
                         else->{
                             changeLoadingStatusRoom(orderId, isLoading = false)
-                            ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()}: orderid:$orderId ${it.message()} body:${body}"))
+                            ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()} body:${body}"))
 
                         }
                     }
@@ -280,7 +280,7 @@ class OrderRepository(private val application: Context) {
                 else -> {
                     //onOrderStatusNotModified
                     changeLoadingStatusRoom(orderId, isLoading = false)
-                    ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()}: decline orderid:$orderId ${it.message()} "))
+                    ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()} ${it.message()} "))
 
                 }
             }

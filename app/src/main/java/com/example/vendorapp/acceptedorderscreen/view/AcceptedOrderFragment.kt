@@ -114,7 +114,7 @@ showLoadingStateFragment()
 
                 is UIState.ErrorStateChangeStatus->{
                     Log.d("NewOrderFrag1","Error Change Status:${(it as UIState.ErrorStateChangeStatus).message}")
-                    Toast.makeText(activity,"Error changing status ", Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity,"Error changing status ${(it as UIState.ErrorStateChangeStatus).message}}", Toast.LENGTH_LONG).show()
 
                 }
 

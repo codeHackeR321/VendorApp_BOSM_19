@@ -73,7 +73,9 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
            (earnings as MutableLiveData<String>).postValue(totalEarning.toString())
        }.doOnError {
            Log.e("Error in COVM" , "Error in updating data = ${it.toString()}")
-       }.subscribe()
+       }.subscribe({},{
+           Log.e("Error in COVM" , "Error in updating data = ${it.toString()}")
+       })
    }
 
     @SuppressLint("CheckResult")
