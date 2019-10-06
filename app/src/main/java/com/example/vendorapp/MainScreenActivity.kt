@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -21,9 +22,13 @@ import com.example.vendorapp.loginscreen.view.MainActivity
 import com.example.vendorapp.menu.view.MenuActivity
 import com.example.vendorapp.neworderscreen.view.NewOrderFragment
 import com.example.vendorapp.shared.Listeners.NetConnectionChanged
+import com.example.vendorapp.shared.singletonobjects.VendorDatabase
+import com.example.vendorapp.shared.singletonobjects.model.room.OrderDao
 import com.example.vendorapp.shared.utils.NetworkReceiver
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import io.reactivex.Completable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main_screen.*
 
 class MainScreenActivity : AppCompatActivity(),NetConnectionChanged {
@@ -85,6 +90,12 @@ class MainScreenActivity : AppCompatActivity(),NetConnectionChanged {
             {
                 //add alert dialog box
                sharedPref.edit().clear().apply()
+               delete().subscribeOn(Schedulers.io()).subscribe({
+                   Log.d("MAinScreenActivity1","Data delted from room on  logout")
+               },{
+
+                   Log.d("MAinScreenActivity1","Data not delted from room on  logout")
+               })
                 startActivity(Intent(this@MainScreenActivity, MainActivity::class.java))
                 finish()
             }
@@ -129,6 +140,17 @@ class MainScreenActivity : AppCompatActivity(),NetConnectionChanged {
         override fun canSwipeDismissView(child: View): Boolean {
             return false
         }
+
+    }
+
+
+    private fun delete():Completable{
+        val database = VendorDatabase.getDatabaseInstance(application)
+        val  orderDao = database.orderDao()
+        orderDao.deleteAllOrderDetails().subscribe({},{})
+        val menuDao =database.menuDao()
+        menuDao.deleteAllMenu().subscribe({},{})
+        return  orderDao.deleteAllOrderItems()
 
     }
 }

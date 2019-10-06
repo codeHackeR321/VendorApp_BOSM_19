@@ -50,7 +50,7 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
 
         viewModel.orders.observe(this, Observer {
             Log.d("NewOrderFrag4", "Entered observer for orders with data = ${it.toString()}")
-            (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders = it
+            (recycler_new_order_screen.adapter as RecyclerAdapterFragment).orders = it.sortedByDescending { it.orderId }
             (recycler_new_order_screen.adapter as RecyclerAdapterFragment).notifyDataSetChanged()
             removeLoadingStateFragment()
         })
@@ -141,7 +141,7 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
 
         }, {
             Log.d("Firestore77", "observe observe ui state New oter error$it")
-            Toast.makeText(activity,"Error observing UI State New Orderfrag$it",Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),"Error observing UI State New Orderfrag$it",Toast.LENGTH_LONG).show()
         })
     }
 

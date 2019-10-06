@@ -27,13 +27,13 @@ interface OrderDao {
     @Query("SELECT items_order.item_id AS itemId, price, quantity, item_name AS name from items_order INNER JOIN menu_table ON items_order.item_id = menu_table.item_id WHERE order_Id= :orderId")
     fun getItemsForOrder(orderId: String): Single<List<ItemsModel>>
 
-    @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status_order, is_loading,time,date, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id WHERE status_order = 0")
+    @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status_order, is_loading,time,date, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id WHERE status_order = 0 ORDER BY items_order.order_id desc" )
     fun getAllNewOrders() : Flowable<List<OrderItremCombinedDataClass>>
 
-    @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status_order, is_loading,time,date, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id WHERE status_order = 1 OR status_order = 2")
+    @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status_order, is_loading,time,date, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id WHERE status_order = 1 OR status_order = 2 ORDER BY items_order.order_id desc")
     fun getAllAcceptedOrders() : Flowable<List<OrderItremCombinedDataClass>>
 
-    @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status_order, is_loading,time,date, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id WHERE status_order = 3")
+    @Query("SELECT  items_order.item_id AS itemId, price , quantity, items_order.order_Id AS orderId, status_order, is_loading,time,date, otp, item_name AS name, total_amount AS totalAmount FROM items_order JOIN orders_table JOIN menu_table ON items_order.order_Id = orders_table.order_id AND items_order.item_Id = menu_table.item_id WHERE status_order = 3 ORDER BY items_order.order_id desc")
     fun getAllFinishedOrdersRoom() : Flowable<List<OrderItremCombinedDataClass>>
 
     @Query("UPDATE orders_table SET status_order = :status,is_loading= :isLoading WHERE order_id = :orderId")
@@ -49,7 +49,10 @@ interface OrderDao {
     fun insertOrderItems(items: List<ItemData>)
 
     @Query("DELETE FROM items_order")
-    fun deleteAllOrderItems()
+    fun deleteAllOrderItems():Completable
+
+    @Query("DELETE FROM orders_table")
+    fun deleteAllOrderDetails():Completable
 
     @Query("DELETE FROM items_order WHERE order_Id=:orderId    ")
     fun deleteItemsWithOrderId(orderId: Int)

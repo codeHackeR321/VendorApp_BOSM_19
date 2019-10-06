@@ -27,6 +27,7 @@ import io.reactivex.*
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import com.google.gson.JsonArray
+import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -149,7 +150,7 @@ class OrderRepository(private val application: Context) {
                                 }
                             }
                             ui_status_subject.onNext(
-                                UIState.ErrorStateFetchingOrders(" Error code: ${it.code()} "
+                                UIState.ErrorStateFetchingOrders(" Error code: ${it.errorBody()!!.string()} "
                                     /* ,orderId*/, incomp_order_status_list))
                         }
 
@@ -162,6 +163,9 @@ class OrderRepository(private val application: Context) {
                                     incomp_order_status_list.add(IncompleteOrderStatus(orderId, application.getString(com.example.vendorapp.R.string.status_try_again)))
                                 }
                             }
+                           /*
+                            var json=JSONObject(it.errorBody()!!.string())
+                            json["display_message"]*/
                             ui_status_subject.onNext(
                                     UIState.ErrorStateFetchingOrders("Server error code: ${it.code()}",/*orderId,*/incomp_order_status_list))
                         }

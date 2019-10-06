@@ -3,6 +3,7 @@ package com.example.vendorapp.menu.model.room
 import androidx.room.*
 import com.example.vendorapp.menu.model.MenuStatus
 import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
+import io.reactivex.Completable
 import io.reactivex.Flowable
 
 @Dao
@@ -12,7 +13,7 @@ interface MenuDao {
     fun getMenu(): Flowable<List<MenuItemData>>
 
     @Query("DELETE FROM menu_table ")
-    fun deleteAll()
+    fun deleteAllMenu():Completable
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertMenu(menu: List<MenuItemData>)

@@ -40,6 +40,8 @@ class GroupViewHolderAcceptedOrderScreen(private var isLoading:Boolean,private v
         textViewOrderAmount.setOnClickListener{}
         textViewOrderId.setOnClickListener {  }
 
+        buttonOtp.text=otp.toString()
+
         if (isLoading){
 
             buttonOtp.visibility=View.INVISIBLE
