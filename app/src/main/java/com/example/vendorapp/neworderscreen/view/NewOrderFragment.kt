@@ -128,20 +128,25 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
 
                 is UIState.ErrorStateChangeStatus->{
                     Log.d("NewOrderFrag1","Error Change Status:${(it as UIState.ErrorStateChangeStatus).message}")
-                    Toast.makeText(activity,"Error change status${(it as UIState.ErrorStateChangeStatus).message}",Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity,"Error in change status ${(it as UIState.ErrorStateChangeStatus).message}}",Toast.LENGTH_LONG).show()
 
                 }
 
                 is UIState.SuccessStateChangeStatus->{
                     Log.d("NewOrderFrag1","Success Change Status:${(it as UIState.SuccessStateChangeStatus).message}")
-                    Toast.makeText(activity,"Success change status${(it as UIState.SuccessStateChangeStatus).message}",Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity,"Sccessfuly changed status",Toast.LENGTH_LONG).show()
 
                 }
             }
 
         }, {
             Log.d("Firestore77", "observe observe ui state New oter error$it")
-            Toast.makeText(requireContext(),"Error observing UI State New Orderfrag$it",Toast.LENGTH_LONG).show()
+
+            try {
+                Toast.makeText(activity,"Internal App Error. Please Restart the app",Toast.LENGTH_LONG).show()
+            } catch (e: Exception) {
+
+            }
         })
     }
 

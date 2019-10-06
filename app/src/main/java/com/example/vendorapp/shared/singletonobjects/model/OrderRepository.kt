@@ -253,12 +253,12 @@ class OrderRepository(private val application: Context) {
                             // show error message
                             changeLoadingStatusRoom(orderId, isLoading = false)
                             // please specially handle 412
-                            ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()}: orderid:$orderId User has not seen otp ${it.message()} body:${body}"))
+                            ui_status_subject.onNext(UIState.ErrorStateChangeStatus("User has not seen otp body:${body}"))
                         }
 
                         else->{
                             changeLoadingStatusRoom(orderId, isLoading = false)
-                            ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()}: orderid:$orderId ${it.message()} body:${body}"))
+                            ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()} body:${body}"))
 
                         }
                     }
@@ -284,7 +284,7 @@ class OrderRepository(private val application: Context) {
                 else -> {
                     //onOrderStatusNotModified
                     changeLoadingStatusRoom(orderId, isLoading = false)
-                    ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()}: decline orderid:$orderId ${it.message()} "))
+                    ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()} ${it.message()} "))
 
                 }
             }
@@ -470,7 +470,7 @@ class OrderRepository(private val application: Context) {
 
     //update room with earnings data
     fun updateEarningsData(): Completable {
-        val dateArray = arrayOf("5_08_2019", "6_08_2019", "2_08_2019", "7_08_2019")
+        val dateArray = arrayOf("13_09_2019", "14_09_2019", "15_09_2019", "16_09_2019", "17_09_2019")
         val body: JsonObject = getEarningBody(dateArray)
         return earningsApiCall.getEarningData("JWT $jwt_token", body = body).subscribeOn(Schedulers.io())
                 .doOnSuccess {

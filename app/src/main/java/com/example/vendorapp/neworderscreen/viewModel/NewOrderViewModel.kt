@@ -34,7 +34,10 @@ class NewOrderViewModel(val context : Context) : ViewModel(){
       }.doOnError {
           Log.e("Firestore50", "Error in Orders from room fetch ${it.message}")
           (errors as MutableLiveData<String>).postValue(it.toString())
-      }.subscribe()
+      }.subscribe({},{
+          Log.e("Firestore50", "Error in Orders from room fetch ${it.message}")
+          (errors as MutableLiveData<String>).postValue(it.toString())
+      })
     }
 
 
