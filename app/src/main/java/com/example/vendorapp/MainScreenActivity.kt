@@ -147,9 +147,9 @@ class MainScreenActivity : AppCompatActivity(),NetConnectionChanged {
     private fun delete():Completable{
         val database = VendorDatabase.getDatabaseInstance(application)
         val  orderDao = database.orderDao()
-        orderDao.deleteAllOrderDetails().subscribe({},{})
+        orderDao.deleteAllOrderDetails()
         val menuDao =database.menuDao()
-        menuDao.deleteAllMenu().subscribe({},{})
+        menuDao.deleteAllMenu()
         return  orderDao.deleteAllOrderItems()
 
     }

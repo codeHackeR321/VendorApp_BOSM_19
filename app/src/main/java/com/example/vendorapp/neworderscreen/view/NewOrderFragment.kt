@@ -2,6 +2,7 @@ package com.example.vendorapp.neworderscreen.view
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -22,6 +23,7 @@ import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
 import com.example.vendorapp.shared.utils.NetworkConnectivityCheck
 import com.example.vendorapp.shared.utils.StatusKeyValue
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 
 class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
@@ -31,6 +33,7 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        Log.d("LifeCyCle","New onCraeteView")
         return inflater.inflate(R.layout.fragment_fra_new_order, container, false)
     }
 
@@ -38,7 +41,7 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         observeUIState()
         initializeView()
-
+        Log.d("LifeCyCle","New ViewCreated")
         super.onViewCreated(view, savedInstanceState)
 
     }
@@ -93,7 +96,7 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
     @SuppressLint("CheckResult")
     private fun observeUIState() {
 
-        viewModel.observeUIState().observeOn(AndroidSchedulers.mainThread()).subscribe({
+        viewModel.observeUIState().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe({
             Log.d("Firestore78", "in Neworderfrag ui state$it")
             when (it!!) {
                 UIState.ShowLoadingState -> {
@@ -186,4 +189,58 @@ private fun showLoadingStateFragment(){
         alertDialog?.setCanceledOnTouchOutside(false)
         alertDialog?.show()
     }
+
+    override fun onAttach(context: Context?) {
+        Log.d("LifeCyCle","New on Attach")
+        super.onAttach(context)
+    }
+
+    @SuppressLint("CheckResult")
+    override fun onDetach() {
+        Log.d("LifeCyCle","New on DeAttach")
+        viewModel.observeUIState().unsubscribeOn(Schedulers.io())
+        super.onDetach()
+    }
+
+    override fun onDestroy() {
+        Log.d("LifeCyCle","New on Destroy")
+        super.onDestroy()
+    }
+
+    override fun onDestroyView() {
+        Log.d("LifeCyCle","New on Destroy View")
+        super.onDestroyView()
+    }
+
+    override fun onPause() {
+        Log.d("LifeCyCle","New on Pause")
+        super.onPause()
+    }
+
+    override fun onResume() {
+        Log.d("LifeCyCle","New on Resume")
+        super.onResume()
+    }
+
+    override fun onStop() {
+        Log.d("LifeCyCle","New on Stop")
+        super.onStop()
+    }
+
+    override fun onStart() {
+        Log.d("LifeCyCle","New on Start")
+        super.onStart()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("LifeCyCle","New on Crrate")
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        Log.d("LifeCyCle","New onActivityCreated")
+        super.onActivityCreated(savedInstanceState)
+    }
+
+
 }

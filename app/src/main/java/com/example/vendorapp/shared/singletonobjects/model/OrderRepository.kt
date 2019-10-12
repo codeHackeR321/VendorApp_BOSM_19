@@ -74,6 +74,7 @@ class OrderRepository(private val application: Context) {
 
     fun initFirestore(previousOrderIds: List<Int>) {
         //receive order id from firestore
+        Log.d("OasisTest","vendor id:${vendor_id}")
         var order_id: String? = null
         db.collection("orders").whereEqualTo("vendorid", vendor_id!!.toInt()).addSnapshotListener { snapshots, e ->
 
@@ -86,6 +87,7 @@ class OrderRepository(private val application: Context) {
             }
 
             for (dc in snapshots!!.documents) {
+                Log.d("OasisTest2","documents id :${dc.id}")
                 Log.d("OrderRepo_Firestore3", "Document = ${dc.data.toString()}")
             }
 

@@ -2,6 +2,7 @@ package com.example.vendorapp.acceptedorderscreen.view
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,6 +24,7 @@ import com.example.vendorapp.shared.Listeners.ListenerRecyViewButtonClick
 import com.example.vendorapp.shared.UIState
 import com.example.vendorapp.shared.utils.NetworkConnectivityCheck
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_fra_accepted_order.*
 import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 
@@ -36,6 +38,7 @@ class AcceptedOrderFragment : Fragment(), ListenerRecyViewButtonClick {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        Log.d("LifeCyCle","Accepted on Ctrateview")
         return inflater.inflate(R.layout.fragment_fra_accepted_order, container, false)
     }
 
@@ -98,7 +101,7 @@ showLoadingStateFragment()
     @SuppressLint("CheckResult")
     private fun observeUIState() {
 
-        viewModel.observeUIState().observeOn(AndroidSchedulers.mainThread()).subscribe({
+        viewModel.observeUIState().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe({
             Log.d("Firestore78", "in Neworderfrag ui state$it")
             when (it!!) {
                 UIState.ShowLoadingState -> {
@@ -150,5 +153,47 @@ showLoadingStateFragment()
         }
         alertDialog?.setCanceledOnTouchOutside(false)
         alertDialog?.show()
+    }
+
+    override fun onAttach(context: Context?) {
+        Log.d("LifeCyCle","Accepted on Attach")
+        super.onAttach(context)
+    }
+
+    @SuppressLint("CheckResult")
+    override fun onDetach() {
+        Log.d("LifeCyCle","Accepted on DeAttach")
+        viewModel.observeUIState().unsubscribeOn(Schedulers.io())
+        super.onDetach()
+    }
+
+    override fun onDestroy() {
+        Log.d("LifeCyCle","Accepted on Destroy")
+        super.onDestroy()
+    }
+
+    override fun onDestroyView() {
+        Log.d("LifeCyCle","Accepted on Destroy View")
+        super.onDestroyView()
+    }
+
+    override fun onPause() {
+        Log.d("LifeCyCle","Accepted on Pause")
+        super.onPause()
+    }
+
+    override fun onResume() {
+        Log.d("LifeCyCle","Accepted on Resume")
+        super.onResume()
+    }
+
+    override fun onStop() {
+        Log.d("LifeCyCle","Accepted on Stop")
+        super.onStop()
+    }
+
+    override fun onStart() {
+        Log.d("LifeCyCle","Accepted on Start")
+        super.onStart()
     }
 }
