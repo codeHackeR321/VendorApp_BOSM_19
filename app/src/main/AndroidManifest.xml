@@ -15,7 +15,7 @@
             android:theme="@style/AppTheme" tools:ignore="GoogleAppIndexingWarning" tools:targetApi="n">
         <activity android:name=".completedorderscreen.view.CompletedOrdersActivity">
         </activity>
-        <activity android:name=".MainScreenActivity"
+        <activity android:name=".homeactivity.MainScreenActivity"
             android:launchMode="singleTop">
         </activity>
         <activity android:name=".menu.view.MenuActivity">

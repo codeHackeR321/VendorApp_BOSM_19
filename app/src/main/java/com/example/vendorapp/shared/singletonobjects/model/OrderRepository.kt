@@ -20,6 +20,7 @@ import com.example.vendorapp.shared.expandableRecyclerView.ChildDataClass
 import com.example.vendorapp.shared.singletonobjects.RetrofitApi
 import com.example.vendorapp.shared.singletonobjects.RetrofitInstance
 import com.example.vendorapp.shared.singletonobjects.VendorDatabase
+import com.example.vendorapp.shared.singletonobjects.repositories.OrderRepositoryInstance
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.JsonObject
@@ -27,6 +28,8 @@ import io.reactivex.*
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import com.google.gson.JsonArray
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Action
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
@@ -40,6 +43,7 @@ class OrderRepository(private val application: Context) {
     private var jwt_token: String? = null
     private var vendor_id: String? = null
     private val orderService = RetrofitInstance.getRetroInstance()
+    private var database: VendorDatabase?=null
 
     var ui_status_subject = BehaviorSubject.create<UIState>()
     var incomp_order_status_list = mutableListOf<IncompleteOrderStatus>()
@@ -48,11 +52,11 @@ class OrderRepository(private val application: Context) {
     private val sharedPref = application.getSharedPreferences(application.getString(com.example.vendorapp.R.string.preference_file_login), Context.MODE_PRIVATE)
 
     init {
-        val database = VendorDatabase.getDatabaseInstance(application)
-        orderDao = database.orderDao()
+         database = VendorDatabase.getDatabaseInstance(application)
+        orderDao = database!!.orderDao()
         orderApiCall = RetrofitInstance.getRetroInstance().orders
         // for daywise earnings
-        earningDao = database.earningDao()
+        earningDao = database!!.earningDao()
         earningsApiCall = RetrofitInstance.getRetroInstance()
         jwt_token = sharedPref.getString(application.getString(com.example.vendorapp.R.string.saved_jwt),application.getString(com.example.vendorapp.R.string.default_jwt_value))
         vendor_id = sharedPref.getString(application.getString(com.example.vendorapp.R.string.saved_vendor_id), application.getString(com.example.vendorapp.R.string.default_vendor_id))
@@ -470,9 +474,14 @@ class OrderRepository(private val application: Context) {
         }
     }
 
+    fun logout(): Completable{
+       return Completable.fromAction {
+           database!!.clearAllTables() }
+
+    }
     //update room with earnings data
     fun updateEarningsData(): Completable {
-        val dateArray = arrayOf("13_09_2019", "14_09_2019", "15_09_2019", "16_09_2019", "17_09_2019")
+        val dateArray = arrayOf("14_10_2019", "15_10_2019", "16_10_2019", "17_10_2019", "18_10_2019")
         val body: JsonObject = getEarningBody(dateArray)
         return earningsApiCall.getEarningData("JWT $jwt_token", body = body).subscribeOn(Schedulers.io())
                 .doOnSuccess {

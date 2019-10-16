@@ -15,6 +15,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.crashlytics.android.Crashlytics
 import com.example.vendorapp.R
 import com.example.vendorapp.acceptedorderscreen.view.adapters.AdapterForFragment
 import com.example.vendorapp.acceptedorderscreen.viewModel.AcceptedOrderViewModel
@@ -101,7 +102,7 @@ showLoadingStateFragment()
     @SuppressLint("CheckResult")
     private fun observeUIState() {
 
-        viewModel.observeUIState().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe({
+        viewModel.loginui.observe(this, Observer {
             Log.d("Firestore78", "in Neworderfrag ui state$it")
             when (it!!) {
                 UIState.ShowLoadingState -> {
@@ -128,10 +129,12 @@ showLoadingStateFragment()
                 }
             }
 
+        })/*observeUIState().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
+
         }, {
             Log.d("Firestore89", "observe observe ui state  Acceptederror$it")
             Toast.makeText(activity,"Error observing UI State Accepted Order frag$it",Toast.LENGTH_LONG).show()
-        })
+        })*/
     }
 
     private fun showAlertDialogBox(message:String,title:String,isRoom:Boolean){
@@ -162,8 +165,8 @@ showLoadingStateFragment()
 
     @SuppressLint("CheckResult")
     override fun onDetach() {
-        Log.d("LifeCyCle","Accepted on DeAttach")
-        viewModel.observeUIState().unsubscribeOn(Schedulers.io())
+       /* Log.d("LifeCyCle","Accepted on DeAttach")
+        viewModel.observeUIState().unsubscribeOn(Schedulers.io())*/
         super.onDetach()
     }
 

@@ -1,22 +1,13 @@
 package com.example.vendorapp.notification
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
-import android.os.Build
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.vendorapp.MainScreenActivity
 import com.example.vendorapp.R
 import com.example.vendorapp.loginscreen.view.MainActivity
-import com.example.vendorapp.menu.view.MenuAdapter
-import com.example.vendorapp.shared.dataclasses.roomClasses.MenuItemData
-import com.example.vendorapp.shared.singletonobjects.VendorDatabase
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import org.json.JSONObject

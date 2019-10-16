@@ -3,8 +3,6 @@ package com.example.vendorapp.loginscreen.view
 import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context.NOTIFICATION_SERVICE
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -13,12 +11,10 @@ import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.example.vendorapp.MainScreenActivity
+import com.example.vendorapp.homeactivity.MainScreenActivity
 
 import com.example.vendorapp.R
 import com.example.vendorapp.loginscreen.viewModel.LoginViewModel

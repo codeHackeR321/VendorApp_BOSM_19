@@ -67,13 +67,11 @@ class CompletedOrderViewModel(context:Context) :ViewModel() {
 
    fun updateData(){
 
-       orderRepository.getdaywiseEarningRoom().observeOn(AndroidSchedulers.mainThread()).doOnNext{
+       orderRepository.getdaywiseEarningRoom().observeOn(AndroidSchedulers.mainThread()).subscribe({
            Log.d("check1","called")
            var totalEarning: Int = it.sumBy { it.earnings }
            (earnings as MutableLiveData<String>).postValue(totalEarning.toString())
-       }.doOnError {
-           Log.e("Error in COVM" , "Error in updating data = ${it.toString()}")
-       }.subscribe({},{
+       },{
            Log.e("Error in COVM" , "Error in updating data = ${it.toString()}")
        })
    }

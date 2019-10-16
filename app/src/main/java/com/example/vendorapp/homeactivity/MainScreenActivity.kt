@@ -1,4 +1,4 @@
-package com.example.vendorapp
+package com.example.vendorapp.homeactivity
 
 import android.content.Context
 import android.content.Intent
@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.example.vendorapp.acceptedorderscreen.view.AcceptedOrderFragment
 import com.example.vendorapp.completedorderscreen.view.CompletedOrdersActivity
@@ -23,19 +24,27 @@ import com.example.vendorapp.menu.view.MenuActivity
 import com.example.vendorapp.neworderscreen.view.NewOrderFragment
 import com.example.vendorapp.shared.Listeners.NetConnectionChanged
 import com.example.vendorapp.shared.singletonobjects.VendorDatabase
-import com.example.vendorapp.shared.singletonobjects.model.room.OrderDao
 import com.example.vendorapp.shared.utils.NetworkReceiver
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main_screen.*
+import com.example.vendorapp.R
+import com.example.vendorapp.completedorderscreen.viewModel.CompletedOrderViewModel
+import com.example.vendorapp.completedorderscreen.viewModel.CompletedOrderViewModelFactory
+import com.example.vendorapp.homeactivity.viewmodel.MainScreenViewModel
+import com.example.vendorapp.homeactivity.viewmodel.MainScreenViewModelFactory
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.Action
+
 
 class MainScreenActivity : AppCompatActivity(),NetConnectionChanged {
 
     private lateinit var viewPager : ViewPager
     private lateinit var viewPagerAdapter : FragmentPagerAdapter
    private lateinit  var sharedPref:SharedPreferences
+    private lateinit var mainScreenViewModel: MainScreenViewModel
     override fun buttonClicked(status: String) {
         if(status=="wifi"||status=="data")
         {
@@ -64,8 +73,13 @@ class MainScreenActivity : AppCompatActivity(),NetConnectionChanged {
         viewPager = viewPager_activity_mainScreen
         viewPager.adapter = MyPagerAdapter()
         tabLayout_activity_mainScreen.setBackgroundColor(resources.getColor(R.color.tablayout_back))
-        tabLayout_activity_mainScreen.setTabTextColors(resources.getColor(R.color.tab_layout_unselected), resources.getColor(R.color.tab_layout_selected));
+        tabLayout_activity_mainScreen.setTabTextColors(resources.getColor(R.color.tab_layout_unselected), resources.getColor(
+            R.color.tab_layout_selected
+        ));
         tabLayout_activity_mainScreen.setSelectedTabIndicatorColor(Color.parseColor("#FFFFFF"))
+
+        mainScreenViewModel= ViewModelProviders.of(this, MainScreenViewModelFactory(this)).get(
+            MainScreenViewModel::class.java)
 
         val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
         receiver = NetworkReceiver(this)
@@ -73,7 +87,7 @@ class MainScreenActivity : AppCompatActivity(),NetConnectionChanged {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.overflow_menu , menu)
+        menuInflater.inflate(R.menu.overflow_menu, menu)
         return true
     }
 
@@ -90,14 +104,17 @@ class MainScreenActivity : AppCompatActivity(),NetConnectionChanged {
             {
                 //add alert dialog box
                sharedPref.edit().clear().apply()
-               delete().subscribeOn(Schedulers.io()).subscribe({
+                val database = VendorDatabase.getDatabaseInstance(application)
+                mainScreenViewModel.logout()
+                database.clearAllTables().subscribeOn(Schedulers.io()).subscribe({
                    Log.d("MAinScreenActivity1","Data delted from room on  logout")
+                   startActivity(Intent(this@MainScreenActivity, MainActivity::class.java))
+                   finish()
                },{
 
                    Log.d("MAinScreenActivity1","Data not delted from room on  logout")
                })
-                startActivity(Intent(this@MainScreenActivity, MainActivity::class.java))
-                finish()
+
             }
         }
         return super.onOptionsItemSelected(item)
@@ -146,11 +163,29 @@ class MainScreenActivity : AppCompatActivity(),NetConnectionChanged {
 
     private fun delete():Completable{
         val database = VendorDatabase.getDatabaseInstance(application)
-        val  orderDao = database.orderDao()
+    Completable.fromAction(
+        Action { database.clearAllTables() }).subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe({},{})
+        return  database.clearAllTables()
+        /*val  orderDao = database.orderDao()
         orderDao.deleteAllOrderDetails()
         val menuDao =database.menuDao()
         menuDao.deleteAllMenu()
-        return  orderDao.deleteAllOrderItems()
+      *//*  orderDao.deleteAllOrderDetails().subscribe({
+            Log.d("Delete", " Deleted all oerder details")
+        },{
+            Log.d("Delete", " n o  Deleted all oerder details")
 
+        })
+        val menuDao =database.menuDao()
+        menuDao.deleteAllMenu().subscribe({
+            Log.d("Delete", " Deleted all menu details")
+        },{
+            Log.d("Delete", " n o  Deleted all menu details")
+
+        })*//*
+        return  orderDao.deleteAllOrderItems()
+*/
     }
 }

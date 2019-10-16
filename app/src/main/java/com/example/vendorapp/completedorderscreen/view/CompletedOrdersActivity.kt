@@ -104,7 +104,8 @@ class CompletedOrdersActivity : AppCompatActivity(), DatesAdapter.DateSelectedLi
                 (orders_recycler.adapter as OrdersAdapterFragment).orders = emptyList()
             }
             else
-            (orders_recycler.adapter as OrdersAdapterFragment).orders = datewisedataMap[selectedDate] ?: error("No data Found $selectedDate")
+            (orders_recycler.adapter as OrdersAdapterFragment).orders =
+                datewisedataMap[selectedDate] ?: error("No Data Found For$selectedDate")
 
             //Check daywise data
             Log.d("CompletedDataCheck", "data Check${datewisedataMap[selectedDate]}.dayWiseorders.toString()}")

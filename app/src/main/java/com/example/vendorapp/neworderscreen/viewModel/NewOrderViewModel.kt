@@ -28,13 +28,10 @@ class NewOrderViewModel(val context : Context) : ViewModel(){
     @SuppressLint("CheckResult")
     fun getNewOrders() {
 
-      orderRepo.getAllNewOrdersRoom().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).doOnNext {
+      orderRepo.getAllNewOrdersRoom().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe({
           Log.d("Firestore51", " Orders from room fetch ${it}")
           (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(it)
-      }.doOnError {
-          Log.e("Firestore50", "Error in Orders from room fetch ${it.message}")
-          (errors as MutableLiveData<String>).postValue(it.toString())
-      }.subscribe({},{
+      },{
           Log.e("Firestore50", "Error in Orders from room fetch ${it.message}")
           (errors as MutableLiveData<String>).postValue(it.toString())
       })

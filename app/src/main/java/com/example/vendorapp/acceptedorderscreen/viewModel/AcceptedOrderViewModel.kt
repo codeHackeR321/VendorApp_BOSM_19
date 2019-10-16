@@ -10,6 +10,7 @@ import com.example.vendorapp.neworderscreen.view.ModifiedOrdersDataClass
 import com.example.vendorapp.shared.UIState
 import com.example.vendorapp.shared.singletonobjects.repositories.OrderRepositoryInstance
 import io.reactivex.Flowable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 class AcceptedOrderViewModel(context : Context) : ViewModel(){
@@ -18,16 +19,15 @@ class AcceptedOrderViewModel(context : Context) : ViewModel(){
     var  acceptedOrders : LiveData<List<ModifiedOrdersDataClass>> = MutableLiveData()
     var orderRepo = OrderRepositoryInstance.getInstance(context)
     var error : LiveData<String> = MutableLiveData()
-
+    var loginui : LiveData<UIState> = MutableLiveData()
+  var disposable : Disposable? = null
     @SuppressLint("CheckResult")
     fun getAcceptedOrders(){
-        orderRepo.getAcceptedOrdersRoom().doOnNext {
+        disposable?.dispose()
+        disposable= orderRepo.getAcceptedOrdersRoom().subscribe({
             Log.d("Testing AO VM" , "Entered observer with list = ${it.toString()}")
             (acceptedOrders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(it)
-        }.doOnError {
-            Log.e("Testing AO VM" , "Error in reading new orders from database")
-            (error as MutableLiveData<String>).postValue("Error in database. Please try after some time")
-        }.subscribe({},{
+        },{
             Log.e("Testing AO VM" , "Error in reading new orders from database")
             (error as MutableLiveData<String>).postValue("Error in database. Please try after some time")
         })
@@ -41,9 +41,17 @@ class AcceptedOrderViewModel(context : Context) : ViewModel(){
     }
 
     @SuppressLint("CheckResult")
-    fun observeUIState(): Flowable<UIState> {
-        return  orderRepo.getUIStateFlowable().doOnError { Log.e("TAG", "UI State observer error hu") }
+    fun observeUIState() {
+         orderRepo.getUIStateFlowable().doOnError { Log.e("TAG", "UI State observer error hu") }.subscribeOn(Schedulers.io()).subscribe({
+             (loginui as MutableLiveData).postValue(it)
+        },{
+
+        })
     }
 
+    override fun onCleared() {
+        Log.d("ViewModelAccepted","Acce destroiyed")
+        super.onCleared()
+    }
 }
 
