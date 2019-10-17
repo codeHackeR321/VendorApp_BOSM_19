@@ -19,7 +19,7 @@ class RetrofitInstance {
                 //Base url of test api from sheety
                 //RxJava adapter for api calls
                 retrofitService = Retrofit.Builder()
-                    .baseUrl("https://wallet.bits-oasis.org/")
+                    .baseUrl("https://www.bits-oasis.org/")
                     .client(OkHttpClient().newBuilder()
                         .addInterceptor(BaseInterceptor())
                         .connectTimeout(60,TimeUnit.SECONDS)

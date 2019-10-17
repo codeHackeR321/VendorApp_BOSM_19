@@ -39,7 +39,6 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
 
     @SuppressLint("CheckResult")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        observeUIState()
         initializeView()
         Log.d("LifeCyCle","New ViewCreated")
         super.onViewCreated(view, savedInstanceState)
@@ -64,6 +63,8 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
             removeLoadingStateFragment()
         })
         Log.d("NewOrderFrag2", "Refresh Data Called")
+
+        observeUIState()
 
         viewModel.doInitialFetch()
         viewModel.getNewOrders()
@@ -96,7 +97,7 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
     @SuppressLint("CheckResult")
     private fun observeUIState() {
 
-        viewModel.observeUIState().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe({
+        viewModel.orderUIStateNewOrder.observe(this, Observer {
             Log.d("Firestore78", "in Neworderfrag ui state$it")
             when (it!!) {
                 UIState.ShowLoadingState -> {
@@ -142,14 +143,6 @@ class NewOrderFragment : Fragment(), ListenerRecyViewButtonClick {
                 }
             }
 
-        }, {
-            Log.d("Firestore77", "observe observe ui state New oter error$it")
-
-            try {
-                Toast.makeText(activity,"Internal App Error. Please Restart the app",Toast.LENGTH_LONG).show()
-            } catch (e: Exception) {
-
-            }
         })
     }
 
@@ -198,7 +191,6 @@ private fun showLoadingStateFragment(){
     @SuppressLint("CheckResult")
     override fun onDetach() {
         Log.d("LifeCyCle","New on DeAttach")
-        viewModel.observeUIState().unsubscribeOn(Schedulers.io())
         super.onDetach()
     }
 

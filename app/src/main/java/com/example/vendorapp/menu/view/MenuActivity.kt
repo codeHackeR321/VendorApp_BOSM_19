@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.fragment_fra_new_order.*
 class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
     private lateinit var nMenuViewModel:MenuViewModel
     var newStatusItemList= mutableListOf<MenuItemData>()
+    var isSaveChangesSelected=false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,10 +36,10 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
         menu_recycler.adapter=MenuAdapter(this)
         showLoadingStateActivity()
         observeUIState()
+        nMenuViewModel.setSaveChangesSelectedListener()
 
         nMenuViewModel.menuList.observe(this, Observer {menu->
             (menu_recycler.adapter as MenuAdapter).itemList=menu
-
             (menu_recycler.adapter as MenuAdapter).notifyDataSetChanged()
            removeLoadingStateActivity()
         })
@@ -48,26 +49,46 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
            removeLoadingStateActivity()
         })
 
+        nMenuViewModel.saveChangesSelectedListener.observe(this, Observer {
+            if (it>0)
+            {
+                isSaveChangesSelected=true
+                saveChanges.setTextColor(resources.getColor(R.color.tab_layout_selected))
+
+            }
+            else
+            {
+                isSaveChangesSelected=false
+                saveChanges.setTextColor(resources.getColor(R.color.tab_layout_unselected))
+            }
+
+        })
         saveChanges.setOnClickListener{
 
                 showLoadingStateActivity()
 
-                if(newStatusItemList.isEmpty())
+                if(!isSaveChangesSelected)
                 {
                     Toast.makeText(this,"No changes made to be saved",Toast.LENGTH_SHORT).show()
                     removeLoadingStateActivity()
                 }
 
                 else
-                    nMenuViewModel.updateStatus(newStatusItemList)
+                    nMenuViewModel.updateStatus()
             }
 
         nMenuViewModel.getMenuFromRoom()
     }
 
-    override fun onStatusChanged(item: MenuItemData, newStatus: Int) {
+    override fun onStatusChanged(itemData: MenuItemData, newTempStatus: Int) {
         Log.d("Listener", "Entered Listener")
-        item.status=newStatus
+        if (itemData.temp_status==-1){
+            nMenuViewModel.updateTempStatus(itemId = itemData.itemId,newTempStatus =newTempStatus)
+        }
+        else
+            nMenuViewModel.updateTempStatus(itemId = itemData.itemId,newTempStatus = -1)
+
+       /* item.status=newStatus
         val position=newStatusItemList.indexOfFirst { it.itemId==item.itemId }
         if (position!=-1)
         {
@@ -77,11 +98,11 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
         {
             newStatusItemList.add(item)
         }
-
-        if (newStatusItemList.isEmpty())
+*/
+        /*if (newStatusItemList.isEmpty())
              saveChanges.setTextColor(resources.getColor(R.color.tab_layout_unselected))
         else
-            saveChanges.setTextColor(resources.getColor(R.color.tab_layout_selected))
+            saveChanges.setTextColor(resources.getColor(R.color.tab_layout_selected))*/
 
     }
 
@@ -97,7 +118,7 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
     @SuppressLint("CheckResult")
     private fun observeUIState() {
 
-        nMenuViewModel.observeUIState().observeOn(AndroidSchedulers.mainThread()).subscribe({
+        nMenuViewModel.menuUIState.observe(this, Observer {
             Log.d("Firestore78", "in Neworderfrag ui state$it")
             when (it!!) {
                 UIState.ShowLoadingState -> {
@@ -129,9 +150,6 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
                 }
             }
 
-        }, {
-            Log.d("MenuActivity9", "observe observe ui state  MenUAcrtivity$it")
-            Toast.makeText(this,"Error observing UI State menuActivity$it",Toast.LENGTH_LONG).show()
         })
     }
 

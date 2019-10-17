@@ -7,7 +7,7 @@ import com.example.vendorapp.acceptedorderscreen.viewModel.AcceptedOrderViewMode
 
 class MainScreenViewModelFactory (val context : Context) : ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return AcceptedOrderViewModel(context) as T
+        return MainScreenViewModel(context) as T
     }
 
 }

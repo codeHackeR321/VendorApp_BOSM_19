@@ -19,8 +19,14 @@ class AcceptedOrderViewModel(context : Context) : ViewModel(){
     var  acceptedOrders : LiveData<List<ModifiedOrdersDataClass>> = MutableLiveData()
     var orderRepo = OrderRepositoryInstance.getInstance(context)
     var error : LiveData<String> = MutableLiveData()
-    var loginui : LiveData<UIState> = MutableLiveData()
+    var orderUIState : LiveData<UIState> = MutableLiveData()
   var disposable : Disposable? = null
+
+
+    init {
+        observeUIState()
+    }
+
     @SuppressLint("CheckResult")
     fun getAcceptedOrders(){
         disposable?.dispose()
@@ -42,11 +48,11 @@ class AcceptedOrderViewModel(context : Context) : ViewModel(){
 
     @SuppressLint("CheckResult")
     fun observeUIState() {
-         orderRepo.getUIStateFlowable().doOnError { Log.e("TAG", "UI State observer error hu") }.subscribeOn(Schedulers.io()).subscribe({
-             (loginui as MutableLiveData).postValue(it)
+         orderRepo.getUIStateFlowable().subscribeOn(Schedulers.io()).subscribe({
+             ( orderUIState as MutableLiveData).postValue(it)
         },{
-
-        })
+             Log.e("AcceptedVM", "error flowablew accepetd ui syate")
+         })
     }
 
     override fun onCleared() {

@@ -102,7 +102,7 @@ showLoadingStateFragment()
     @SuppressLint("CheckResult")
     private fun observeUIState() {
 
-        viewModel.loginui.observe(this, Observer {
+        viewModel.orderUIState.observe(this, Observer {
             Log.d("Firestore78", "in Neworderfrag ui state$it")
             when (it!!) {
                 UIState.ShowLoadingState -> {

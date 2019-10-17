@@ -13,6 +13,7 @@ import com.example.vendorapp.shared.singletonobjects.repositories.MenuRepository
 import com.example.vendorapp.shared.utils.NetworkConnectivityCheck
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 class NewOrderViewModel(val context : Context) : ViewModel(){
@@ -21,14 +22,17 @@ class NewOrderViewModel(val context : Context) : ViewModel(){
     var orderRepo = OrderRepositoryInstance.getInstance(context)
     val menuRepo = MenuRepositoryInstance.getInstance(context)
     var errors : LiveData<String> = MutableLiveData()
-
+    var orderUIStateNewOrder : LiveData<UIState> = MutableLiveData()
     var ui_status:LiveData<UIState> = MutableLiveData()
-
+    var disposable : Disposable? = null
+init {
+    observeUIState()
+}
 
     @SuppressLint("CheckResult")
     fun getNewOrders() {
-
-      orderRepo.getAllNewOrdersRoom().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe({
+        disposable?.dispose()
+     disposable= orderRepo.getAllNewOrdersRoom().observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe({
           Log.d("Firestore51", " Orders from room fetch ${it}")
           (orders as MutableLiveData<List<ModifiedOrdersDataClass>>).postValue(it)
       },{
@@ -52,7 +56,7 @@ class NewOrderViewModel(val context : Context) : ViewModel(){
     }
 
     fun fetchOrderAgain(orderId: Int){
-orderRepo.onNewOrderAdded(listOf(orderId))
+      orderRepo.onNewOrderAdded(listOf(orderId))
     }
 
     @SuppressLint("CheckResult")
@@ -75,10 +79,19 @@ orderRepo.onNewOrderAdded(listOf(orderId))
     }
 
     @SuppressLint("CheckResult")
-    fun observeUIState(): Flowable<UIState>{
+    fun observeUIState(){
 
-      return  orderRepo.getUIStateFlowable().doOnError { Log.e("TAG", "ahfsdhahfha hu") }
+        orderRepo.getUIStateFlowable().subscribeOn(Schedulers.io()).subscribe({
+            ( orderUIStateNewOrder as MutableLiveData).postValue(it)
+        },{
+            Log.e("NewVM", "error flowablew accepetd ui syate")
+        })
 
+    }
+
+    override fun onCleared() {
+        Log.d("ViewModelnewe","Acce destroiyed")
+        super.onCleared()
     }
 
 

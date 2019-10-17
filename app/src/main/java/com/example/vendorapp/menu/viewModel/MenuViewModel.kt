@@ -15,6 +15,7 @@ import com.example.vendorapp.shared.singletonobjects.repositories.MenuRepository
 import com.example.vendorapp.shared.utils.NetworkConnectivityCheck
 import com.google.firebase.database.core.Repo
 import io.reactivex.Flowable
+import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -24,8 +25,12 @@ class MenuViewModel(context: Context) :ViewModel() {
     var menuList:LiveData<List<MenuItemData>> = MutableLiveData()
     var error : LiveData<String> = MutableLiveData()
     var menuRepository:MenuRepository=MenuRepositoryInstance.getInstance(context)
+    var saveChangesSelectedListener: LiveData<Int> = MutableLiveData()
+    var menuUIState: LiveData<UIState> = MutableLiveData()
 
     init {
+
+        observeUIState()
         @SuppressLint("CheckResult")
         if (NetworkConnectivityCheck().checkIntenetConnection(context)) {
             menuRepository.updateMenu().subscribeOn(Schedulers.io()).subscribe({
@@ -48,9 +53,9 @@ class MenuViewModel(context: Context) :ViewModel() {
     }
 
     @SuppressLint("CheckResult")
-    fun updateStatus(newStatusList: MutableList<MenuItemData>) {
+    fun updateStatus() {
         Log.d("MenuVM", "Entered update status")
-        menuRepository.updateItemStatus(newStatusList)
+        menuRepository.updateItemStatus()
     }
 
     @SuppressLint("CheckResult")
@@ -58,13 +63,46 @@ class MenuViewModel(context: Context) :ViewModel() {
         menuRepository.getMenuRoom().subscribeOn(Schedulers.io())
             .subscribe({menu->
                 (menuList as MutableLiveData<List<MenuItemData>>).postValue(menu)
+
+                Log.d("MenuViewModel1","menuList Room ${menuList}")
             },{
                 Log.d("Error",it.stackTrace.toString())
             })
 
     }
     @SuppressLint("CheckResult")
-    fun observeUIState(): Flowable<UIState> {
-        return  menuRepository.getUIStateFlowable().doOnError { Log.e("MenuViewModel", "UI State observer error hu") }
+    fun observeUIState() {
+          menuRepository.getUIStateFlowable().subscribeOn(Schedulers.io()).subscribe({
+
+              (menuUIState as MutableLiveData).postValue(it)
+          },{
+              (error as MutableLiveData<String>).postValue("Error in returning flwable menu activity")
+          })
     }
-}
+
+    @SuppressLint("CheckResult")
+    fun setSaveChangesSelectedListener(){
+
+        menuRepository.getSaveChangesSelectedState().subscribeOn(Schedulers.io()).subscribe({
+
+            (saveChangesSelectedListener as MutableLiveData).postValue(it)
+        },{
+
+            Log.d("Errror in room", "Not return save changes stauys$it")
+        })
+    }
+
+
+    @SuppressLint("CheckResult")
+    fun updateTempStatus(itemId : Int, newTempStatus: Int){
+
+        menuRepository.setTempStatusRoom(itemId=itemId,newTempStatus = newTempStatus).subscribeOn(Schedulers.io()).subscribe({
+
+            Log.d("Errror in room", " update temp stauys$")
+        },{
+            Log.d("Errror in room", "Not update temp stauys$it")
+        })
+    }
+ }
+
+

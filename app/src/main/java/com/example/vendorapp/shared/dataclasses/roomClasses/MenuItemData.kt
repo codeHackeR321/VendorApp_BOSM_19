@@ -18,5 +18,8 @@ data class MenuItemData (
     var price: Int,
 
     @ColumnInfo(name = "item_status")
-    var status: Int
+    var status: Int,
+
+    @ColumnInfo(name = "item_status_temp")
+    var temp_status: Int
 )

@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.example.vendorapp.acceptedorderscreen.view.AcceptedOrderFragment
@@ -35,6 +36,7 @@ import com.example.vendorapp.completedorderscreen.viewModel.CompletedOrderViewMo
 import com.example.vendorapp.completedorderscreen.viewModel.CompletedOrderViewModelFactory
 import com.example.vendorapp.homeactivity.viewmodel.MainScreenViewModel
 import com.example.vendorapp.homeactivity.viewmodel.MainScreenViewModelFactory
+import com.example.vendorapp.shared.UIState
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Action
 
@@ -81,6 +83,24 @@ class MainScreenActivity : AppCompatActivity(),NetConnectionChanged {
         mainScreenViewModel= ViewModelProviders.of(this, MainScreenViewModelFactory(this)).get(
             MainScreenViewModel::class.java)
 
+        mainScreenViewModel.logoutState.observe(this, Observer {
+
+            when(it)
+            {
+                UIState.LogoutSuccess-> {
+
+                    Log.d("MAinScreenActivity1","Data delted from room on  logout")
+                    startActivity(Intent(this@MainScreenActivity, MainActivity::class.java))
+                    finish()
+                }
+
+              is   UIState.LogoutFail->
+                {
+                    Toast.makeText(this,"Error loggon out  ${(it as UIState.ErrorStateChangeStatus).message}}", Toast.LENGTH_LONG).show()
+
+                }
+            }
+        })
         val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
         receiver = NetworkReceiver(this)
         this.registerReceiver(receiver, filter)
@@ -103,17 +123,10 @@ class MainScreenActivity : AppCompatActivity(),NetConnectionChanged {
             R.id.overflowMenu_logout ->
             {
                 //add alert dialog box
-               sharedPref.edit().clear().apply()
-                val database = VendorDatabase.getDatabaseInstance(application)
-                mainScreenViewModel.logout()
-                database.clearAllTables().subscribeOn(Schedulers.io()).subscribe({
-                   Log.d("MAinScreenActivity1","Data delted from room on  logout")
-                   startActivity(Intent(this@MainScreenActivity, MainActivity::class.java))
-                   finish()
-               },{
 
-                   Log.d("MAinScreenActivity1","Data not delted from room on  logout")
-               })
+
+                mainScreenViewModel.logout()
+
 
             }
         }
@@ -161,31 +174,4 @@ class MainScreenActivity : AppCompatActivity(),NetConnectionChanged {
     }
 
 
-    private fun delete():Completable{
-        val database = VendorDatabase.getDatabaseInstance(application)
-    Completable.fromAction(
-        Action { database.clearAllTables() }).subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe({},{})
-        return  database.clearAllTables()
-        /*val  orderDao = database.orderDao()
-        orderDao.deleteAllOrderDetails()
-        val menuDao =database.menuDao()
-        menuDao.deleteAllMenu()
-      *//*  orderDao.deleteAllOrderDetails().subscribe({
-            Log.d("Delete", " Deleted all oerder details")
-        },{
-            Log.d("Delete", " n o  Deleted all oerder details")
-
-        })
-        val menuDao =database.menuDao()
-        menuDao.deleteAllMenu().subscribe({
-            Log.d("Delete", " Deleted all menu details")
-        },{
-            Log.d("Delete", " n o  Deleted all menu details")
-
-        })*//*
-        return  orderDao.deleteAllOrderItems()
-*/
-    }
 }

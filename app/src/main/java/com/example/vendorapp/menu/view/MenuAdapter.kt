@@ -19,7 +19,7 @@ import java.lang.Exception
 class MenuAdapter(private val listener: UpdateMenuListener) : RecyclerView.Adapter<MenuAdapter.MenuViewHolder>() {
 
     interface UpdateMenuListener {
-        fun onStatusChanged(itemData: MenuItemData, newStatus: Int)
+        fun onStatusChanged(itemData: MenuItemData, newTempStatus: Int)
     }
 
     var itemList: List<MenuItemData> = emptyList()
@@ -46,20 +46,39 @@ class MenuAdapter(private val listener: UpdateMenuListener) : RecyclerView.Adapt
             holder.itemView.resources.getString(R.string.new_order_total_amount),
             itemList.get(position).price
         )
-       if(itemList.get(position).status==0)
-           holder.switch.isChecked =false
-        else if(itemList.get(position).status==1)
-           holder.switch.isChecked=true
+
+        if (itemList[position].temp_status==-1)
+        {
+            if (itemList[position].status==1)
+            {
+                holder.switch.isChecked=true
+            }
+            else if(itemList[position].status==0)
+            {
+                holder.switch.isChecked=false
+            }
+
+        }
+
+        else
+            if (itemList[position].temp_status==1)
+            {
+                holder.switch.isChecked=true
+            }
+            else if(itemList[position].temp_status==0)
+            {
+                holder.switch.isChecked=false
+            }
 
         holder.switch.setOnCheckedChangeListener { buttonView, isChecked ->
             when(isChecked) {
                 true -> {
                     Log.d("Menu Activity1", "Entered True")
-                    listener.onStatusChanged(itemList[position], 1)
+                    listener.onStatusChanged(itemList[position], 0)
                 }
                 false -> {
                     Log.d("Menu Activity1", "Entered False")
-                    listener.onStatusChanged(itemList[position], 0)
+                    listener.onStatusChanged(itemList[position], 1)
                 }
             }
         }

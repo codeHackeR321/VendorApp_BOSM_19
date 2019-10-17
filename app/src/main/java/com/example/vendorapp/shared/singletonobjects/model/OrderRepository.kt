@@ -475,9 +475,16 @@ class OrderRepository(private val application: Context) {
     }
 
     fun logout(): Completable{
-       return Completable.fromAction {
-           database!!.clearAllTables() }
 
+
+     return   Completable.fromAction {
+           Log.d("logout","1 action  fucytion called")
+
+         sharedPref.edit().clear().apply()
+         database!!.clearAllTables()
+           Log.d("logout","1 acton compleredfucytion called")
+
+       }
     }
     //update room with earnings data
     fun updateEarningsData(): Completable {

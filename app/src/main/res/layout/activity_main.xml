@@ -13,15 +13,17 @@
 
 
     <TextView
-            android:text="@string/bosm_heading"
-            android:layout_width="match_parent"
-            android:textAlignment="center"
+        android:id="@+id/textViewBosmHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
 
-            android:layout_height="wrap_content"
-            android:id="@+id/textViewBosmHeading" android:layout_marginTop="64dp"
-            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:text="BOSM'19" android:textSize="24sp"/>
+        android:layout_marginTop="64dp"
+        android:text="@string/bosm_heading"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <TextView
             android:text="@string/vendorappheading"
             android:layout_width="match_parent"
@@ -105,10 +107,11 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextUsername" >
 
         <com.google.android.material.textfield.TextInputEditText
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
             android:id="@+id/editTextPassword"
-            android:inputType="textPassword"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:text="vendor@oasis" />
 
     </com.google.android.material.textfield.TextInputLayout>
     <Button

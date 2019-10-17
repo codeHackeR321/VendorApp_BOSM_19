@@ -16,6 +16,10 @@ sealed class UIState {
 
     object GoToMainScreen : UIState()
 
+    object LogoutSuccess: UIState()
+
+    data class LogoutFail(val message: String): UIState()
+
     data class ErrorState(val message:String): UIState()
 
     data class ErrorStateChangeStatus(val message:String): UIState()
