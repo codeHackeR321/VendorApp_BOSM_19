@@ -18,13 +18,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
 
     private fun sendNotification(messageBody: JSONObject) {
-        val intent = Intent(this, MainActivity::class.java)
+       /* val intent = Intent(this, MainActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val pendingIntent = PendingIntent.getActivity(
-            this, 0 /* Request code */, intent,
+            this, 0 *//* Request code *//*, intent,
             PendingIntent.FLAG_ONE_SHOT
-        )
+        )*/
 
         val channelId = getString(R.string.chanel_id_newOrder)
         val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
@@ -34,7 +34,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setContentText(messageBody.getString("body"))
             .setAutoCancel(true)
             .setSound(defaultSoundUri)
-            .setContentIntent(pendingIntent)
+            /*.setContentIntent(pendingIntent)*/
             .build()
 
         with(NotificationManagerCompat.from(this)) {

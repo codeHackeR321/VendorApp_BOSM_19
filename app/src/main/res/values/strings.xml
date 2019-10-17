@@ -56,7 +56,7 @@
 
     <string name="defaultStartDate">13</string>
 
-    <string name="bosm_heading">BOSM\'19</string>
+    <string name="oasis_heading">Oasis-19</string>
     <string name="vendorappheading">Vendor App</string>
 
     <string name="saved_jwt">jwt</string>

@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.crashlytics.android.Crashlytics
 import com.example.vendorapp.R
 import com.example.vendorapp.menu.model.MenuStatus
 import com.example.vendorapp.menu.viewModel.MenuViewModel
@@ -21,6 +22,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_menu.*
 import kotlinx.android.synthetic.main.fragment_fra_new_order.*
+import java.lang.IllegalStateException
 
 class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
     private lateinit var nMenuViewModel:MenuViewModel
@@ -35,11 +37,14 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         menu_recycler.adapter=MenuAdapter(this)
         showLoadingStateActivity()
+        saveChanges.setTextColor(resources.getColor(R.color.tab_layout_unselected))
         observeUIState()
-        nMenuViewModel.setSaveChangesSelectedListener()
+        //nMenuViewModel.setSaveChangesSelectedListener()
 
         nMenuViewModel.menuList.observe(this, Observer {menu->
             (menu_recycler.adapter as MenuAdapter).itemList=menu
+            /*(menu_recycler.adapter as MenuAdapter).newStatusItemList=newStatusItemList*/
+            (menu_recycler.adapter as MenuAdapter).newStatusItemList.clear()
             (menu_recycler.adapter as MenuAdapter).notifyDataSetChanged()
            removeLoadingStateActivity()
         })
@@ -49,7 +54,7 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
            removeLoadingStateActivity()
         })
 
-        nMenuViewModel.saveChangesSelectedListener.observe(this, Observer {
+    /*    nMenuViewModel.saveChangesSelectedListener.observe(this, Observer {
             if (it>0)
             {
                 isSaveChangesSelected=true
@@ -62,47 +67,58 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
                 saveChanges.setTextColor(resources.getColor(R.color.tab_layout_unselected))
             }
 
-        })
+        })*/
         saveChanges.setOnClickListener{
 
+               Crashlytics.log("save changes test")
+            Crashlytics.logException(IllegalStateException("test crashly"))
                 showLoadingStateActivity()
 
-                if(!isSaveChangesSelected)
+               /* if(!isSaveChangesSelected)*/
+                if ((menu_recycler.adapter as MenuAdapter).newStatusItemList.isEmpty()/*newStatusItemList.isEmpty()*/)
                 {
                     Toast.makeText(this,"No changes made to be saved",Toast.LENGTH_SHORT).show()
                     removeLoadingStateActivity()
                 }
-
                 else
-                    nMenuViewModel.updateStatus()
+                    nMenuViewModel.updateStatus(/*newStatusItemList*/(menu_recycler.adapter as MenuAdapter).newStatusItemList)
+                   /* nMenuViewModel.updateStatus()*/
             }
 
-        nMenuViewModel.getMenuFromRoom()
+        /*nMenuViewModel.getMenuFromRoom()*/
     }
 
-    override fun onStatusChanged(itemData: MenuItemData, newTempStatus: Int) {
-        Log.d("Listener", "Entered Listener")
+    override fun onStatusChanged(/*itemData: MenuItemData,*/ /*newTempStatus*/ isNotEmpty: Boolean) {
+        /*Log.d("Listener", "Entered Listener")
         if (itemData.temp_status==-1){
             nMenuViewModel.updateTempStatus(itemId = itemData.itemId,newTempStatus =newTempStatus)
         }
         else
-            nMenuViewModel.updateTempStatus(itemId = itemData.itemId,newTempStatus = -1)
+            nMenuViewModel.updateTempStatus(itemId = itemData.itemId,newTempStatus = -1)*/
 
-       /* item.status=newStatus
-        val position=newStatusItemList.indexOfFirst { it.itemId==item.itemId }
+        /*itemData.status=newTempStatus*/
+       /* var tempItemData=itemData
+        tempItemData.status=newTempStatus
+
+        val position=newStatusItemList.indexOfFirst { it.itemId==tempItemData.itemId }
         if (position!=-1)
         {
             newStatusItemList.removeAt(position)
         }
         else
         {
-            newStatusItemList.add(item)
-        }
-*/
-        /*if (newStatusItemList.isEmpty())
-             saveChanges.setTextColor(resources.getColor(R.color.tab_layout_unselected))
+            newStatusItemList.add(tempItemData)
+        }*/
+
+        if (isNotEmpty)
+             saveChanges.setTextColor(resources.getColor(R.color.tab_layout_selected))
         else
-            saveChanges.setTextColor(resources.getColor(R.color.tab_layout_selected))*/
+            saveChanges.setTextColor(resources.getColor(R.color.tab_layout_unselected))
+
+        /*(menu_recycler.adapter as MenuAdapter).newStatusItemList=newStatusItemList*/
+
+       /* (menu_recycler.adapter as MenuAdapter).notifyDataSetChanged()
+*/
 
     }
 
@@ -142,7 +158,8 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
                 is UIState.SuccessStateChangeStatus->{
                     removeLoadingStateActivity()
 
-                    newStatusItemList.clear()
+                    /*newStatusItemList.clear()*/
+                    (menu_recycler.adapter as MenuAdapter).newStatusItemList.clear()
                     saveChanges.setTextColor(resources.getColor(R.color.tab_layout_unselected))
                     Log.d("MenuActivity2","Success Change Status:${(it as UIState.SuccessStateChangeStatus).message}")
                     Toast.makeText(this,"Success change status${(it as UIState.SuccessStateChangeStatus).message}",Toast.LENGTH_LONG).show()

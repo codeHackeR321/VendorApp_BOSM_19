@@ -68,53 +68,58 @@ class MenuRepository(val application: Context) {
     }
 
     @SuppressLint("CheckResult")
-    fun updateItemStatus() {
+   /* fun updateItemStatus() {*/
+    fun updateItemStatus(newStatusList: MutableList<MenuItemData>) {
 
-        menuDao.getMenuListToBeUpdated().subscribeOn(Schedulers.io()).subscribe({newStatusList->
-            Log.d("MenuRepo", "Entered update status with jwt = $jwt_token\nlist = $newStatusList")
-            if (newStatusList.isNotEmpty()){
-                val body =getBody(newStatusList)
-                Log.d("MenuRepo", "Sent body = ${body.toString()}")
-                menuApiCall.toogleItemAvailiblity("JWT " + jwt_token!!, body).subscribeOn(Schedulers.io()).subscribe({
-                    Log.d("MenuRepo_API1", "update status of menu  code:${it.code()},body : $body,\n it.body:  ${it.body()} ")
-
-                    when (it.code()) {
-                        200 -> {
-                            //changeLoadingStatusRoom(orderId,isLoading = false)
-                            Log.d("MenuRepo_API2","code : ${it.code()} new s ${body} it.body: ${it.body()} $")
-                            menuDao.insertMenu(newStatusList)
-                            ui_status_subject.onNext(UIState.SuccessStateChangeStatus("${it.code()}: body:${body} ${it.message()}"))
-                            //display toast message
-                        }
-                        400 -> {
-                            // show error message
-                            //var json =JSONObject(it.errorBody().toString())
-
-                            ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()}:Something went wrong"))
-                        }
-
-                        else->{
-                            ui_status_subject.onNext(UIState.ErrorStateChangeStatus(" Error ${it.code()}: ${it.message()} "))
-
-                        }
-                    }
-                }, {
-                    Log.d("MenuRepo_API15", "error apicall ,body:${body}, ERROR: $it")
-                    ui_status_subject.onNext(UIState.ErrorStateChangeStatus("EXCEPTION:  $it  body:${body}"))
-                })
-
-            }
+       /* menuDao.getMenuListToBeUpdated().subscribeOn(Schedulers.io()).subscribe({newStatusList->
 
         },{
             Log.d("Error in room","Retriveing get menu list to nbe upadted")
         })
+*/
+        Log.d("MenuRepo", "Entered update status with jwt = $jwt_token\nlist = $newStatusList")
+        if (newStatusList.isNotEmpty()){
+            val body =getBody(newStatusList)
+            Log.d("MenuRepo", "Sent body = ${body.toString()}")
+            menuApiCall.toogleItemAvailiblity("JWT " + jwt_token!!, body).subscribeOn(Schedulers.io()).subscribe({
+                Log.d("MenuRepo_API1", "update status of menu  code:${it.code()},body : $body,\n it.body:  ${it.body()} ")
+
+                when (it.code()) {
+                    200 -> {
+                        //changeLoadingStatusRoom(orderId,isLoading = false)
+                        Log.d("MenuRepo_API2","code : ${it.code()} new s ${body} it.body: ${it.body()} $")
+                        menuDao.insertMenu(newStatusList)
+                        ui_status_subject.onNext(UIState.SuccessStateChangeStatus("${it.code()}: body:${body} ${it.message()}"))
+                        //display toast message
+                    }
+                    400 -> {
+                        // show error message
+                        //var json =JSONObject(it.errorBody().toString())
+
+                        ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()}:Something went wrong"))
+                    }
+
+                    else->{
+                        ui_status_subject.onNext(UIState.ErrorStateChangeStatus(" Error ${it.code()}: ${it.message()} "))
+
+                    }
+                }
+            }, {
+                Log.d("MenuRepo_API15", "error apicall ,body:${body}, ERROR: $it")
+                ui_status_subject.onNext(UIState.ErrorStateChangeStatus("EXCEPTION:  $it  body:${body}"))
+            })
+
+        }
 
 
 
     }
 
     private fun MenuPojo.toMenuItemData(): MenuItemData {
-         return MenuItemData(id, name, price, is_available,-1)
+        var statusSave=false
+        if (is_available==1)
+            statusSave=true
+         return MenuItemData(id, name, price, statusSave/*,-1*/)
     }
     fun getUIStateFlowable(): Flowable<UIState> {
         return ui_status_subject.toFlowable(BackpressureStrategy.LATEST).doOnError { Log.e("OrderRepo", "Failed to convert into uiState") }
@@ -123,11 +128,15 @@ class MenuRepository(val application: Context) {
     private fun getBody(newStatusList: List<MenuItemData>):JsonObject{
        val body=JsonObject()
         val array=JsonArray()
-
+         // api call me body status 0 ya 1 bhejna h true/ faolse nahi
         newStatusList.forEach {item->
             val element=JsonObject().also {
+                var statusSent=0
+                if (item.status)
+                    statusSent=1
+
                 it.addProperty("item_id", item.itemId)
-                it.addProperty("new_availability_state", item.temp_status)
+                it.addProperty("new_availability_state", /*item.temp_status*//*item.status*/statusSent)
             }
             array.add(element)
         }
@@ -136,12 +145,12 @@ class MenuRepository(val application: Context) {
         return body
     }
 
-    fun getSaveChangesSelectedState():Flowable<Int>{
+   /* fun getSaveChangesSelectedState():Flowable<Int>{
         return menuDao.getSaveChangesSelectedStatus()
     }
 
     fun setTempStatusRoom(itemId: Int,newTempStatus: Int): Completable{
         return menuDao.setNewTempStatus(itemId = itemId, tempStatus = newTempStatus)
-    }
+    }*/
 
 }

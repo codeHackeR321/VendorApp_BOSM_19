@@ -99,7 +99,7 @@ class OrderRepository(private val application: Context) {
             for (dc in snapshots!!.documentChanges) {
                 when (dc.type) {
                     DocumentChange.Type.ADDED -> {
-                        Log.d("OrderRepo_Firestore4", "Entered new document addition")
+                        Log.d("OrderRepo_Firestore4", "Entered new document addition ${dc.document.id}")
                         order_id = dc.document.id
                         pendingDataOrderIds = pendingDataOrderIds.plus(order_id!!.toInt())
 
