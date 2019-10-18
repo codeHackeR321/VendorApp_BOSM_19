@@ -24,7 +24,11 @@ sealed class UIState {
 
     data class ErrorStateChangeStatus(val message:String): UIState()
 
+    data class ErrorStateChangeStatusMenuActivity(val message:String): UIState()
+
     data class SuccessStateChangeStatus(val message:String): UIState()
+
+    data class SuccessStateChangeStatusMenuActivity(val message:String): UIState()
 
     data class SuccessStateFetchingOrders(val message:String,/*val orderId :Int,*/val incompleteOrderList: List<IncompleteOrderStatus>): UIState()
 

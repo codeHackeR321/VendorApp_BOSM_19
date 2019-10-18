@@ -20,13 +20,18 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
+import retrofit2.HttpException
+import retrofit2.http.HTTP
+import java.net.HttpURLConnection
+import java.net.SocketTimeoutException
 
 
 class MenuRepository(val application: Context) {
 
     private val menuDao: MenuDao
     private val menuApiCall: RetrofitApi
-    var ui_status_subject = BehaviorSubject.create<UIState>()
+    var ui_status_subject =PublishSubject.create<UIState>()
     private val sharedPref = application.getSharedPreferences(
         application.getString(R.string.preference_file_login), Context.MODE_PRIVATE
     )
@@ -68,15 +73,9 @@ class MenuRepository(val application: Context) {
     }
 
     @SuppressLint("CheckResult")
-   /* fun updateItemStatus() {*/
+
     fun updateItemStatus(newStatusList: MutableList<MenuItemData>) {
 
-       /* menuDao.getMenuListToBeUpdated().subscribeOn(Schedulers.io()).subscribe({newStatusList->
-
-        },{
-            Log.d("Error in room","Retriveing get menu list to nbe upadted")
-        })
-*/
         Log.d("MenuRepo", "Entered update status with jwt = $jwt_token\nlist = $newStatusList")
         if (newStatusList.isNotEmpty()){
             val body =getBody(newStatusList)
@@ -84,29 +83,32 @@ class MenuRepository(val application: Context) {
             menuApiCall.toogleItemAvailiblity("JWT " + jwt_token!!, body).subscribeOn(Schedulers.io()).subscribe({
                 Log.d("MenuRepo_API1", "update status of menu  code:${it.code()},body : $body,\n it.body:  ${it.body()} ")
 
+
                 when (it.code()) {
                     200 -> {
                         //changeLoadingStatusRoom(orderId,isLoading = false)
                         Log.d("MenuRepo_API2","code : ${it.code()} new s ${body} it.body: ${it.body()} $")
                         menuDao.insertMenu(newStatusList)
-                        ui_status_subject.onNext(UIState.SuccessStateChangeStatus("${it.code()}: body:${body} ${it.message()}"))
+                        ui_status_subject.onNext(UIState.SuccessStateChangeStatusMenuActivity("${it.code()}: body:${body} ${it.message()}"))
                         //display toast message
                     }
                     400 -> {
                         // show error message
                         //var json =JSONObject(it.errorBody().toString())
 
-                        ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()}:Something went wrong"))
+                        ui_status_subject.onNext(UIState.ErrorStateChangeStatusMenuActivity("${it.code()}:Something went wrong"))
                     }
 
                     else->{
-                        ui_status_subject.onNext(UIState.ErrorStateChangeStatus(" Error ${it.code()}: ${it.message()} "))
+                        ui_status_subject.onNext(UIState.ErrorStateChangeStatusMenuActivity(" Error ${it.code()}: ${it.message()} "))
 
                     }
                 }
             }, {
+
+                if (it is SocketTimeoutException)
                 Log.d("MenuRepo_API15", "error apicall ,body:${body}, ERROR: $it")
-                ui_status_subject.onNext(UIState.ErrorStateChangeStatus("EXCEPTION:  $it  body:${body}"))
+                ui_status_subject.onNext(UIState.ErrorStateChangeStatusMenuActivity("EXCEPTION:  $it  body:${body}"))
             })
 
         }
@@ -144,13 +146,5 @@ class MenuRepository(val application: Context) {
         body.add("item_obj_list",array)
         return body
     }
-
-   /* fun getSaveChangesSelectedState():Flowable<Int>{
-        return menuDao.getSaveChangesSelectedStatus()
-    }
-
-    fun setTempStatusRoom(itemId: Int,newTempStatus: Int): Completable{
-        return menuDao.setNewTempStatus(itemId = itemId, tempStatus = newTempStatus)
-    }*/
 
 }

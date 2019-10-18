@@ -142,7 +142,7 @@ class OrderRepository(private val application: Context) {
                             }
 
                             ui_status_subject.onNext(
-                                UIState.SuccessStateFetchingOrders("New Orders fetched Sucessfully",
+                                UIState.SuccessStateFetchingOrders("New Orderssssss fetched Sucessfully",
                                     /* orderId,*/incompleteOrderList = incomp_order_status_list))
                         }
 
@@ -259,7 +259,7 @@ class OrderRepository(private val application: Context) {
                             // show error message
                             changeLoadingStatusRoom(orderId, isLoading = false)
                             // please specially handle 412
-                            ui_status_subject.onNext(UIState.ErrorStateChangeStatus("User has not seen otp body:${body}"))
+                            ui_status_subject.onNext(UIState.ErrorStateChangeStatus("${it.code()} User has not seen otp body:${body}"))
                         }
 
                         else->{
@@ -488,7 +488,7 @@ class OrderRepository(private val application: Context) {
     }
     //update room with earnings data
     fun updateEarningsData(): Completable {
-        val dateArray = arrayOf("14_10_2019", "15_10_2019", "16_10_2019", "17_10_2019", "18_10_2019")
+        val dateArray = arrayOf("19_10_2019", "20_10_2019", "21_10_2019", "22_10_2019", "23_10_2019")
         val body: JsonObject = getEarningBody(dateArray)
         return earningsApiCall.getEarningData("JWT $jwt_token", body = body).subscribeOn(Schedulers.io())
                 .doOnSuccess {

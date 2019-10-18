@@ -146,23 +146,23 @@ class MenuActivity : AppCompatActivity(),MenuAdapter.UpdateMenuListener {
                 }
 
 
-                is UIState.ErrorStateChangeStatus->{
+                is UIState.ErrorStateChangeStatusMenuActivity->{
                     removeLoadingStateActivity()
                     saveChanges.setTextColor(resources.getColor(R.color.tab_layout_selected))
 
-                    Log.d("MenuActivity1","Error Change Status:${(it as UIState.ErrorStateChangeStatus).message}")
-                    Toast.makeText(this,"Error: Try Again After SomeTime${(it as UIState.ErrorStateChangeStatus).message}",Toast.LENGTH_LONG).show()
+                    Log.d("MenuActivity1","Error Change Status:${(it as UIState.ErrorStateChangeStatusMenuActivity).message}")
+                    Toast.makeText(this,"Error: Try Again After SomeTime${(it as UIState.ErrorStateChangeStatusMenuActivity).message}",Toast.LENGTH_LONG).show()
 
                 }
 
-                is UIState.SuccessStateChangeStatus->{
+                is UIState.SuccessStateChangeStatusMenuActivity->{
                     removeLoadingStateActivity()
 
                     /*newStatusItemList.clear()*/
                     (menu_recycler.adapter as MenuAdapter).newStatusItemList.clear()
                     saveChanges.setTextColor(resources.getColor(R.color.tab_layout_unselected))
-                    Log.d("MenuActivity2","Success Change Status:${(it as UIState.SuccessStateChangeStatus).message}")
-                    Toast.makeText(this,"Success change status${(it as UIState.SuccessStateChangeStatus).message}",Toast.LENGTH_LONG).show()
+                    Log.d("MenuActivity2","Success Change Status:${(it as UIState.SuccessStateChangeStatusMenuActivity).message}")
+                    Toast.makeText(this,"Success change status${(it as UIState.SuccessStateChangeStatusMenuActivity).message}",Toast.LENGTH_LONG).show()
 
                 }
             }

@@ -66,6 +66,8 @@ var x = activity.getString(R.string.login_failed)
        }
      }.doOnError {
        Log.d("Login","error in apicall ${it.printStackTrace()}")} }
+    
+
 }
 
 

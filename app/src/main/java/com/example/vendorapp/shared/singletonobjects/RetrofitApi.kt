@@ -22,7 +22,6 @@ interface RetrofitApi {
     val menu: Single<List<MenuPojo>>*/
 
 
-
     @POST("wallet/vendor/items/toggle_availability")
     fun toogleItemAvailiblity(@Header("Authorization") jwt: String, @Body body: JsonObject) : Single<Response<Unit>>
 
